@@ -2,13 +2,13 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-// import connectDB from "./config/db.js";
+import connectDB from "./config/db.js";
 // import Error from "./middleware/error.middleware.js";
 // import { Server } from "socket.io";
-// import Chat from "./models/chat.model.js";
+import User from "./models/user.model.js";
 // import Message from "./models/message.model.js";
 
-// connectDB();
+connectDB();
 dotenv.config();
 
 const app = express();
