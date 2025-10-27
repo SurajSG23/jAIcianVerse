@@ -5,6 +5,7 @@ const Profile = () => {
     <div>
       Hello i am preksha!this page belongs to me no enroaching my space!
       Okay Madam, I wont touch this.
+      thank u
     </div>
   )
 }
