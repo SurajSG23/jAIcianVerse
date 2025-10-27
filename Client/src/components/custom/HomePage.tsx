@@ -6,6 +6,7 @@ import { cn } from "../../../lib/utils";
 import { IoExitOutline } from "react-icons/io5";
 import { Home, MessagesSquare, NotebookPen, User2 } from "lucide-react";
 import Dashboard from "./Dashboard";
+import Profile from "./Profile";
 import { Link } from "react-router-dom";
 import SemesterDetails from "../../data/semesters";
 
@@ -92,6 +93,8 @@ const HomePage = () => {
         </SidebarBody>
       </Sidebar>
       <Dashboard />
+      {/* <Profile/> */}
+
     </div>
   );
 };
