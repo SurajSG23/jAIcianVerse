@@ -15,7 +15,6 @@ const Dashboard = () => {
       postedAt: "2 hours ago",
       tags: ["Python", "BST", "Algorithms"],
       views: 234,
-      upvotes: 15,
       bookmarked: false,
       answers: [
         {
@@ -47,7 +46,6 @@ const Dashboard = () => {
       postedAt: "5 hours ago",
       tags: ["ML", "AI", "Classification"],
       views: 567,
-      upvotes: 15,
       bookmarked: false,
       answers: [
         {
@@ -71,7 +69,6 @@ const Dashboard = () => {
       postedAt: "1 day ago",
       tags: ["JavaScript", "Closures", "Functions"],
       views: 892,
-      upvotes: 30,
       bookmarked: false,
       answers: [],
     },
@@ -233,7 +230,8 @@ const Dashboard = () => {
             border-radius: 4px;
           }
           ::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(65, 65, 65, 0.8);
+            transition: all 0.3s ease;
+            background-color: rgba(54, 54, 54, 0.8);
             cursor: pointer;
           }
         `}
@@ -425,10 +423,6 @@ const Dashboard = () => {
                   </svg>
                   <span>{disc.answers.length} answers</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <BiSolidUpvote />
-                  <span>{disc.upvotes} upvotes</span>
-                </div>
               </div>
 
               <div className="flex gap-3">
@@ -445,9 +439,6 @@ const Dashboard = () => {
                   className="px-4 py-2 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
                 >
                   Add Answer
-                </button>
-                <button className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors">
-                  <BiUpvote className="w-6 h-6" />
                 </button>
               </div>
 
@@ -466,10 +457,10 @@ const Dashboard = () => {
                     return (
                       <div
                         key={j}
-                        className={`p-4 rounded-lg ${
+                        className={`p-4 rounded-lg bg-black ${
                           ans.isBestAnswer
-                            ? "bg-emerald-950 border border-emerald-900"
-                            : "bg-neutral-950 border border-neutral-800"
+                            ? "border border-emerald-900"
+                            : "border border-neutral-800"
                         }`}
                       >
                         <p className="text-neutral-200 leading-relaxed mb-3">
