@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { BiSolidUpvote, BiUpvote } from "react-icons/bi";
 
 const Dashboard = () => {
   const [discussions, setDiscussions] = useState([
@@ -10,9 +11,11 @@ const Dashboard = () => {
       profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
       subject: "Data Structures",
       unit: "Unit 3",
+      semester: 6,
       postedAt: "2 hours ago",
       tags: ["Python", "BST", "Algorithms"],
       views: 234,
+      upvotes: 15,
       bookmarked: false,
       answers: [
         {
@@ -40,9 +43,11 @@ const Dashboard = () => {
       profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=James",
       subject: "Machine Learning",
       unit: "Unit 1",
+      semester: 6,
       postedAt: "5 hours ago",
       tags: ["ML", "AI", "Classification"],
       views: 567,
+      upvotes: 15,
       bookmarked: false,
       answers: [
         {
@@ -62,9 +67,11 @@ const Dashboard = () => {
       profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya",
       subject: "Web Development",
       unit: "Unit 2",
+      semester: 6,
       postedAt: "1 day ago",
       tags: ["JavaScript", "Closures", "Functions"],
       views: 892,
+      upvotes: 30,
       bookmarked: false,
       answers: [],
     },
@@ -213,6 +220,24 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-screen w-full flex-1 flex-col overflow-y-auto rounded-l-2xl border border-neutral-800 bg-black p-6 md:p-10">
+      <style>
+        {`
+          ::-webkit-scrollbar {
+            width: 10px;
+          }
+          ::-webkit-scrollbar-track {
+            background-color: black;
+          }
+          ::-webkit-scrollbar-thumb {
+            background-color: rgba(63, 63, 63, 0.604);
+            border-radius: 4px;
+          }
+          ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(65, 65, 65, 0.8);
+            cursor: pointer;
+          }
+        `}
+      </style>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-white">Discussion Forum</h1>
         <button
@@ -307,9 +332,11 @@ const Dashboard = () => {
                   <div>
                     <h3 className="text-white font-medium">{disc.postedBy}</h3>
                     <p className="text-sm text-neutral-500">
-                      {disc.postedAt} · {disc.subject} / {disc.unit}
+                      {disc.postedAt} &bull; {disc.semester} Sem &bull;{" "}
+                      {disc.subject} / {disc.unit}
                     </p>
                   </div>
+
                   <button
                     onClick={() => toggleBookmark(discussions.indexOf(disc))}
                     className="text-neutral-500 hover:text-white transition-colors"
@@ -398,6 +425,10 @@ const Dashboard = () => {
                   </svg>
                   <span>{disc.answers.length} answers</span>
                 </div>
+                <div className="flex items-center gap-1">
+                  <BiSolidUpvote />
+                  <span>{disc.upvotes} upvotes</span>
+                </div>
               </div>
 
               <div className="flex gap-3">
@@ -414,6 +445,9 @@ const Dashboard = () => {
                   className="px-4 py-2 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
                 >
                   Add Answer
+                </button>
+                <button className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors">
+                  <BiUpvote className="w-6 h-6" />
                 </button>
               </div>
 
