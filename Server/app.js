@@ -1,9 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 // import connectDB from "./config/db.js";
 // import Error from "./middleware/error.middleware.js";
-import cookieParser from "cookie-parser";
 // import { Server } from "socket.io";
 // import Chat from "./models/chat.model.js";
 // import Message from "./models/message.model.js";
@@ -26,6 +26,10 @@ app.get("/", (req, res) => {
     res.send("API is running");
 });
 
+const server = app.listen(3000, () => {
+    console.log("Server is running on port 3000");
+});
+
 // app.use("/api/user", userRoutes);
 // app.use("/api/chat", chatsRoutes);
 // app.use("/api/message", messageRoutes);
@@ -33,9 +37,6 @@ app.get("/", (req, res) => {
 // app.use(Error.notFound);
 // app.use(Error.errorHandler);
 
-const server = app.listen(3000, () => {
-    console.log("Server is running on port 3000");
-});
 
 // const io = new Server(server, {
 //     pingTimeout: 60000,
