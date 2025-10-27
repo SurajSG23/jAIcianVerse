@@ -7,7 +7,11 @@ import { IoExitOutline } from "react-icons/io5";
 import { Home, MessagesSquare, NotebookPen, User2 } from "lucide-react";
 import Dashboard from "./Dashboard";
 import { Link } from "react-router-dom";
+import SemesterDetails from "../../../data/semesters";
+
 const HomePage = () => {
+  console.log(SemesterDetails);
+
   const links = [
     {
       label: "Home",

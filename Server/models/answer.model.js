@@ -13,7 +13,7 @@ const answerSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    upvotes: { type: Number, default: 0 },
+    upvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Answer" }],
   },
   { timestamps: true }
 );
