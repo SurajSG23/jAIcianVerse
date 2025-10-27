@@ -6,7 +6,7 @@ import connectDB from "./config/db.js";
 // import Error from "./middleware/error.middleware.js";
 // import { Server } from "socket.io";
 import User from "./models/user.model.js";
-// import Message from "./models/message.model.js";
+import Discussion from "./models/discussion.model.js";
 
 connectDB();
 dotenv.config();
