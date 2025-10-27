@@ -33,6 +33,8 @@ const userSchema = new mongoose.Schema(
       {
         title: String,
         message: String,
+        semester: Number,
+        subject: { type: mongoose.Schema.Types.ObjectId, ref: "Subject" },
         createdAt: { type: Date, default: Date.now },
       },
     ],
