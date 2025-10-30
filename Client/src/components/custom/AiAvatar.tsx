@@ -22,9 +22,7 @@ export default function AIAvatar() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [textDisplaying]);
 
-  const text = `Hello, welcome to JaisianVerse! I’m here to summarize this unit for you — a quick, clear walkthrough to help you understand the key points before you move ahead.
-
-Today, we’re exploring one of the most fascinating processes in nature — Photosynthesis.
+  const text = `Hello, welcome to JaisianVerse! I’m here to summarize this unit for you a quick, clear walkthrough to help you understand the key points before you move ahead Today, we’re exploring one of the most fascinating processes in nature Photosynthesis.
 
 Photosynthesis is how green plants, algae, and some bacteria make their own food using sunlight. Imagine a plant as a tiny, solar-powered factory — it takes in sunlight, carbon dioxide from the air, and water from the soil, and transforms them into glucose — a type of sugar that serves as food and energy. In the process, it also releases oxygen, which we humans rely on to breathe. Pretty amazing, right?
 
@@ -45,7 +43,7 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
       const availableVoices = window.speechSynthesis.getVoices();
 
       if (availableVoices.length > 0) {
-        let selectedVoice =
+        const selectedVoice =
           availableVoices.find((v) => v.lang.toLowerCase().includes("hi-in")) ||
           availableVoices.find((v) => v.name.toLowerCase().includes("hindi")) ||
           availableVoices.find((v) =>
@@ -212,6 +210,10 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
     }
   };
 
+  useEffect(() => {
+    stopSpeech();
+  }, []);
+
   const stopSpeech = () => {
     window.speechSynthesis.cancel();
     subtitleTimeoutRefs.current.forEach(clearTimeout);
@@ -236,7 +238,7 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
   return (
     <div
       className={cn(
-        "mx-auto fixed flex w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-900 h-screen"
+        "mx-auto fixed overflow-y-auto flex w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-900 h-screen"
       )}
     >
       <Sidebar />
@@ -277,18 +279,10 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
             {/* Left Side - Video */}
             <div className="flex flex-col">
-              <div
-                className="relative rounded-2xl overflow-hidden transition-all duration-500 ease-out bg-neutral-900"
-                style={{
-                  filter:
-                    isSpeaking && !isPaused
-                      ? "drop-shadow(0 0 40px hsl(270 80% 65% / 0.6))"
-                      : "drop-shadow(0 0 20px hsl(270 50% 40% / 0.2))",
-                }}
-              >
+              <div className="relative rounded-2xl overflow-hidden transition-all duration-500 ease-out bg-neutral-900">
                 <video
                   ref={videoRef}
-                  src="AI-Teacher-Video.mp4"
+                  src="AI-Teacher-Video-1.mp4"
                   className="w-full h-auto"
                   muted
                   preload="auto"
