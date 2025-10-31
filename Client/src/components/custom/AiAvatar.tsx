@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Play, Pause, Square, MessageSquare } from "lucide-react";
 import Sidebar from "./Navbar";
 import { cn } from "../../../lib/utils";
+import BottomGradient from "../ui/buttonGradient";
 
 export default function AIAvatar() {
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -325,41 +326,44 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
               <div className="mt-6 flex justify-center gap-3">
                 {!isSpeaking ? (
                   <button
+                    className="group/btn relative block h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
                     onClick={speakText}
-                    className="group relative px-8 py-3 rounded-xl font-semibold text-white transition-all duration-300 bg-purple-600 hover:bg-purple-700 active:scale-95 shadow-lg shadow-purple-500/50"
                   >
-                    <span className="relative z-10 flex items-center gap-2">
-                      <Play className="w-5 h-5" />
-                      Start Speaking
-                    </span>
+                    <Play className="w-5 h-5" />
+                    Start Speaking
+                    <BottomGradient />
                   </button>
                 ) : (
                   <>
                     <button
+                      className="group/btn relative block h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
                       onClick={togglePause}
-                      className="px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200 bg-blue-600 hover:bg-blue-700 active:scale-95 shadow-lg shadow-blue-500/50"
                     >
                       <span className="flex items-center gap-2">
                         {isPaused ? (
                           <>
                             <Play className="w-5 h-5" />
                             Resume
+                            <BottomGradient />
                           </>
                         ) : (
                           <>
                             <Pause className="w-5 h-5" />
                             Pause
+                            <BottomGradient />
                           </>
                         )}
                       </span>
                     </button>
+
                     <button
+                      className="group/btn relative block h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
                       onClick={stopSpeech}
-                      className="px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200 bg-red-600 hover:bg-red-700 active:scale-95 shadow-lg shadow-red-500/50"
                     >
                       <span className="flex items-center gap-2">
                         <Square className="w-5 h-5" />
                         Stop
+                        <BottomGradient />
                       </span>
                     </button>
                   </>
@@ -371,22 +375,22 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
             <div className="flex flex-col justify-center">
               <div className="relative">
                 {/* Decorative corner elements */}
-                <div className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-purple-500/50 rounded-tl-lg"></div>
-                <div className="absolute -top-2 -right-2 w-8 h-8 border-t-2 border-r-2 border-purple-500/50 rounded-tr-lg"></div>
-                <div className="absolute -bottom-2 -left-2 w-8 h-8 border-b-2 border-l-2 border-purple-500/50 rounded-bl-lg"></div>
-                <div className="absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 border-purple-500/50 rounded-br-lg"></div>
+                <div className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-orange-500/50 rounded-tl-lg"></div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 border-t-2 border-r-2 border-orange-500/50 rounded-tr-lg"></div>
+                <div className="absolute -bottom-2 -left-2 w-8 h-8 border-b-2 border-l-2 border-orange-500/50 rounded-bl-lg"></div>
+                <div className="absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 border-orange-500/50 rounded-br-lg"></div>
 
-                <div className="relative bg-neutral-900 backdrop-blur-xl rounded-2xl p-8 border border-purple-500/20 min-h-[400px] flex items-center justify-center">
+                <div className="relative bg-neutral-900 backdrop-blur-xl rounded-2xl p-8 border border-orange-500/20 min-h-[400px] flex items-center justify-center">
                   <div className="relative z-10 w-full">
                     {textDisplaying ? (
                       <div className="space-y-4">
                         <div className="flex items-center gap-2 mb-4">
                           <div className="flex gap-1">
-                            <div className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse"></div>
-                            <div className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse delay-150"></div>
-                            <div className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse delay-300"></div>
+                            <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
+                            <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-150"></div>
+                            <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-300"></div>
                           </div>
-                          <span className="text-xs font-semibold text-purple-300 uppercase tracking-wider">
+                          <span className="text-xs font-semibold text-orange-300 uppercase tracking-wider">
                             Live Transcript
                           </span>
                         </div>
@@ -395,18 +399,23 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
                         </p>
                       </div>
                     ) : (
-                      <div className="text-center space-y-6">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-500/20 border border-purple-500/30">
-                          <MessageSquare className="w-8 h-8 text-purple-400" />
+                      <div className="text-center space-y-6 flex flex-col justify-center items-center">
+                        <div className="flex items-center gap-2 mb-4">
+                          <div className="flex gap-1">
+                            <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
+                            <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-150"></div>
+                            <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-300"></div>
+                          </div>
+                          <span className="text-xs font-semibold text-orange-300 uppercase tracking-wider">
+                            Live Transcript
+                          </span>
                         </div>
-                        <div>
-                          <p className="text-xl text-gray-300 font-medium mb-2">
-                            Ready to Learn
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Press the speak button to begin your lesson
-                          </p>
-                        </div>
+                        <p className="text-xl text-gray-300 font-medium mb-2">
+                          Ready to Learn
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          Press the speak button to begin your lesson
+                        </p>
                       </div>
                     )}
                   </div>
