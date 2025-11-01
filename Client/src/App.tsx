@@ -4,7 +4,6 @@ import HomePage from "./components/custom/HomePage";
 import Profile from "./components/custom/Profile";
 import Materials from "./components/custom/Materials";
 import Messages from "./components/custom/Messages";
-import AIAvatar from "./components/custom/AiAvatar";
 const App = () => {
   return (
     <div>
@@ -14,7 +13,6 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/materials" element={<Materials />} />
-        <Route path="/aiteacher" element={<AIAvatar />} />
       </Routes>
     </div>
   );

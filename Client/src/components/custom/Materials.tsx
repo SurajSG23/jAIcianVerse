@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Loader2, X } from "lucide-react";
 import { unitOptions } from "../../data/unitOptions";
 import { motion, AnimatePresence } from "framer-motion";
-
+import AIAvatar from "./AiAvatar";
 interface Unit {
   _id: string;
   title: string;
@@ -27,6 +27,8 @@ const Materials = () => {
   const [isUnitDialogOpen, setIsUnitDialogOpen] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAiTeacherVisible, setIsAiTeacherVisible] = useState(false);
+
   useEffect(() => {
     fetchSubjects();
   }, []);
@@ -214,6 +216,11 @@ const Materials = () => {
     setTimeout(() => setSelectedUnit(null), 200);
   };
 
+  const handleOptionClick = (label: number) => {
+    if (label === 3) {
+      setIsAiTeacherVisible(true);
+    }
+  };
 
   if (error) {
     return (
@@ -485,7 +492,7 @@ const Materials = () => {
                               initial={{ opacity: 0, scale: 0.9 }}
                               animate={{ opacity: 1, scale: 1 }}
                               transition={{ delay: index * 0.05 }}
-                              // onClick={() => handleOptionClick(option.label)}
+                              onClick={() => handleOptionClick(option.id)}
                               className={`bg-black border border-neutral-800 hover:border-gray-600 rounded-lg p-4 transition-all hover:scale-102 active:scale-95 group text-left cursor-pointer`}
                             >
                               <div className="flex items-center gap-3">
@@ -513,6 +520,9 @@ const Materials = () => {
           </AnimatePresence>
         </div>
       </div>
+      {isAiTeacherVisible && (
+        <AIAvatar setIsAiTeacherVisible={setIsAiTeacherVisible} selectedUnit={selectedUnit}/>
+      )}
     </div>
   );
 };
