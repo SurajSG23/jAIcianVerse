@@ -27,6 +27,12 @@ const VisualVault: React.FC<props> = ({
   const udemyUrl = `https://www.udemy.com/courses/search/?src=ukw&q=${encodeURIComponent(
     currentKeyword
   )}`;
+  const courseraUrl = `https://www.coursera.org/search?query=${encodeURIComponent(
+    currentKeyword
+  )}`;
+  const linkedInUrl = `https://www.linkedin.com/learning/search?keywords=${encodeURIComponent(
+    currentKeyword
+  )}`;
 
   const fetchVideos = async () => {
     if (!currentKeyword) return;
@@ -95,7 +101,7 @@ const VisualVault: React.FC<props> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.2 }}
-          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex justify-center items-center z-80"
+          className="fixed flex-col  left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex justify-center items-center z-80"
         >
           <button
             onClick={() => setIsVisualVaultVisible(false)}
@@ -124,34 +130,50 @@ const VisualVault: React.FC<props> = ({
                 .delay-300 { animation-delay: 300ms; }
             `}
           </style>
-          <div className="max-w-7xl w-full overflow-y-auto flex flex-col justify-center items-center gap-2">
+          <h2 className="text-2xl font-bold mb-4 text-gray-500">
+            Keywords:{" "}
+            <span className="text-gray-300">{keywords.join(", ")}</span>
+          </h2>
+          <div className="flex flex-wrap gap-4">
+            <button
+              className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black border border-gray-700  to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
+              onClick={fetchVideos}
+              disabled={loading}
+            >
+              <RefreshCcw className="w-5 h-5" />
+              {loading ? "Fetching..." : "Refresh"}
+              <BottomGradient />
+            </button>
+            <a
+              href={udemyUrl}
+              target="_blank"
+              className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black border border-gray-700 to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
+            >
+              Udemy
+              <RxArrowTopRight className="w-5 h-5" />
+              <BottomGradient />
+            </a>
+            <a
+              href={courseraUrl}
+              target="_blank"
+              className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black border border-gray-700 to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
+            >
+              Coursera
+              <RxArrowTopRight className="w-5 h-5" />
+              <BottomGradient />
+            </a>
+            <a
+              href={linkedInUrl}
+              target="_blank"
+              className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black border border-gray-700 to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
+            >
+              LinkedIn 
+              <RxArrowTopRight className="w-5 h-5" />
+              <BottomGradient />
+            </a>
+          </div>
+          <div className="max-w-7xl w-full overflow-y-auto p-4 flex flex-col justify-center items-center gap-2">
             <div className="w-full mx-auto">
-              <h2 className="text-2xl font-bold mb-4 text-gray-500">
-                Keywords:{" "}
-                <span className="text-gray-300">{keywords.join(", ")}</span>
-              </h2>
-
-              <div className="flex flex-wrap gap-4 mb-6">
-                <button
-                  className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
-                  onClick={fetchVideos}
-                  disabled={loading}
-                >
-                  <RefreshCcw className="w-5 h-5" />
-                  {loading ? "Fetching..." : "Refresh"}
-                  <BottomGradient />
-                </button>
-                <a
-                  href={udemyUrl}
-                  target="_blank"
-                  className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
-                >
-                  Udemy Courses
-                  <RxArrowTopRight className="w-5 h-5" />
-                  <BottomGradient />
-                </a>
-              </div>
-
               {videos.length === 0 && !loading && (
                 <p className="text-gray-600 mb-4">No videos found yet.</p>
               )}
@@ -163,15 +185,15 @@ const VisualVault: React.FC<props> = ({
                   {videos.map((video) => {
                     const videoUrl = `https://www.youtube.com/watch?v=${video.id.videoId}`;
                     return (
-                      <div
+                      <a
+                        href={videoUrl}
+                        target="_blank"
                         key={video.id.videoId}
                         className="group bg-neutral-900 text-white rounded-xl shadow-lg border border-neutral-800 
-             hover:-translate-y-2 hover:shadow-2xl hover:border-orange-600/50 
+             hover:-translate-y-2 hover:shadow-2xl hover:border-gray-600/50 
              transition-all duration-300 ease-out"
                       >
-                        <a
-                          href={videoUrl}
-                          target="_blank"
+                        <div
                           rel="noopener noreferrer"
                           className="block overflow-hidden rounded-t-xl"
                         >
@@ -180,23 +202,18 @@ const VisualVault: React.FC<props> = ({
                             alt={video.snippet.title}
                             className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300 ease-out"
                           />
-                        </a>
+                        </div>
                         <div className="p-4">
-                          <a
-                            href={videoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block"
-                          >
+                          <div rel="noopener noreferrer" className="block">
                             <p className="font-semibold text-white group-hover:text-orange-400 transition-colors duration-300">
                               {video.snippet.title}
                             </p>
-                          </a>
+                          </div>
                           <p className="text-gray-400 text-sm mt-1">
                             {video.snippet.channelTitle}
                           </p>
                         </div>
-                      </div>
+                      </a>
                     );
                   })}
                 </div>
