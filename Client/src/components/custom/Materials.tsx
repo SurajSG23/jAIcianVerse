@@ -1,10 +1,11 @@
 import { cn } from "../../../lib/utils";
 import Sidebar from "./Navbar";
-import React, { useState, useEffect } from "react";
-import { Loader2, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { X } from "lucide-react";
 import { unitOptions } from "../../data/unitOptions";
 import { motion, AnimatePresence } from "framer-motion";
 import AIAvatar from "./AiAvatar";
+import VisualVault from "./VisualVault";
 interface Unit {
   _id: string;
   title: string;
@@ -28,6 +29,7 @@ const Materials = () => {
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAiTeacherVisible, setIsAiTeacherVisible] = useState(false);
+  const [isVisualVaultVisible, setIsVisualVaultVisible] = useState(false);
 
   useEffect(() => {
     fetchSubjects();
@@ -219,6 +221,8 @@ const Materials = () => {
   const handleOptionClick = (label: number) => {
     if (label === 3) {
       setIsAiTeacherVisible(true);
+    } else if (label === 6) {
+      setIsVisualVaultVisible(true);
     }
   };
 
@@ -521,7 +525,16 @@ const Materials = () => {
         </div>
       </div>
       {isAiTeacherVisible && (
-        <AIAvatar setIsAiTeacherVisible={setIsAiTeacherVisible} selectedUnit={selectedUnit}/>
+        <AIAvatar
+          setIsAiTeacherVisible={setIsAiTeacherVisible}
+          selectedUnit={selectedUnit}
+        />
+      )}
+      {isVisualVaultVisible && (
+        <VisualVault
+          setIsVisualVaultVisible={setIsVisualVaultVisible}
+          selectedUnit={selectedUnit}
+        />
       )}
     </div>
   );

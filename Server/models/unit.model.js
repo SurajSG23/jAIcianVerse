@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const unitSchema = new mongoose.Schema({
   unitNumber: { type: Number, required: true },
+  topics: [{ type: String, required: true }],
   subject: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Subject",

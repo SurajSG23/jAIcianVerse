@@ -10,7 +10,7 @@ interface Unit {
 }
 interface props {
   setIsAiTeacherVisible: (visible: boolean) => void;
-  selectedUnit: Unit;
+  selectedUnit: Unit | null;
 }
 
 const AIAvatar: React.FC<props> = ({ setIsAiTeacherVisible, selectedUnit }) => {

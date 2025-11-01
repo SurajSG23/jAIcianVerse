@@ -42,6 +42,7 @@ export const unitOptions = [
     icon: Video,
     id: 6,
     label: "Visual Vault",
-    description: "Watch curated video lectures and visual explainers.",
+    description:
+      "Access YouTube and NPTEL video lectures related to this unit.",
   },
 ];
