@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import AIAvatar from "./AiAvatar";
 import VisualVault from "./VisualVault";
 import StudyHub from "./StudyHub";
+import ChatBot from "./ChatBot";
 interface Unit {
   _id: string;
   title: string;
@@ -32,6 +33,7 @@ const Materials = () => {
   const [isAiTeacherVisible, setIsAiTeacherVisible] = useState(false);
   const [isVisualVaultVisible, setIsVisualVaultVisible] = useState(false);
   const [isStudyHubVisible, setIsStdudyHubVisible] = useState(false);
+  const [isChatBotVisible, setIsSChatBotVisible] = useState(false);
 
   useEffect(() => {
     fetchSubjects();
@@ -223,6 +225,8 @@ const Materials = () => {
   const handleOptionClick = (label: number) => {
     if (label === 1) {
       setIsStdudyHubVisible(true);
+    } else if (label === 2) {
+      setIsSChatBotVisible(true);
     } else if (label === 3) {
       setIsAiTeacherVisible(true);
     } else if (label === 6) {
@@ -544,6 +548,11 @@ const Materials = () => {
         <StudyHub
           setIsStdudyHubVisible={setIsStdudyHubVisible}
           selectedUnit={selectedUnit}
+        />
+      )}
+      {isChatBotVisible && (
+        <ChatBot
+          setIsSChatBotVisible={setIsSChatBotVisible}
         />
       )}
     </div>
