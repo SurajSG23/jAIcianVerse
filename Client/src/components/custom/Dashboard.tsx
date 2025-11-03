@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { AnimatedTestimonials } from "../../components/ui/animated-testimonials";
+import BottomGradient from "../ui/buttonGradient";
 const Dashboard = () => {
   const announcements = [
     {
@@ -121,6 +122,7 @@ const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [sortBy, setSortBy] = useState("Recent");
+  const [answerText, setAnswerText] = useState("");
 
   const [questionForm, setQuestionForm] = useState({
     question: "",
@@ -129,8 +131,6 @@ const Dashboard = () => {
     tags: "",
     image: null,
   });
-
-  const [answerText, setAnswerText] = useState("");
 
   const filters = ["All", "Unanswered", "Answered", "Bookmarked"];
   const sortOptions = ["Recent", "Most Viewed", "Most Answered"];
@@ -748,70 +748,68 @@ const Dashboard = () => {
 
       {showAnswerModal && (
         <AnimatePresence>
-          {showAnswerModal && (
-            <>
-              {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => {
-                  setShowAnswerModal(false);
-                  setAnswerText("");
-                  setSelectedDiscussionIndex(null);
-                }}
-                className="fixed inset-0 backdrop-blur-md bg-black/60 z-40 cursor-pointer"
-              />
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => {
+                setShowAnswerModal(false);
+                setAnswerText("");
+                setSelectedDiscussionIndex(null);
+              }}
+              className="fixed inset-0 backdrop-blur-md bg-black/60 z-40"
+            />
 
-              {/* Modal */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                transition={{ duration: 0.2 }}
-                className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl bg-neutral-900 border border-neutral-800 rounded-xl p-6 shadow-xl"
-              >
-                {/* Header */}
-                <h2 className="text-2xl font-bold text-white mb-6">
-                  Add Your Answer
-                </h2>
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl bg-neutral-900 border border-neutral-800 rounded-xl p-6 shadow-xl"
+            >
+              {/* Header */}
+              <h2 className="text-2xl font-bold text-white mb-6">
+                Add Your Answer
+              </h2>
 
-                {/* Textarea */}
-                <div>
-                  <label className="block text-sm font-medium text-neutral-400 mb-2">
-                    Your Answer
-                  </label>
-                  <textarea
-                    value={answerText}
-                    onChange={(e) => setAnswerText(e.target.value)}
-                    placeholder="Share your knowledge..."
-                    className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700 resize-none"
-                    rows={6}
-                  />
-                </div>
+              {/* Textarea */}
+              <div>
+                <label className="block text-sm font-medium text-neutral-400 mb-2">
+                  Your Answer
+                </label>
+                <textarea
+                  value={answerText}
+                  onChange={(e) => setAnswerText(e.target.value)}
+                  placeholder="Share your knowledge..."
+                  className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700 resize-none"
+                  rows={6}
+                />
+              </div>
 
-                {/* Buttons */}
-                <div className="flex gap-3 mt-6">
-                  <button
-                    onClick={postAnswer}
-                    className="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-900 transition-colors cursor-pointer"
-                  >
-                    Post Answer
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowAnswerModal(false);
-                      setAnswerText("");
-                      setSelectedDiscussionIndex(null);
-                    }}
-                    className="px-6 py-2.5 text-sm font-medium text-neutral-400 bg-neutral-950 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </motion.div>
-            </>
-          )}
+              {/* Buttons */}
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={postAnswer}
+                  className="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-900 transition-colors cursor-pointer"
+                >
+                  Post Answer
+                </button>
+                <button
+                  onClick={() => {
+                    setShowAnswerModal(false);
+                    setAnswerText("");
+                    setSelectedDiscussionIndex(null);
+                  }}
+                  className="px-6 py-2.5 text-sm font-medium text-neutral-400 bg-neutral-950 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
+          </>
         </AnimatePresence>
       )}
     </div>

@@ -8,6 +8,7 @@ import AIAvatar from "./AiAvatar";
 import VisualVault from "./VisualVault";
 import StudyHub from "./StudyHub";
 import ChatBot from "./ChatBot";
+import TrendingPage from "./TrendingPage";
 interface Unit {
   _id: string;
   title: string;
@@ -34,6 +35,7 @@ const Materials = () => {
   const [isVisualVaultVisible, setIsVisualVaultVisible] = useState(false);
   const [isStudyHubVisible, setIsStdudyHubVisible] = useState(false);
   const [isChatBotVisible, setIsSChatBotVisible] = useState(false);
+  const [isTrendingPageVisible, setIsTrendingPageVisible] = useState(false);
 
   useEffect(() => {
     fetchSubjects();
@@ -229,6 +231,8 @@ const Materials = () => {
       setIsSChatBotVisible(true);
     } else if (label === 3) {
       setIsAiTeacherVisible(true);
+    } else if (label === 5) {
+      setIsTrendingPageVisible(true);
     } else if (label === 6) {
       setIsVisualVaultVisible(true);
     }
@@ -553,6 +557,11 @@ const Materials = () => {
       {isChatBotVisible && (
         <ChatBot
           setIsSChatBotVisible={setIsSChatBotVisible}
+        />
+      )}
+      {isTrendingPageVisible && (
+        <TrendingPage
+          setIsTrendingPageVisible={setIsTrendingPageVisible}
         />
       )}
     </div>
