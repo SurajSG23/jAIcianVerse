@@ -55,7 +55,7 @@ function LandingPage() {
                 to="home"
                 smooth={true}
                 duration={500}
-                className="cursor-pointer text-[#cccccc] hover:text-[#e63946] transition-colors duration-200"
+                className="cursor-pointer text-[#cccccc] hover:text-[orange] transition-colors duration-200"
               >
                 Home
               </Link>
@@ -63,7 +63,7 @@ function LandingPage() {
                 to="about"
                 smooth={true}
                 duration={500}
-                className="cursor-pointer text-[#cccccc] hover:text-[#e63946] transition-colors duration-200"
+                className="cursor-pointer text-[#cccccc] hover:text-[orange] transition-colors duration-200"
               >
                 About Us
               </Link>
@@ -71,7 +71,7 @@ function LandingPage() {
                 to="highlights"
                 smooth={true}
                 duration={500}
-                className="cursor-pointer text-[#cccccc] hover:text-[#e63946] transition-colors duration-200"
+                className="cursor-pointer text-[#cccccc] hover:text-[orange] transition-colors duration-200"
               >
                 Highlights
               </Link>
@@ -79,7 +79,7 @@ function LandingPage() {
                 to="contact"
                 smooth={true}
                 duration={500}
-                className="cursor-pointer text-[#cccccc] hover:text-[#e63946] transition-colors duration-200"
+                className="cursor-pointer text-[#cccccc] hover:text-[orange] transition-colors duration-200"
               >
                 Contact
               </Link>
@@ -89,7 +89,7 @@ function LandingPage() {
             <div className="md:hidden">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="text-white hover:text-[#e63946] transition-colors"
+                className="text-white hover:text-[orange] transition-colors"
               >
                 {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -106,7 +106,7 @@ function LandingPage() {
                 smooth={true}
                 duration={500}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="cursor-pointer text-white hover:text-[#e63946] transition-colors duration-200"
+                className="cursor-pointer text-white hover:text-[orange] transition-colors duration-200"
               >
                 Home
               </Link>
@@ -115,7 +115,7 @@ function LandingPage() {
                 smooth={true}
                 duration={500}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="cursor-pointer text-white hover:text-[#e63946] transition-colors duration-200"
+                className="cursor-pointer text-white hover:text-[orange] transition-colors duration-200"
               >
                 About Us
               </Link>
@@ -124,7 +124,7 @@ function LandingPage() {
                 smooth={true}
                 duration={500}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="cursor-pointer text-white hover:text-[#e63946] transition-colors duration-200"
+                className="cursor-pointer text-white hover:text-[orange] transition-colors duration-200"
               >
                 Highlights
               </Link>
@@ -133,7 +133,7 @@ function LandingPage() {
                 smooth={true}
                 duration={500}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="cursor-pointer text-white hover:text-[#e63946] transition-colors duration-200"
+                className="cursor-pointer text-white hover:text-[orange] transition-colors duration-200"
               >
                 Contact
               </Link>
@@ -278,7 +278,7 @@ function LandingPage() {
           {featuredPosts.map((post) => (
             <div
               key={post.id}
-              className="group bg-[#1a1a1a] rounded-lg overflow-hidden border border-gray-800 hover:border-[#e63946] transition-all duration-300 hover:transform hover:scale-105 hover:shadow-[0_0_30px_rgba(230,57,70,0.2)]"
+              className="group bg-[#1a1a1a] rounded-lg overflow-hidden border border-gray-800 hover:border-[orange] transition-all duration-300 hover:transform hover:scale-105 hover:shadow-[0_0_30px_rgba(230,57,70,0.2)]"
             >
               {/* Card Image */}
               <div className="relative h-64 overflow-hidden">
@@ -292,7 +292,7 @@ function LandingPage() {
 
               {/* Card Content */}
               <div className="p-6">
-                <h3 className="text-2xl font-medium mb-3 group-hover:text-[#e63946] transition-colors duration-200">
+                <h3 className="text-2xl font-medium mb-3 group-hover:text-[orange] transition-colors duration-200">
                   {post.title}
                 </h3>
                 <p className="text-[#cccccc] mb-6 leading-relaxed">
@@ -330,28 +330,28 @@ function LandingPage() {
               <div className="space-y-2">
                 <a
                   href="https://www.jssstuniv.in/#/"
-                  className="block text-[#cccccc] hover:text-[#e63946] transition-colors text-sm cursor-pointer"
+                  className="block text-[#cccccc] hover:text-[orange] transition-colors text-sm cursor-pointer"
                   target="_blank"
                 >
                   JSS Science and Technology University
                 </a>
                 <a
                   href="https://studentportal.universitysolutions.in/index.html"
-                  className="block text-[#cccccc] hover:text-[#e63946] transition-colors text-sm cursor-pointer"
+                  className="block text-[#cccccc] hover:text-[orange] transition-colors text-sm cursor-pointer"
                   target="_blank"
                 >
                   Student Portal
                 </a>
                 <a
                   href="https://central.sjceplacements.org/login"
-                  className="block text-[#cccccc] hover:text-[#e63946] transition-colors text-sm cursor-pointer"
+                  className="block text-[#cccccc] hover:text-[orange] transition-colors text-sm cursor-pointer"
                   target="_blank"
                 >
                   Placement Cell
                 </a>
                 <a
                   href="https://jssatem.azurewebsites.net/Apps/Login.aspx"
-                  className="block text-[#cccccc] hover:text-[#e63946] transition-colors text-sm cursor-pointer"
+                  className="block text-[#cccccc] hover:text-[orange] transition-colors text-sm cursor-pointer"
                   target="_blank"
                 >
                   Fees/Feedback Portal
@@ -363,7 +363,7 @@ function LandingPage() {
             <div>
               <h4 className="font-semibold mb-4 text-lg">Follow Us</h4>
               <div className="flex space-x-4">
-                <button className="hover:bg-gray-800 hover:text-[#e63946]">
+                <button className="hover:bg-gray-800 hover:text-[orange]">
                   <a
                     href="https://www.instagram.com/suraj_sg23/"
                     target="_blank"
@@ -374,7 +374,7 @@ function LandingPage() {
                   </a>
                 </button>
 
-                <button className="hover:bg-gray-800 hover:text-[#e63946]">
+                <button className="hover:bg-gray-800 hover:text-[orange]">
                   <a
                     href="https://www.linkedin.com/in/suraj-s-g-dhanva-995a23298/"
                     target="_blank"
@@ -385,7 +385,7 @@ function LandingPage() {
                   </a>
                 </button>
 
-                <button className="hover:bg-gray-800 hover:text-[#e63946]">
+                <button className="hover:bg-gray-800 hover:text-[orange]">
                   <a
                     href="https://github.com/SurajSG23"
                     target="_blank"

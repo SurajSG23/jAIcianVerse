@@ -183,10 +183,9 @@ const VisualVault: React.FC<props> = ({
               ) : (
                 <div className="grid grid-cols-1 h-[70vh] sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {videos.map((video) => {
-                    const videoUrl = `https://www.youtube.com/watch?v=${video.id.videoId}`;
                     return (
                       <a
-                        href={videoUrl}
+                        href={`https://www.youtube.com/watch?v=${video.id.videoId}`}
                         target="_blank"
                         key={video.id.videoId}
                         className="group bg-neutral-900 text-white rounded-xl shadow-lg border border-neutral-800 

@@ -6,6 +6,7 @@ import { unitOptions } from "../../data/unitOptions";
 import { motion, AnimatePresence } from "framer-motion";
 import AIAvatar from "./AiAvatar";
 import VisualVault from "./VisualVault";
+import StudyHub from "./StudyHub";
 interface Unit {
   _id: string;
   title: string;
@@ -30,6 +31,7 @@ const Materials = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAiTeacherVisible, setIsAiTeacherVisible] = useState(false);
   const [isVisualVaultVisible, setIsVisualVaultVisible] = useState(false);
+  const [isStudyHubVisible, setIsStdudyHubVisible] = useState(false);
 
   useEffect(() => {
     fetchSubjects();
@@ -219,7 +221,9 @@ const Materials = () => {
   };
 
   const handleOptionClick = (label: number) => {
-    if (label === 3) {
+    if (label === 1) {
+      setIsStdudyHubVisible(true);
+    } else if (label === 3) {
       setIsAiTeacherVisible(true);
     } else if (label === 6) {
       setIsVisualVaultVisible(true);
@@ -533,6 +537,12 @@ const Materials = () => {
       {isVisualVaultVisible && (
         <VisualVault
           setIsVisualVaultVisible={setIsVisualVaultVisible}
+          selectedUnit={selectedUnit}
+        />
+      )}
+      {isStudyHubVisible && (
+        <StudyHub
+          setIsStdudyHubVisible={setIsStdudyHubVisible}
           selectedUnit={selectedUnit}
         />
       )}
