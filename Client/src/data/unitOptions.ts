@@ -36,7 +36,7 @@ export const unitOptions = [
     icon: TrendingUp,
     id: 5,
     label: "Hot Concepts",
-    description: "Explore trending and advanced topics in this subject.",
+    description: "Explore trending discussions on this unit.",
   },
   {
     icon: Video,

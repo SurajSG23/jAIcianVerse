@@ -253,7 +253,6 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={() => setIsAiTeacherVisible(false)}
           className="fixed inset-0 backdrop-blur-sm"
         />
 
@@ -293,8 +292,8 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
         `}
           </style>
           <div className="max-w-7xl w-full flex flex-col justify-center items-center gap-2">
-            <p className="text-4xl font-bold">{selectedUnit.title}</p>
-            <p className="text-sm text-gray-400">{selectedUnit.description}</p>
+            <p className="text-4xl font-bold">{selectedUnit?.title}</p>
+            <p className="text-sm text-gray-400">{selectedUnit?.description}</p>
             {/* Main Content Grid */}
             <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
               {/* Left Side - Video */}

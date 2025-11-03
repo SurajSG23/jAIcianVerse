@@ -91,7 +91,6 @@ const VisualVault: React.FC<props> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={() => setIsVisualVaultVisible(false)}
           className="fixed inset-0 backdrop-blur-sm"
         />
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 
@@ -24,6 +24,8 @@ interface Props {
 }
 
 const StudyHub: React.FC<Props> = ({ setIsStdudyHubVisible, selectedUnit }) => {
+  const [loading, setLoading] = useState(true);
+
   const sampleMaterials: Material[] = [
     {
       _id: "1",
@@ -54,19 +56,22 @@ const StudyHub: React.FC<Props> = ({ setIsStdudyHubVisible, selectedUnit }) => {
     },
   ];
 
+  // Simulate loading time
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <AnimatePresence>
       <>
-        {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={() => setIsStdudyHubVisible(false)}
           className="fixed inset-0 backdrop-blur-sm"
         />
 
-        {/* Dialog */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -80,41 +85,56 @@ const StudyHub: React.FC<Props> = ({ setIsStdudyHubVisible, selectedUnit }) => {
           >
             <X className="h-6 w-6" />
           </button>
+
           <h1 className="text-white text-3xl text-center">{selectedUnit?.title}</h1>
           <h2 className="text-xl font-semibold text-gray-500 mb-6 text-center">
             Study Materials
           </h2>
 
-          {/* Materials Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sampleMaterials.map((material) => (
-              <motion.a
-                key={material._id}
-                href={material.fileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                className="bg-neutral-800 border border-neutral-700 p-5 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between"
-              >
-                <div>
-                  <h3 className="text-lg font-bold text-white mb-2">
-                    {material.title}
-                  </h3>
-                  <p className="text-sm text-gray-400 mb-1">
-                    Subject: {material.subject}
-                  </p>
-                  <p className="text-sm text-gray-400 mb-1">
-                    Unit: {material.unit}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Uploaded by: {material.uploadedBy}
-                  </p>
-                </div>
-                <div className="mt-3 text-orange-400 text-sm">
-                  Open Material →
-                </div>
-              </motion.a>
-            ))}
+            {loading
+              ? 
+                Array.from({ length: 3 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="bg-neutral-800 border border-neutral-700 p-5 rounded-xl shadow-md animate-pulse"
+                  >
+                    <div className="h-6 bg-neutral-700 rounded w-3/4 mb-3" />
+                    <div className="h-4 bg-neutral-700 rounded w-1/2 mb-2" />
+                    <div className="h-4 bg-neutral-700 rounded w-1/3 mb-2" />
+                    <div className="h-4 bg-neutral-700 rounded w-2/3 mb-4" />
+                    <div className="h-4 bg-neutral-800 rounded w-1/4 mt-4" />
+                  </div>
+                ))
+              : 
+                sampleMaterials.map((material) => (
+                  <motion.a
+                    key={material._id}
+                    href={material.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-neutral-800 border border-neutral-700 p-5 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between hover:border-gray-500"
+                  >
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-2">
+                        {material.title}
+                      </h3>
+                      <p className="text-sm text-gray-400 mb-1">
+                        Subject: {material.subject}
+                      </p>
+                      <p className="text-sm text-gray-400 mb-1">
+                        Unit: {material.unit}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Uploaded by: {material.uploadedBy}
+                      </p>
+                    </div>
+                    <div className="mt-3 text-orange-400 text-sm">
+                      Open Material →
+                    </div>
+                  </motion.a>
+                ))}
           </div>
 
           <style>
