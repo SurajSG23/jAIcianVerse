@@ -86,7 +86,6 @@ const VisualVault: React.FC<props> = ({
   return (
     <AnimatePresence>
       <>
-        {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

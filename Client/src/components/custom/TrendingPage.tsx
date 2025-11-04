@@ -162,16 +162,16 @@ const TrendingPage: React.FC<Props> = ({ setIsTrendingPageVisible }) => {
         >
           <button
             onClick={() => setIsTrendingPageVisible(false)}
-            className="absolute right-4 top-4 text-neutral-500 hover:text-white transition-colors"
+            className="ml-4 absolute right-1 top-1 text-neutral-400 hover:text-white transition-colors p-1 rounded-md hover:bg-neutral-800 cursor-pointer"
           >
             <X className="h-6 w-6" />
           </button>
 
-          <h1 className="text-white text-3xl text-center mb-4">
+          <h1 className="text-white text-3xl text-center mb-2">
             Discussion Forum
           </h1>
-          <h2 className="text-xl font-medium text-neutral-500 text-center mb-8">
-            Share your coding questions and answers
+          <h2 className="text-md font-medium text-neutral-500 text-center mb-4">
+            View trending questions and answer them
           </h2>
 
           {loading ? (
