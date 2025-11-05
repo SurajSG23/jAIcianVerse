@@ -9,6 +9,8 @@ import VisualVault from "./VisualVault";
 import StudyHub from "./StudyHub";
 import ChatBot from "./ChatBot";
 import TrendingPage from "./TrendingPage";
+import QuickQuiz from "./QuickQuiz";
+
 interface Unit {
   _id: string;
   title: string;
@@ -36,7 +38,7 @@ const Materials = () => {
   const [isStudyHubVisible, setIsStdudyHubVisible] = useState(false);
   const [isChatBotVisible, setIsSChatBotVisible] = useState(false);
   const [isTrendingPageVisible, setIsTrendingPageVisible] = useState(false);
-
+  const [isQuickQuizVisible, setIsQuickQuizVisible] = useState(false);
   useEffect(() => {
     fetchSubjects();
   }, []);
@@ -231,6 +233,8 @@ const Materials = () => {
       setIsSChatBotVisible(true);
     } else if (label === 3) {
       setIsAiTeacherVisible(true);
+    } else if (label === 4) {
+      setIsQuickQuizVisible(true);
     } else if (label === 5) {
       setIsTrendingPageVisible(true);
     } else if (label === 6) {
@@ -555,13 +559,15 @@ const Materials = () => {
         />
       )}
       {isChatBotVisible && (
-        <ChatBot
-          setIsSChatBotVisible={setIsSChatBotVisible}
-        />
+        <ChatBot setIsSChatBotVisible={setIsSChatBotVisible} />
       )}
       {isTrendingPageVisible && (
-        <TrendingPage
-          setIsTrendingPageVisible={setIsTrendingPageVisible}
+        <TrendingPage setIsTrendingPageVisible={setIsTrendingPageVisible} />
+      )}
+      {isQuickQuizVisible && (
+        <QuickQuiz
+          setIsQuickQuizVisible={setIsQuickQuizVisible}
+          selectedUnit={selectedUnit}
         />
       )}
     </div>
