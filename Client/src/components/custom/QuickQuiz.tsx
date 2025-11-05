@@ -11,6 +11,7 @@ import {
 import BottomGradient from "../ui/buttonGradient";
 import { RxCross1 } from "react-icons/rx";
 import { FaCheck } from "react-icons/fa";
+import useDetectTabSwitch from "../ui/useDetectTabSwitch";
 
 interface Unit {
   _id: string;
@@ -34,6 +35,7 @@ interface Props {
 }
 
 const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
+  useDetectTabSwitch();
   const [currentTime, setCurrentTime] = useState(10 * 60);
   const [userAnswers, setUserAnswers] = useState<(string | null)[]>(
     Array(10).fill(null)
@@ -632,28 +634,45 @@ const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
                           <ul className="space-y-5 max-w-3xl mx-auto px-4">
                             {geminiAnswers.map((correct, index) => {
                               const user = userAnswers[index];
-                              if (user && user.trim() !== correct.trim()) {
+
+                              // Show this if user gave a wrong answer OR didn't answer at all
+                              if (
+                                (!user || user.trim() !== correct.trim()) &&
+                                index != 10
+                              ) {
                                 return (
                                   <li
                                     key={index}
-                                    className="bg-neutral-800 p-5 rounded-2xl shadow-md border border-red-900 transition-all duration-200"
+                                    className="bg-neutral-800 p-5 rounded-2xl shadow-md border border-red-900/8 0 transition-all duration-200"
                                   >
                                     <p className="text-red-400 font-semibold mb-2 flex items-center gap-1">
                                       <RxCross1 className="text-xl" /> Question{" "}
                                       {index + 1}
                                     </p>
-                                    <p className="text-gray-300">
-                                      <span className="text-gray-500 font-semibold">
-                                        Your Answer:
-                                      </span>{" "}
-                                      {user}
-                                    </p>
+
+                                    {/* If user didn’t answer */}
+                                    {!user ? (
+                                      <p className="text-gray-400 italic">
+                                        You did not answer this question.
+                                      </p>
+                                    ) : (
+                                      <>
+                                        <p className="text-gray-300">
+                                          <span className="text-gray-500 font-semibold">
+                                            Your Answer:
+                                          </span>{" "}
+                                          {user}
+                                        </p>
+                                      </>
+                                    )}
+
                                     <p className="text-gray-300">
                                       <span className="text-gray-500 font-semibold">
                                         Correct Answer:
                                       </span>{" "}
                                       {correct}
                                     </p>
+
                                     <p className="text-gray-300 mt-2">
                                       <span className="text-gray-500 font-semibold">
                                         Explanation:
