@@ -8,6 +8,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousal";
+import BottomGradient from "../ui/buttonGradient";
+import { RxCross1 } from "react-icons/rx";
+import { FaCheck } from "react-icons/fa";
 
 interface Unit {
   _id: string;
@@ -228,198 +231,6 @@ const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
     GenerateQuestions();
   }, []);
 
-  if (submitConfirmation) {
-    return (
-      <div className="fixed inset-0 flex justify-center items-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 z-50 backdrop-blur-sm">
-        <div className="bg-gray-900 rounded-3xl shadow-2xl p-10 text-white w-[90%] max-w-lg border border-orange-500/30 transition-all duration-300">
-          <h1 className="text-3xl font-extrabold mb-6 text-orange-400 tracking-wide text-center">
-            Are you sure you want to submit?
-          </h1>
-          <p className="text-center">
-            You have attended{" "}
-            <span className="text-orange-300">
-              {userAnswers.filter((answer) => answer !== null).length}
-            </span>{" "}
-            / 10 Questions
-          </p>
-          <p className="text-center">
-            <span className="text-orange-300">
-              {10 - userAnswers.filter((answer) => answer !== null).length}
-            </span>{" "}
-            remaining
-          </p>
-          <div className="mt-8 flex justify-center gap-6">
-            <button
-              onClick={() => {
-                setSubmitConfirmation(false);
-              }}
-              className="bg-zinc-600 cursor-pointer hover:bg-zinc-700 px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-red-700/40"
-            >
-              No
-            </button>
-            <button
-              onClick={() => {
-                handleSubmitTest();
-                setSubmitConfirmation(false);
-              }}
-              className="bg-orange-600 cursor-pointer hover:bg-orange-700 px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-orange-700/40"
-            >
-              Yes
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  if (scoreBoard) {
-    return (
-      <div className="fixed inset-0 flex justify-center items-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 z-50 backdrop-blur-sm">
-        <div className="bg-gray-900 rounded-3xl shadow-2xl p-10 text-white w-full h-full overflow-y-auto border border-orange-500/30 transition-all duration-300">
-          <h1 className="text-3xl font-extrabold mb-6 text-orange-400 tracking-wide text-center">
-            🎉 Test Completed!
-          </h1>
-
-          <div className="text-center space-y-4 text-lg">
-            <p>
-              <span className="text-orange-400 font-semibold">
-                Total Points:
-              </span>{" "}
-              {score} / 10
-            </p>
-            <p className="text-green-400 font-medium">
-              {score == 10
-                ? "Perfect Score!"
-                : score >= 7
-                ? "Great Job!"
-                : score >= 4
-                ? "Good Effort!"
-                : "Keep Practicing!"}
-            </p>
-          </div>
-
-          {score < 10 && (
-            <div className="mt-10">
-              <h2 className="text-2xl font-semibold text-red-400 text-center mb-4">
-                Your Mistakes
-              </h2>
-              <ul className="space-y-4 max-w-3xl mx-auto px-4">
-                {geminiAnswers.map((correct, index) => {
-                  const user = userAnswers[index];
-                  if (user && user.trim() !== correct.trim()) {
-                    return (
-                      <li
-                        key={index}
-                        className="bg-gray-800 p-4 rounded-xl shadow-md border border-red-500/30"
-                      >
-                        <p className="text-white font-medium mb-1">
-                          ❌ Question {index + 1}
-                        </p>
-                        <p className="text-red-400">
-                          Your Answer:{" "}
-                          <span className="font-semibold">{user}</span>
-                        </p>
-                        <p className="text-green-400">
-                          Correct Answer:{" "}
-                          <span className="font-semibold">{correct}</span>
-                        </p>
-
-                        <p className="text-white">
-                          Explaination:{" "}
-                          <span className="font-semibold">
-                            {geminiExplaination[index]}
-                          </span>
-                        </p>
-                      </li>
-                    );
-                  } else {
-                    return null;
-                  }
-                })}
-              </ul>
-              <h2 className="text-2xl font-semibold text-green-400 text-center m-4">
-                Correct Answers
-              </h2>
-              <ul className="space-y-4 max-w-3xl mx-auto px-4">
-                {geminiAnswers.map((correct, index) => {
-                  const user = userAnswers[index];
-                  if (user && user.trim() === correct.trim()) {
-                    return (
-                      <li
-                        key={index}
-                        className="bg-gray-800 p-4 rounded-xl shadow-md border border-red-500/30"
-                      >
-                        <p className="text-white font-medium mb-1">
-                          ✔️ Question {index + 1}
-                        </p>
-                        <p className="text-green-400">
-                          Your Answer:{" "}
-                          <span className="font-semibold">{user}</span>
-                        </p>
-                        <p className="text-white">
-                          Explaination:{" "}
-                          <span className="font-semibold">
-                            {geminiExplaination[index]}
-                          </span>
-                        </p>
-                      </li>
-                    );
-                  } else {
-                    return null;
-                  }
-                })}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-  if (quitConfirmation) {
-    return (
-      <div className="fixed inset-0 flex justify-center items-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 z-50 backdrop-blur-sm">
-        <div className="bg-gray-900 rounded-3xl shadow-2xl p-10 text-white w-[90%] max-w-lg border border-orange-500/30 transition-all duration-300">
-          <h1 className="text-3xl font-extrabold mb-6 text-orange-400 tracking-wide text-center">
-            Are you sure you want to quit?
-          </h1>
-          <div className="mt-8 flex justify-center gap-6">
-            <button
-              onClick={() => {
-                setQuitConfirmation(false);
-              }}
-              className="bg-zinc-600 cursor-pointer hover:bg-zinc-700 px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-zinc-700/40"
-            >
-              No
-            </button>
-            <button
-              onClick={() => {
-                setQuitConfirmation(false);
-                // navigate("/homepage");
-              }}
-              className="bg-red-600 cursor-pointer hover:bg-red-700 px-6 py-3 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-red-700/40"
-            >
-              Yes
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <>
-        <div className="flex absolute top-0 justify-center items-center h-screen bg-gray-900 w-full z-99">
-          <div className="flex flex-col items-center">
-            <div className="w-16 h-16 border-4 border-transparent border-t-orange-500 border-b-orange-500 rounded-full animate-spin"></div>
-            <p className="text-white mt-4 text-lg font-semibold">
-              Generating Questions...
-            </p>
-          </div>
-        </div>
-      </>
-    );
-  }
-
   return (
     <AnimatePresence>
       <>
@@ -435,21 +246,21 @@ const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.2 }}
-          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl p-8 flex flex-col z-80"
+          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
         >
           <button
             onClick={() => setIsQuickQuizVisible(false)}
-            className="absolute right-3 top-3 text-neutral-400 hover:text-white transition-colors p-1 rounded-md hover:bg-neutral-800 cursor-pointer"
+            className="absolute right-3 top-3 text-neutral-400 hover:text-white transition-colors p-1 rounded-md hover:bg-neutral-800 cursor-pointer z-100"
           >
             <X className="h-6 w-6" />
           </button>
 
-          <div className="min-h-screen bg-gray-900 text-white w-full absolute">
+          <div className="min-h-screen bg-neutral-900 text-white w-full absolute">
             {/* Header */}
-            <header className="bg-gray-800 shadow-md">
-              <div className="container mx-auto px-4 py-3 flex justify-end items-center">
+            <header className="bg-black shadow-md">
+              <div className="container mx-auto px-4 py-3 flex justify-start items-center">
                 <div className="flex items-center">
-                  <div className="bg-gray-700 px-4 py-2 rounded-md flex items-center">
+                  <div className="bg-neutral-900 px-4 py-2 rounded-md flex items-center">
                     <svg
                       className="h-5 w-5 mr-2 text-orange-500"
                       fill="none"
@@ -469,7 +280,7 @@ const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
               </div>
             </header>
 
-            <div className="bg-gray-800 py-2 px-4">
+            <div className="bg-black py-2 px-4">
               <div className="container mx-auto">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm text-gray-300">Progress</span>
@@ -499,7 +310,7 @@ const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
                 <CarouselContent>
                   {geminiQuestions.map((question, index) => (
                     <CarouselItem key={index}>
-                      <div className="bg-gray-800 rounded-lg p-6 shadow-lg h-full">
+                      <div className="bg-black rounded-lg p-6 shadow-lg h-full">
                         <div className="flex justify-between items-center mb-4">
                           <h3 className="text-xl font-bold text-orange-500">
                             Question {index + 1}
@@ -530,7 +341,7 @@ const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <div className="flex justify-between items-center mt-6">
+                <div className="flex justify-between items-center mt-4">
                   <div
                     aria-disabled={currentSlide <= 1}
                     onClick={() => {
@@ -568,7 +379,7 @@ const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
                       className={`h-10 w-10 rounded-md flex items-center justify-center ${
                         userAnswers[index] !== null
                           ? "bg-orange-600 text-white"
-                          : "bg-gray-800 text-gray-300 border border-gray-700"
+                          : "bg-black text-gray-300 border border-gray-700"
                       } cursor-pointer hover:bg-gray-700`}
                       onClick={() => {
                         changeSlide(index);
@@ -585,9 +396,9 @@ const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
                     }}
                     className="relative w-[120px] mt-6 mx-auto"
                   >
-                    <p className=" bg-zinc-600 hover:bg-zinc-700 text-white text-center font-medium py-2 px-4 rounded-md transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-                      {" "}
+                    <p className="group/btn relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer">
                       Quit Test
+                      <BottomGradient />
                     </p>
                   </div>
                   <div
@@ -596,17 +407,14 @@ const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
                     }}
                     className="relative w-[120px] mt-6 mx-auto"
                   >
-                    <button className=" bg-orange-600 hover:bg-orange-700 text-center text-white font-medium py-2 px-4 rounded-md transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-                      {" "}
+                    <button className="group/btn relative block  border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer">
                       Submit Test
+                      <BottomGradient />
                     </button>
                   </div>
                 </div>
                 <p className="text-center m-3">
-                  {" "}
-                  <span className="font-semibold text-orange-400">
-                    Notice:
-                  </span>{" "}
+                  <span className="font-semibold text-gray-400">Notice:</span>{" "}
                   If you encounter any errors in generating questions or
                   options, <br /> please click{" "}
                   <span
@@ -641,6 +449,325 @@ const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
           </style>
         </motion.div>
       </>
+      {quitConfirmation && (
+        <AnimatePresence>
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 backdrop-blur-sm"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
+            >
+              <div className="fixed inset-0 flex justify-center items-center bg-neutral-900 z-50 backdrop-blur-sm">
+                <div className="bg-black rounded-3xl shadow-2xl p-10 text-white w-[90%] max-w-lg border border-gray-700 transition-all duration-300">
+                  <h1 className="text-3xl font-bold mb-6 tracking-wide text-center">
+                    Are you sure you want to quit?
+                  </h1>
+                  <div className="mt-8 flex justify-center gap-6">
+                    <button
+                      onClick={() => {
+                        setQuitConfirmation(false);
+                      }}
+                      className="group/btn px-6 text-lg relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                    >
+                      No
+                      <BottomGradient />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setQuitConfirmation(false);
+                        setIsQuickQuizVisible(false);
+                      }}
+                      className="group/btn px-6 text-lg relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                    >
+                      Yes
+                      <BottomGradient />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        </AnimatePresence>
+      )}
+
+      {submitConfirmation && (
+        <AnimatePresence>
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 backdrop-blur-sm"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
+            >
+              <div className="w-full h-full inset-0 flex justify-center items-center bg-neutral-900 z-50 backdrop-blur-sm">
+                <div className="bg-black rounded-3xl shadow-2xl p-10 text-white max-w-lg border border-gray-600 transition-all duration-300">
+                  <h1 className="text-3xl font-extrabold mb-6 tracking-wide text-center">
+                    Are you sure you want to submit?
+                  </h1>
+                  <p className="text-center">
+                    You have attended{" "}
+                    <span className="text-orange-300">
+                      {userAnswers.filter((answer) => answer !== null).length}
+                    </span>{" "}
+                    / 10 Questions
+                  </p>
+                  <p className="text-center">
+                    <span className="text-orange-300">
+                      {10 -
+                        userAnswers.filter((answer) => answer !== null).length}
+                    </span>{" "}
+                    remaining
+                  </p>
+                  <div className="mt-4 flex justify-center gap-2">
+                    <button
+                      onClick={() => {
+                        setSubmitConfirmation(false);
+                      }}
+                      className="group/btn px-6 text-lg relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                    >
+                      No
+                      <BottomGradient />
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleSubmitTest();
+                        setSubmitConfirmation(false);
+                      }}
+                      className="group/btn px-6 text-lg relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                    >
+                      Yes
+                      <BottomGradient />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        </AnimatePresence>
+      )}
+
+      {scoreBoard && (
+        <AnimatePresence>
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 backdrop-blur-sm"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
+            >
+              <div className="fixed inset-0 flex justify-center items-center bg-black z-50 backdrop-blur-sm">
+                <div className="bg-neutral-900 shadow-2xl p-10 text-white w-full h-full overflow-y-auto transition-all duration-300">
+                  {/* Title */}
+                  <h1 className="text-4xl font-extrabold mb-6 tracking-wide text-center drop-shadow-lg">
+                    Test Completed!
+                  </h1>
+
+                  {/* Score Summary */}
+                  <div className="text-center space-y-4 text-lg">
+                    <p>
+                      <span className="text-gray-600 font-semibold">
+                        Total Points:
+                      </span>{" "}
+                      {score} / 10
+                    </p>
+                    <p
+                      className={`font-medium ${
+                        score === 10
+                          ? "text-green-400"
+                          : score >= 7
+                          ? "text-blue-400"
+                          : score >= 4
+                          ? "text-yellow-400"
+                          : "text-red-400"
+                      }`}
+                    >
+                      {score === 10
+                        ? "Perfect Score!"
+                        : score >= 7
+                        ? "Great Job!"
+                        : score >= 4
+                        ? "Good Effort!"
+                        : "Keep Practicing!"}
+                    </p>
+                  </div>
+
+                  {/* Mistakes Section */}
+                  {score < 10 && (
+                    <div className="mt-10 space-y-10">
+                      {/* MISTAKES SECTION*/}
+                      <div>
+                        <h2 className="text-2xl font-semibold text-gray-500 text-center mb-6">
+                          Your Mistakes
+                        </h2>
+
+                        {geminiAnswers.some(
+                          (correct, index) =>
+                            userAnswers[index]?.trim() !== correct.trim()
+                        ) ? (
+                          <ul className="space-y-5 max-w-3xl mx-auto px-4">
+                            {geminiAnswers.map((correct, index) => {
+                              const user = userAnswers[index];
+                              if (user && user.trim() !== correct.trim()) {
+                                return (
+                                  <li
+                                    key={index}
+                                    className="bg-neutral-800 p-5 rounded-2xl shadow-md border border-red-900 transition-all duration-200"
+                                  >
+                                    <p className="text-red-400 font-semibold mb-2 flex items-center gap-1">
+                                      <RxCross1 className="text-xl" /> Question{" "}
+                                      {index + 1}
+                                    </p>
+                                    <p className="text-gray-300">
+                                      <span className="text-gray-500 font-semibold">
+                                        Your Answer:
+                                      </span>{" "}
+                                      {user}
+                                    </p>
+                                    <p className="text-gray-300">
+                                      <span className="text-gray-500 font-semibold">
+                                        Correct Answer:
+                                      </span>{" "}
+                                      {correct}
+                                    </p>
+                                    <p className="text-gray-300 mt-2">
+                                      <span className="text-gray-500 font-semibold">
+                                        Explanation:
+                                      </span>{" "}
+                                      {geminiExplaination[index]}
+                                    </p>
+                                  </li>
+                                );
+                              }
+                              return null;
+                            })}
+                          </ul>
+                        ) : (
+                          <p className="text-center text-green-400 text-lg font-medium mt-4">
+                            No mistakes found.
+                          </p>
+                        )}
+                      </div>
+
+                      {/*CORRECT ANSWERS SECTION*/}
+                      <div>
+                        <h2 className="text-2xl font-semibold text-gray-500 text-center my-6">
+                          Correct Answers
+                        </h2>
+
+                        {geminiAnswers.some(
+                          (correct, index) =>
+                            userAnswers[index]?.trim() === correct.trim()
+                        ) ? (
+                          <ul className="space-y-5 max-w-3xl mx-auto px-4">
+                            {geminiAnswers.map((correct, index) => {
+                              const user = userAnswers[index];
+                              if (user && user.trim() === correct.trim()) {
+                                return (
+                                  <li
+                                    key={index}
+                                    className="bg-neutral-800 p-5 rounded-2xl shadow-md border border-green-500/30 hover:border-green-400/60 transition-all duration-200"
+                                  >
+                                    <p className="text-green-400 font-semibold mb-2 flex items-center gap-1">
+                                      <FaCheck className="text-xl" /> Question{" "}
+                                      {index + 1}
+                                    </p>
+                                    <p className="text-gray-300">
+                                      <span className="text-gray-400 font-semibold">
+                                        Your Answer:
+                                      </span>{" "}
+                                      {user}
+                                    </p>
+                                    <p className="text-gray-300 mt-2">
+                                      <span className="text-gray-400 font-semibold">
+                                        Explanation:
+                                      </span>{" "}
+                                      {geminiExplaination[index]}
+                                    </p>
+                                  </li>
+                                );
+                              }
+                              return null;
+                            })}
+                          </ul>
+                        ) : (
+                          <p className="text-center text-gray-400 text-lg font-medium mt-4">
+                            No correct answers found yet.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="mt-10 flex justify-center gap-6">
+                    <button
+                      onClick={() => setIsQuickQuizVisible(false)}
+                      className="group/btn px-6 text-lg relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                    >
+                      Close
+                      <BottomGradient />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        </AnimatePresence>
+      )}
+
+      {loading && (
+        <AnimatePresence>
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 backdrop-blur-sm"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
+            >
+              <div className="flex absolute top-0 justify-center items-center h-screen bg-neutral-900 w-full z-99">
+                <div className="flex flex-col items-center">
+                  <div className="w-16 h-16 border-4 border-transparent border-t-gray-500 border-b-gray-500 rounded-full animate-spin"></div>
+                  <p className="text-white mt-4 text-lg font-semibold">
+                    Generating Questions...
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        </AnimatePresence>
+      )}
     </AnimatePresence>
   );
 };
