@@ -4,6 +4,8 @@ import HomePage from "./components/custom/HomePage";
 import Profile from "./components/custom/Profile";
 import Materials from "./components/custom/Materials";
 import MessagePage from "./components/custom/MessagePage";
+import ChatBotWidget from "./components/custom/ChatBotWidget";
+
 const App = () => {
   return (
     <div>
@@ -14,6 +16,7 @@ const App = () => {
         <Route path="/materials" element={<Materials />} />
         <Route path="/messages" element={<MessagePage />} />
       </Routes>
+      <ChatBotWidget />
     </div>
   );
 };
