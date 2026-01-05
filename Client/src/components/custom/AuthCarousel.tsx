@@ -34,6 +34,20 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
     name: "",
     department: "",
   });
+  const [subjects, setSubjects] = useState<string[]>([]);
+  const [subjectInput, setSubjectInput] = useState("");
+
+  const addSubject = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && subjectInput.trim()) {
+      e.preventDefault();
+      setSubjects([...subjects, subjectInput.trim()]);
+      setSubjectInput("");
+    }
+  };
+
+  const removeSubject = (index: number) => {
+    setSubjects(subjects.filter((_, i) => i !== index));
+  };
 
   const handleNext = () => {
     if (step < 3) setStep(step + 1);
@@ -403,15 +417,37 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
 
                 <div className="relative">
                   <BookOpen className="absolute left-4 top-4 w-5 h-5 text-white/40" />
-                  <textarea
-                    placeholder="Subjects you handle (comma separated)"
-                    value={formData.subjects}
-                    onChange={(e) =>
-                      handleInputChange("subjects", e.target.value)
-                    }
-                    rows={4}
-                    className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-purple-500/50 focus:bg-white/10 transition-all duration-300 resize-none"
-                  />
+
+                  <div className="pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 focus-within:border-purple-500/50 focus-within:bg-white/10 transition-all duration-300">
+                    {subjects.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {subjects.map((subj, index) => (
+                          <span
+                            key={index}
+                            className="flex items-center gap-2 px-3 py-1 text-sm bg-purple-600/30 rounded-full text-white"
+                          >
+                            {subj}
+                            <button
+                              type="button"
+                              onClick={() => removeSubject(index)}
+                              className="text-white/60 hover:text-white cursor-pointer hover:scale-120 duration-110"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    <input
+                      type="text"
+                      placeholder="Type subject and press Enter"
+                      value={subjectInput}
+                      onChange={(e) => setSubjectInput(e.target.value)}
+                      onKeyDown={addSubject}
+                      className="w-full bg-transparent outline-none text-white placeholder:text-white/40"
+                    />
+                  </div>
                 </div>
               </div>
 
