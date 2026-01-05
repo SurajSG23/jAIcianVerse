@@ -2,25 +2,18 @@ import { cn } from "../../../lib/utils";
 import Sidebar from "./Navbar";
 import { useState, useRef, useEffect } from "react";
 import {
-  Search,
   MessageSquarePlus,
   Users,
-  Settings,
-  Moon,
-  Sun,
-  Phone,
-  Video,
-  MoreVertical,
   Smile,
   Paperclip,
   Send,
   Check,
   CheckCheck,
-  Menu,
   ArrowLeft,
   MessageSquare,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "../../context/AuthContext";
 
 interface User {
   id: string;
@@ -184,13 +177,15 @@ const MessagePage = () => {
   const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messageInput, setMessageInput] = useState("");
-
+  const { checkUser } = useAuth();
   const selectedChat = chats.find((chat) => chat.id === selectedChatId);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
+  useEffect(() => {
+    checkUser("");
+  });
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -482,7 +477,7 @@ const MessagePage = () => {
                         </p>
                       </div>
                     </div>
-                      </div>
+                  </div>
 
                   <div className="flex-1 overflow-y-auto p-6 space-y-4">
                     <AnimatePresence>

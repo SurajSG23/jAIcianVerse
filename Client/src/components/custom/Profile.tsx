@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "../../../lib/utils";
 import Sidebar from "./Navbar";
-import {
-  FileText,
-  Edit2,
-  Plus,
-} from "lucide-react";
+import { FileText, Edit2, Plus } from "lucide-react";
 import BottomGradient from "../ui/buttonGradient";
+import { useAuth } from "../../context/AuthContext";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [userRole, setUserRole] = useState("student");
+  const { checkUser } = useAuth();
+
+  useEffect(() => {
+    checkUser("");
+  }, []);
 
   const userData = {
     student: {

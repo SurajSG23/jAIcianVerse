@@ -10,6 +10,7 @@ import StudyHub from "./StudyHub";
 import ChatBot from "./ChatBot";
 import TrendingPage from "./TrendingPage";
 import QuickQuiz from "./QuickQuiz";
+import { useAuth } from "../../context/AuthContext";
 
 interface Unit {
   _id: string;
@@ -39,8 +40,11 @@ const Materials = () => {
   const [isChatBotVisible, setIsSChatBotVisible] = useState(false);
   const [isTrendingPageVisible, setIsTrendingPageVisible] = useState(false);
   const [isQuickQuizVisible, setIsQuickQuizVisible] = useState(false);
+  const { checkUser } = useAuth();
+  
   useEffect(() => {
     fetchSubjects();
+    checkUser("");
   }, []);
 
   const fetchSubjects = async () => {
