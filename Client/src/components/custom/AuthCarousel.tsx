@@ -72,15 +72,17 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
     // Handle submission logic here
   };
 
-  const handleStudentSubmission = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const payload = {
-      userType,
+      userType, // "student" or "professor"
       ...formData,
     };
+
     try {
       const result = await axios.post(
-        "http://localhost:3000/api/user/signUpStudent",
+        "http://localhost:3000/api/user/signup",
         payload,
         {
           headers: {
@@ -90,32 +92,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
         }
       );
 
-      console.log("Server response:", result.data);
-    } catch (error) {
-      console.error("Signup error:", error);
-    }
-  };
-
-  const handleProfessorSubmission = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const payload = {
-      userType,
-      ...formData,
-    };
-    try {
-      const result = await axios.post(
-        "http://localhost:3000/api/user/signUpProfessor",
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-
-      console.log("Server response:", result.data);
+      console.log("Signup success:", result.data);
     } catch (error) {
       console.error("Signup error:", error);
     }
@@ -158,7 +135,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
         <div className="relative min-h-[400px]">
           {/* Step 0: Sign In */}
           <div
-            className={`absolute inset-0 transition-all duration-500 ${
+            className={`absolute inset-0 transition-all duration-120 ${
               step === 0
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 -translate-x-full pointer-events-none"
@@ -214,7 +191,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
 
           {/* Step 1: User Type Selection */}
           <div
-            className={`absolute inset-0 transition-all duration-500 ${
+            className={`absolute inset-0 transition-all duration-120 ${
               step === 1
                 ? "opacity-100 translate-x-0"
                 : step < 1
@@ -227,7 +204,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
               <div className="w-full space-y-4 mt-8">
                 <button
                   onClick={() => handleUserTypeSelect("student")}
-                  className="w-full p-6 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/50 hover:bg-white/10 transition-all duration-300 group cursor-pointer"
+                  className="w-full p-6 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500/50 hover:bg-white/10 transition-all duration-120 group cursor-pointer"
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-full border-1 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -243,7 +220,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
 
                 <button
                   onClick={() => handleUserTypeSelect("professor")}
-                  className="w-full p-6 rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/50 hover:bg-white/10 transition-all duration-300 group cursor-pointer"
+                  className="w-full p-6 rounded-xl bg-white/5 border border-white/10 hover:border-purple-500/50 hover:bg-white/10 transition-all duration-120 group cursor-pointer"
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-full border-1 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -262,8 +239,8 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
 
           {/* Step 2: Student Form */}
           <form
-            onSubmit={handleStudentSubmission}
-            className={`absolute inset-0 transition-all duration-500 ${
+            onSubmit={handleSignup}
+            className={`absolute inset-0 transition-all duration-120 ${
               step === 2 && userType === "student"
                 ? "opacity-100 translate-x-0"
                 : step < 2
@@ -351,8 +328,8 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
 
           {/* Step 2: Professor Form */}
           <form
-            onSubmit={handleProfessorSubmission}
-            className={`absolute inset-0 transition-all duration-500 ${
+            onSubmit={handleSignup}
+            className={`absolute inset-0 transition-all duration-120 ${
               step === 2 && userType === "professor"
                 ? "opacity-100 translate-x-0"
                 : step < 2

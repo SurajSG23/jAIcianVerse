@@ -4,7 +4,6 @@ import userController from "../controllers/user.controller.js";
 
 const router = express.Router();
 
-router.route("/signUpStudent").post(userController.registerStudent);
-router.route("/signUpProfessor").post(userController.registerProfessor);
+router.route("/signup").post(userController.registerUser);
 
 export default router

@@ -1,12 +1,31 @@
 import User from "../models/user.model.js";
 import asyncHandler from "express-async-handler";
+import { hashPassword } from "../utils/password.utils.js";
 
-const registerStudent = asyncHandler(async (req, res) => {
-  const { name, email, password, userType, branch, semester } = req.body;
+const registerUser = asyncHandler(async (req, res) => {
+  const {
+    name,
+    email,
+    password,
+    userType, // "student" | "professor"
+    branch,
+    semester,
+    department,
+  } = req.body;
 
-  if (!name || !email || !password) {
+  if (!name || !email || !password || !userType) {
     res.status(400);
     throw new Error("Missing required fields");
+  }
+
+  if (userType === "student" && (!branch || !semester)) {
+    res.status(400);
+    throw new Error("Branch and semester are required for students");
+  }
+
+  if (userType === "professor" && !department) {
+    res.status(400);
+    throw new Error("Department is required for professors");
   }
 
   const userExists = await User.findOne({ email });
@@ -15,17 +34,28 @@ const registerStudent = asyncHandler(async (req, res) => {
     throw new Error("User already exists");
   }
 
-  const user = await User.create({
+  const hashedPassword = await hashPassword(password);
+
+  const userData = {
     name,
     email,
-    password,
+    password: hashedPassword,
     role: userType,
-    branch: userType === "student" ? branch : undefined,
-    semester: userType === "student" ? Number(semester) : undefined,
-  });
+  };
+
+  if (userType === "student") {
+    userData.branch = branch;
+    userData.semester = Number(semester);
+  }
+
+  if (userType === "professor") {
+    userData.department = department;
+  }
+
+  const user = await User.create(userData);
 
   res.status(201).json({
-    message: "User registered successfully",
+    message: `${userType} registered successfully`,
     user: {
       id: user._id,
       name: user.name,
@@ -35,38 +65,4 @@ const registerStudent = asyncHandler(async (req, res) => {
   });
 });
 
-const registerProfessor = asyncHandler(async (req, res) => {
-  const { name, email, password, department } = req.body;
-
-  if (!name || !email || !password || !department) {
-    res.status(400);
-    throw new Error("All fields are required");
-  }
-
-  const userExists = await User.findOne({ email });
-  if (userExists) {
-    res.status(400);
-    throw new Error("User already exists");
-  }
-
-  const professor = await User.create({
-    name,
-    email,
-    password,
-    role: "professor",
-    department,
-  });
-
-  res.status(201).json({
-    message: "Professor registered successfully",
-    professor: {
-      id: professor._id,
-      name: professor.name,
-      email: professor.email,
-      role: professor.role,
-      department: professor.department,
-    },
-  });
-});
-
-export default { registerStudent, registerProfessor };
+export default { registerUser };
