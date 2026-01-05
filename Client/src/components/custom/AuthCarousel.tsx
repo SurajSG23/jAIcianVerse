@@ -13,14 +13,15 @@ import {
 import { RxCross2 } from "react-icons/rx";
 import BottomGradient from "../ui/buttonGradient";
 import axios, { AxiosError } from "axios";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 interface props {
   setGetStarted: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
+  const { checkUser } = useAuth();
   const [step, setStep] = useState(0);
   const [userType, setUserType] = useState("");
   const [formData, setFormData] = useState({
@@ -38,7 +39,8 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
     email: "",
     password: "",
   });
-  const navigate = useNavigate();
+  const [registerLoading, setRegisterLoading] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
 
   const addSubject = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && subjectInput.trim()) {
@@ -71,7 +73,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setLoginLoading(true);
     try {
       const res = await axios.post(
         "http://localhost:3000/api/user/login",
@@ -84,8 +86,8 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
         }
       );
       if (res.status == 200) {
-        console.log("Login success:", res.data);
-        navigate("/homepage");
+        localStorage.setItem("userInfo", JSON.stringify(res.data));
+        checkUser("homepage");
       }
     } catch (error) {
       toast.error("Login failed: Invalid credentials");
@@ -94,11 +96,13 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
         "Login failed:",
         (axiosError.response?.data as any)?.message || axiosError.message
       );
+    } finally {
+      setLoginLoading(false);
     }
   };
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setRegisterLoading(true);
     const payload = {
       userType, // "student" or "professor"
       ...formData,
@@ -115,10 +119,13 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
           withCredentials: true,
         }
       );
-
+      toast.success("Signup success: Please login");
+      setStep(0);
       console.log("Signup success:", result.data);
     } catch (error) {
       console.error("Signup error:", error);
+    } finally {
+      setRegisterLoading(false);
     }
   };
 
@@ -181,30 +188,46 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
                       required
                     />
                   </div>
-
                   <button
-                    className="group/btn relative flex justify-center h-10 items-center w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
                     type="submit"
+                    disabled={loginLoading}
+                    className={`group/btn relative flex h-10 w-full items-center justify-center
+    rounded-md bg-gradient-to-br from-black to-neutral-600
+    font-medium text-white
+    shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]
+    dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900
+    dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]
+    transition-all
+    ${
+      loginLoading
+        ? "cursor-not-allowed pointer-events-none opacity-80"
+        : "cursor-pointer"
+    }
+  `}
                   >
-                    Sign in &rarr;
+                    {loginLoading ? (
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    ) : (
+                      <>Sign in &rarr;</>
+                    )}
+
                     <BottomGradient />
                   </button>
 
                   <div className="my-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
-
-                  <div>
-                    <p>
-                      Not Register yet?{" "}
-                      <button
-                        className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
-                        onClick={handleNext}
-                      >
-                        Sign Up &rarr;
-                        <BottomGradient />
-                      </button>
-                    </p>
-                  </div>
                 </form>
+                <div>
+                  <p>
+                    Not Register yet?{" "}
+                    <button
+                      className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
+                      onClick={handleNext}
+                    >
+                      Sign Up &rarr;
+                      <BottomGradient />
+                    </button>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -342,10 +365,31 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
                 </div>
               </div>
               <button
-                className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
                 type="submit"
+                disabled={registerLoading}
+                className={`group/btn relative block h-10 w-full rounded-md
+    bg-gradient-to-br from-black to-neutral-600
+    font-medium text-white
+    shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]
+    dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900
+    dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]
+    transition-all
+    ${
+      registerLoading
+        ? "cursor-not-allowed pointer-events-none opacity-80"
+        : "cursor-pointer"
+    }
+  `}
               >
-                Complete Registration
+                {registerLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    <span className="text-sm">Processing</span>
+                  </div>
+                ) : (
+                  "Complete Registration"
+                )}
+
                 <BottomGradient />
               </button>
             </div>
@@ -454,10 +498,31 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
               </div>
 
               <button
-                className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
                 type="submit"
+                disabled={registerLoading}
+                className={`group/btn relative block h-10 w-full rounded-md
+    bg-gradient-to-br from-black to-neutral-600
+    font-medium text-white
+    shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]
+    dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900
+    dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]
+    transition-all
+    ${
+      registerLoading
+        ? "cursor-not-allowed pointer-events-none opacity-80"
+        : "cursor-pointer"
+    }
+  `}
               >
-                Complete Registration
+                {registerLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    <span className="text-sm">Processing</span>
+                  </div>
+                ) : (
+                  "Complete Registration"
+                )}
+
                 <BottomGradient />
               </button>
             </div>

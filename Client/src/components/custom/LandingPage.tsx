@@ -6,7 +6,7 @@ import { Link } from "react-scroll";
 import { FaInstagram, FaLinkedin, FaGithub } from "react-icons/fa";
 import AuthCarousel from "../../components/custom/AuthCarousel";
 
-function LandingPage() {
+const LandingPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [getStarted, setGetStarted] = useState(false);
 
@@ -402,13 +402,14 @@ function LandingPage() {
           {/* Copyright */}
           <div className="border-t border-gray-800 pt-8 text-center">
             <p className="text-[#cccccc] text-sm">
-              &copy; {new Date().getFullYear()} jAIcianVerse. All rights reserved.
+              &copy; {new Date().getFullYear()} jAIcianVerse. All rights
+              reserved.
             </p>
           </div>
         </div>
       </footer>
     </div>
   );
-}
+};
 
 export default LandingPage;

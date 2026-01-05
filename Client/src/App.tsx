@@ -6,8 +6,20 @@ import Materials from "./components/custom/Materials";
 import MessagePage from "./components/custom/MessagePage";
 import ChatBotWidget from "./components/custom/ChatBotWidget";
 import { ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const App = () => {
+  const navigate = useNavigate();
+
+  const checkUser = (destination: string) => {
+    if (localStorage.getItem("userInfo") === null) {
+      navigate("/");
+      return;
+    } else {
+      navigate(`/${destination}`);
+    }
+  };
+
   return (
     <div>
       <Routes>

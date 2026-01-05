@@ -6,8 +6,10 @@ import { IoExitOutline } from "react-icons/io5";
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { cn } from "../../../lib/utils";
+import { useAuth } from "../../context/AuthContext";
 
 const Navbar = () => {
+  const { checkUser } = useAuth();
   const links = [
     {
       label: "Home",
@@ -39,6 +41,11 @@ const Navbar = () => {
     },
   ];
   const [open, setOpen] = useState(false);
+  const handleLogout = () => {
+    localStorage.removeItem("userInfo");
+    localStorage.clear();
+    checkUser("");
+  };
   return (
     <Sidebar open={open} setOpen={setOpen}>
       <SidebarBody className="justify-between gap-10 group">
@@ -69,8 +76,8 @@ const Navbar = () => {
             }}
           />
 
-          <Link
-            to="/"
+          <button
+            onClick={handleLogout}
             className={cn(
               "text-red-600 text-sm cursor-pointer transition-opacity duration-300 flex items-center gap-1 hover:text-red-500",
               open ? "opacity-100" : "opacity-0 group-hover:opacity-100"
@@ -78,7 +85,7 @@ const Navbar = () => {
           >
             Logout
             <IoExitOutline />
-          </Link>
+          </button>
         </div>
       </SidebarBody>
     </Sidebar>
@@ -117,4 +124,3 @@ export const LogoIcon = () => {
 };
 
 export default Navbar;
-
