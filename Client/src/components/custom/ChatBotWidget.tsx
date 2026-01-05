@@ -137,7 +137,7 @@ export default function ChatBotWidget({
       {/* Chat Window */}
       <div
         className={`
-          fixed bottom-24 right-6 w-96 h-[600px] 
+          fixed bottom-18 right-6 w-96 h-[600px] 
           bg-neutral-900 rounded-2xl shadow-2xl
           flex flex-col overflow-hidden
           transition-all duration-300 ease-in-out
@@ -157,7 +157,7 @@ export default function ChatBotWidget({
         >
           <div className="flex items-center gap-3">
             <div 
-              className="w-10 h-10 rounded-full flex items-center justify-center"
+              className="w-8 h-8 rounded-full flex items-center justify-center"
               style={{ 
                 background: `linear-gradient(135deg, ${accentColor} 0%, #ff5500 100%)` 
               }}
@@ -166,7 +166,7 @@ export default function ChatBotWidget({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
               </svg>
             </div>
-            <h2 className="text-white font-semibold text-lg">Preksha's Assistant</h2>
+            <h2 className="text-white font-semibold text-lg">AI Assistant</h2>
           </div>
           
           <div className="flex items-center gap-2">
@@ -298,7 +298,7 @@ export default function ChatBotWidget({
       {/* Floating Chat Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-16 h-16 rounded-full shadow-2xl hover:scale-110 transition-transform duration-200 active:scale-95 focus:outline-none focus:ring-4"
+        className="fixed bottom-4 right-4 w-14 h-14 rounded-full shadow-2xl hover:scale-110 transition-transform duration-200 active:scale-95 focus:outline-none focus:ring-4"
         style={{ 
           background: `linear-gradient(135deg, ${accentColor} 0%, #ff5500 100%)`,
           boxShadow: `0 8px 24px rgba(255, 122, 24, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3)`,

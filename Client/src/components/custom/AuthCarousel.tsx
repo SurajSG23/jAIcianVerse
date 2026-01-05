@@ -15,6 +15,7 @@ import { Input } from "../ui/input";
 import { cn } from "../../../lib/utils";
 import { Link } from "react-router-dom";
 import BottomGradient from "../ui/buttonGradient";
+import axios from "axios";
 
 interface props {
   setGetStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -55,6 +56,35 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
     // Handle submission logic here
   };
 
+  const handleStudentSubmission = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const payload = {
+      userType,
+      ...formData,
+    };
+    try {
+      const result = await axios.post(
+        "http://localhost:3000/api/user/signup",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      console.log("Server response:", result.data);
+    } catch (error) {
+      console.error("Signup error:", error);
+    }
+  };
+
+  const handleProfessorSubmission = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Form submitted:", { userType, ...formData });
+    // Handle submission logic here
+  };
 
   const LabelInputContainer = ({
     children,
@@ -196,7 +226,8 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
           </div>
 
           {/* Step 2: Student Form */}
-          <div
+          <form
+            onSubmit={handleStudentSubmission}
             className={`absolute inset-0 transition-all duration-500 ${
               step === 2 && userType === "student"
                 ? "opacity-100 translate-x-0"
@@ -281,10 +312,11 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
                 <BottomGradient />
               </button>
             </div>
-          </div>
+          </form>
 
           {/* Step 2: Professor Form */}
-          <div
+          <form
+            onSubmit={handleProfessorSubmission}
             className={`absolute inset-0 transition-all duration-500 ${
               step === 2 && userType === "professor"
                 ? "opacity-100 translate-x-0"
@@ -357,7 +389,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
                 <BottomGradient />
               </button>
             </div>
-          </div>
+          </form>
         </div>
 
         {/* Back button */}
