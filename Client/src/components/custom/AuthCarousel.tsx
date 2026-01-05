@@ -11,12 +11,8 @@ import {
   Building,
 } from "lucide-react";
 import { RxCross2 } from "react-icons/rx";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { cn } from "../../../lib/utils";
-import { Link } from "react-router-dom";
 import BottomGradient from "../ui/buttonGradient";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 interface props {
   setGetStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -36,6 +32,10 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
   });
   const [subjects, setSubjects] = useState<string[]>([]);
   const [subjectInput, setSubjectInput] = useState("");
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
 
   const addSubject = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && subjectInput.trim()) {
@@ -66,12 +66,31 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", { userType, ...formData });
-    // Handle submission logic here
-  };
 
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/user/login",
+        loginData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, 
+        }
+      );
+
+      console.log("Login success:", res.data);
+
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      console.error(
+        "Login failed:",
+        (axiosError.response?.data as any)?.message || axiosError.message
+      );
+    }
+  };
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -98,19 +117,6 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
     }
   };
 
-  const LabelInputContainer = ({
-    children,
-    className,
-  }: {
-    children: React.ReactNode;
-    className?: string;
-  }) => {
-    return (
-      <div className={cn("flex w-full flex-col space-y-2", className)}>
-        {children}
-      </div>
-    );
-  };
 
   return (
     <div className="fixed flex flex-col items-center justify-center min-h-full backdrop-blur-2xl z-99 w-full">
@@ -143,32 +149,42 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
           >
             <div className="flex flex-col items-center text-center">
               <div className="shadow-input mx-auto w-full max-w-md rounded-none bg-white md:rounded-2xl dark:bg-black">
-                <form className="my-6" onSubmit={handleSubmit}>
-                  <LabelInputContainer className="mb-4">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input
-                      id="email"
-                      placeholder="YourEmail@gmail.com"
+                <form className="my-6 space-y-6" onSubmit={handleLogin}>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                    <input
                       type="email"
+                      placeholder="Email"
+                      value={loginData.email}
+                      onChange={(e) =>
+                        setLoginData({ ...loginData, email: e.target.value })
+                      }
+                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-orange-500/50 focus:bg-white/10 transition-all duration-300"
+                      required
                     />
-                  </LabelInputContainer>
-                  <LabelInputContainer className="mb-4">
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
-                      placeholder="••••••••"
-                      type="password"
-                    />
-                  </LabelInputContainer>
+                  </div>
 
-                  <Link
-                    to="/homepage"
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                    <input
+                      type="password"
+                      placeholder="Set a Password"
+                      value={loginData.password}
+                      onChange={(e) =>
+                        setLoginData({ ...loginData, password: e.target.value })
+                      }
+                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-orange-500/50 focus:bg-white/10 transition-all duration-300"
+                      required
+                    />
+                  </div>
+
+                  <button
                     className="group/btn relative flex justify-center h-10 items-center w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
                     type="submit"
                   >
                     Sign in &rarr;
                     <BottomGradient />
-                  </Link>
+                  </button>
 
                   <div className="my-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
 
@@ -264,6 +280,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
                     value={formData.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
                     className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all duration-300"
+                    required
                   />
                 </div>
                 <div className="relative">
@@ -274,6 +291,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
                     className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all duration-300"
+                    required
                   />
                 </div>
 
@@ -287,6 +305,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
                       handleInputChange("password", e.target.value)
                     }
                     className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all duration-300"
+                    required
                   />
                 </div>
 
@@ -300,6 +319,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
                       handleInputChange("branch", e.target.value)
                     }
                     className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all duration-300"
+                    required
                   />
                 </div>
 
@@ -313,6 +333,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
                       handleInputChange("semester", e.target.value)
                     }
                     className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all duration-300"
+                    required
                   />
                 </div>
               </div>

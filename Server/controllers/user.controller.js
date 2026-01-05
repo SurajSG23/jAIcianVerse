@@ -1,6 +1,6 @@
 import User from "../models/user.model.js";
 import asyncHandler from "express-async-handler";
-import { hashPassword } from "../utils/password.utils.js";
+import { hashPassword, comparePassword } from "../utils/password.utils.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   const {
@@ -65,4 +65,43 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 });
 
-export default { registerUser };
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400);
+    throw new Error("Email and password are required");
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(401);
+    throw new Error("Invalid email or password");
+  }
+
+  const isMatch = await comparePassword(password, user.password);
+  if (!isMatch) {
+    res.status(401).send("Invalid email or password");
+    throw new Error("Invalid email or password");
+  }
+  // const token = generateToken(user._id);
+
+  // res.cookie("token", token, {
+  //   httpOnly: true,
+  //   secure: false, // true in production (HTTPS)
+  //   sameSite: "strict",
+  //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  // });
+
+  res.status(200).json({
+    message: "Login successful",
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  });
+});
+
+export default { registerUser, loginUser };
