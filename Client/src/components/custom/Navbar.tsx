@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { cn } from "../../../lib/utils";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const { checkUser } = useAuth();
@@ -44,7 +45,8 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("userInfo");
     localStorage.clear();
-    checkUser("");
+    toast.info("Logged out successfully");
+    checkUser("/");
   };
   return (
     <Sidebar open={open} setOpen={setOpen}>

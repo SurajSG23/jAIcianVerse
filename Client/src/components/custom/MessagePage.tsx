@@ -184,8 +184,8 @@ const MessagePage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
   useEffect(() => {
-    checkUser("");
-  });
+    checkUser("messages");
+  }, []);
   useEffect(() => {
     scrollToBottom();
   }, [messages]);

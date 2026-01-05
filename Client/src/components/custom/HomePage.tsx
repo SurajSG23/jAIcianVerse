@@ -1,7 +1,16 @@
 import { cn } from "../../../lib/utils";
 import Dashboard from "./Dashboard";
 import Sidebar from "./Navbar";
+import { useAuth } from "../../context/AuthContext";
+import { useEffect } from "react";
+
 const HomePage = () => {
+  const { checkUser } = useAuth();
+  
+  useEffect(() => {
+    checkUser("homepage");
+  }, []);
+
   return (
     <div
       className={cn(

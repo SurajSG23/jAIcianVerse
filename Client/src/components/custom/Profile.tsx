@@ -11,7 +11,7 @@ const Profile = () => {
   const { checkUser } = useAuth();
 
   useEffect(() => {
-    checkUser("");
+    checkUser("profile");
   }, []);
 
   const userData = {

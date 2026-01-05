@@ -41,10 +41,10 @@ const Materials = () => {
   const [isTrendingPageVisible, setIsTrendingPageVisible] = useState(false);
   const [isQuickQuizVisible, setIsQuickQuizVisible] = useState(false);
   const { checkUser } = useAuth();
-  
+
   useEffect(() => {
+    checkUser("materials");
     fetchSubjects();
-    checkUser("");
   }, []);
 
   const fetchSubjects = async () => {

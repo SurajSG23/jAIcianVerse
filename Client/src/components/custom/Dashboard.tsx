@@ -1,15 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { AnimatedTestimonials } from "../../components/ui/animated-testimonials";
-import { useAuth } from "../../context/AuthContext";
 
 const Dashboard = () => {
-  const { checkUser } = useAuth();
-
-  useEffect(() => {
-    checkUser("");
-  }, []);
   const announcements = [
     {
       quote:

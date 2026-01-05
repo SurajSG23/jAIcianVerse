@@ -1,6 +1,5 @@
 import { createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
 type AuthContextType = {
   checkUser: (destination: string) => void;
@@ -15,7 +14,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const user = localStorage.getItem("userInfo");
 
     if (!user) {
-      toast.info("Please login to continue");
       navigate("/");
     } else {
       navigate(`/${destination}`);

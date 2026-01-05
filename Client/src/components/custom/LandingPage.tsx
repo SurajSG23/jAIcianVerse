@@ -1,15 +1,16 @@
 import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LayoutTextFlip } from "../../components/ui/layout-text-flip";
 import { motion } from "motion/react";
 import { Link } from "react-scroll";
 import { FaInstagram, FaLinkedin, FaGithub } from "react-icons/fa";
 import AuthCarousel from "../../components/custom/AuthCarousel";
+import { useAuth } from "../../context/AuthContext";
 
 const LandingPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [getStarted, setGetStarted] = useState(false);
-
+  const { checkUser } = useAuth();
   const featuredPosts = [
     {
       id: 1,
@@ -33,7 +34,9 @@ const LandingPage = () => {
         "Interactive virtual teacher that explains concepts in a conversational way, perfect for quick revisions and conceptual clarity.",
     },
   ];
-
+  useEffect(() => {
+    checkUser("homepage");
+  }, []);
   return (
     <div className="min-h-screen bg-[#0b0b0b] text-white">
       {getStarted && <AuthCarousel setGetStarted={setGetStarted} />}
