@@ -13,6 +13,8 @@ import {
 import { RxCross2 } from "react-icons/rx";
 import BottomGradient from "../ui/buttonGradient";
 import axios, { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 interface props {
   setGetStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -36,6 +38,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   const addSubject = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && subjectInput.trim()) {
@@ -77,13 +80,15 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true, 
+          withCredentials: true,
         }
       );
-
-      console.log("Login success:", res.data);
-
+      if (res.status == 200) {
+        console.log("Login success:", res.data);
+        navigate("/homepage");
+      }
     } catch (error) {
+      toast.error("Login failed: Invalid credentials");
       const axiosError = error as AxiosError;
       console.error(
         "Login failed:",
@@ -116,7 +121,6 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
       console.error("Signup error:", error);
     }
   };
-
 
   return (
     <div className="fixed flex flex-col items-center justify-center min-h-full backdrop-blur-2xl z-99 w-full">

@@ -5,6 +5,7 @@ import Profile from "./components/custom/Profile";
 import Materials from "./components/custom/Materials";
 import MessagePage from "./components/custom/MessagePage";
 import ChatBotWidget from "./components/custom/ChatBotWidget";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/messages" element={<MessagePage />} />
       </Routes>
       <ChatBotWidget />
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
