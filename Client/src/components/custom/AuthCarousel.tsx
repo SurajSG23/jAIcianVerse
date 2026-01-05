@@ -8,6 +8,7 @@ import {
   BookMarked,
   Calendar,
   User,
+  Building,
 } from "lucide-react";
 import { RxCross2 } from "react-icons/rx";
 import { Label } from "../ui/label";
@@ -31,6 +32,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
     semester: "",
     subjects: "",
     name: "",
+    department: "",
   });
 
   const handleNext = () => {
@@ -64,7 +66,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
     };
     try {
       const result = await axios.post(
-        "http://localhost:3000/api/user/signup",
+        "http://localhost:3000/api/user/signUpStudent",
         payload,
         {
           headers: {
@@ -80,10 +82,29 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
     }
   };
 
-  const handleProfessorSubmission = (e: React.FormEvent) => {
+  const handleProfessorSubmission = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", { userType, ...formData });
-    // Handle submission logic here
+
+    const payload = {
+      userType,
+      ...formData,
+    };
+    try {
+      const result = await axios.post(
+        "http://localhost:3000/api/user/signUpProfessor",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      console.log("Server response:", result.data);
+    } catch (error) {
+      console.error("Signup error:", error);
+    }
   };
 
   const LabelInputContainer = ({
@@ -368,6 +389,19 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
                 </div>
 
                 <div className="relative">
+                  <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                  <input
+                    type="string"
+                    placeholder="Daprtment"
+                    value={formData.department}
+                    onChange={(e) =>
+                      handleInputChange("department", e.target.value)
+                    }
+                    className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-purple-500/50 focus:bg-white/10 transition-all duration-300"
+                  />
+                </div>
+
+                <div className="relative">
                   <BookOpen className="absolute left-4 top-4 w-5 h-5 text-white/40" />
                   <textarea
                     placeholder="Subjects you handle (comma separated)"
@@ -404,7 +438,18 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
 
         {step === 2 && (
           <button
-            onClick={() => setStep(1)}
+            onClick={() => {
+              setFormData({
+                email: "",
+                password: "",
+                branch: "",
+                semester: "",
+                subjects: "",
+                name: "",
+                department: "",
+              });
+              setStep(1);
+            }}
             className="absolute top-8 left-8 w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all duration-300 cursor-pointer"
           >
             <ChevronLeft className="w-5 h-5 text-white" />

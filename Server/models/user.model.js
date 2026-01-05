@@ -29,15 +29,6 @@ const userSchema = new mongoose.Schema(
     // Professor-specific fields
     department: { type: String },
     subjectsHandled: [{ type: mongoose.Schema.Types.ObjectId, ref: "Subject" }],
-    announcements: [
-      {
-        title: String,
-        message: String,
-        semester: Number,
-        subject: { type: mongoose.Schema.Types.ObjectId, ref: "Subject" },
-        createdAt: { type: Date, default: Date.now },
-      },
-    ],
   },
   { timestamps: true }
 );
