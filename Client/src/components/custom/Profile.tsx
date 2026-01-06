@@ -173,8 +173,8 @@ const Profile = () => {
               <div className="relative group">
                 <div className="absolute inset-0  rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity"></div>
                 <img
-                  src={currentUser.profileImage}
-                  alt={currentUser.name}
+                  src="https://cdn-icons-png.freepik.com/512/8608/8608769.png"
+                  alt={userDetails?.user?.name}
                   className="relative w-36 h-36 rounded-full border-4 border-gray-800 shadow-xl"
                 />
               </div>
@@ -211,7 +211,7 @@ const Profile = () => {
                 {userRole === "professor" && (
                   <div className="flex flex-wrap gap-4 text-sm text-gray-300">
                     <div className="flex items-center gap-2">
-                      <span>{currentUser.department}</span>
+                      <span>{String(userDetails?.user?.department)}</span>
                     </div>
                   </div>
                 )}
@@ -335,13 +335,13 @@ const Profile = () => {
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Department:</span>
                         <span className="font-medium">
-                          {currentUser.department}
+                          {userDetails?.user?.department}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Total Subjects:</span>
                         <span className="font-medium">
-                          {currentUser.subjectsHandled.length}
+                          {userDetails?.user?.subjectsHandled?.length}
                         </span>
                       </div>
                     </div>

@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import asyncHandler from "express-async-handler";
 import { hashPassword, comparePassword } from "../utils/password.utils.js";
 import generateToken from "../config/generateToken.js";
+
 const registerUser = asyncHandler(async (req, res) => {
   const {
     name,
@@ -96,6 +97,7 @@ const loginUser = asyncHandler(async (req, res) => {
       // academic info
       branch: user.branch,
       semester: user.semester,
+      department: user.department,
 
       // gamification / system info
       points: user.points,
