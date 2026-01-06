@@ -76,7 +76,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
     setLoginLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/user/login",
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/login`,
         loginData,
         {
           headers: {
@@ -110,7 +110,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
 
     try {
       const result = await axios.post(
-        "http://localhost:3000/api/user/signup",
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/signup`,
         payload,
         {
           headers: {

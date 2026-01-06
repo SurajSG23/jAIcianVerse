@@ -4,14 +4,31 @@ import Sidebar from "./Navbar";
 import { FileText, Edit2, Plus } from "lucide-react";
 import BottomGradient from "../ui/buttonGradient";
 import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [userRole, setUserRole] = useState("student");
   const { checkUser } = useAuth();
 
+  const fetchUserDetails = async () => {
+    try {
+      const response = await axios.get("", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
+  };
+
   useEffect(() => {
     checkUser("profile");
+    fetchUserDetails();
   }, []);
 
   const userData = {
