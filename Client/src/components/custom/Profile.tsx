@@ -4,23 +4,35 @@ import Sidebar from "./Navbar";
 import { FileText, Edit2, Plus } from "lucide-react";
 import BottomGradient from "../ui/buttonGradient";
 import { useAuth } from "../../context/AuthContext";
-import axios from "axios";
+
+interface UserInfo {
+  user: {
+    name: string;
+    email: string;
+    role: string;
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [userRole, setUserRole] = useState("student");
   const { checkUser } = useAuth();
+  const [userDetails, setUserDetails] = useState<UserInfo | null>(null);
 
   const fetchUserDetails = async () => {
     try {
-      const response = await axios.get("", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      });
+      const storedUser = localStorage.getItem("userInfo");
 
-      console.log(response.data);
+      if (!storedUser) {
+        console.warn("No user info found in localStorage");
+        return;
+      }
+
+      const parsedUser = JSON.parse(storedUser);
+      setUserDetails(parsedUser);
+      setUserRole(parsedUser.user.role);
     } catch (error) {
       console.error("Error fetching user details:", error);
     }
@@ -151,28 +163,6 @@ const Profile = () => {
         `}
       </style>
       <Sidebar />
-      <div className="fixed top-4 right-4 z-50 flex gap-2 bg-gray-800/50 backdrop-blur-lg rounded-full p-1 border border-gray-700">
-        <button
-          onClick={() => setUserRole("student")}
-          className={`px-4 py-2 rounded-full transition-all ${
-            userRole === "student"
-              ? "bg-orange-600 text-white"
-              : "text-gray-400 hover:text-white"
-          }`}
-        >
-          Student View
-        </button>
-        <button
-          onClick={() => setUserRole("professor")}
-          className={`px-4 py-2 rounded-full transition-all ${
-            userRole === "professor"
-              ? "bg-amber-600 text-white"
-              : "text-gray-400 hover:text-white"
-          }`}
-        >
-          Professor View
-        </button>
-      </div>
 
       <div className="max-w-7xl mx-auto p-6 w-screen overflow-y-auto">
         {/* Profile Header */}
@@ -190,21 +180,31 @@ const Profile = () => {
               </div>
               <div className="flex-1 text-center md:text-left">
                 <h1 className="text-4xl py-2 font-bold mb-2 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                  {currentUser.name}
+                  {userDetails?.user?.name}
                 </h1>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-3">
                   <div className="flex items-center gap-2 text-gray-400">
-                    <span>{currentUser.email}</span>
+                    <span>{userDetails?.user?.email}</span>
                   </div>
                   <span className="px-4 py-1 rounded-full text-sm font-medium bg-amber-600/20 text-amber-400 border border-amber-600/30">
-                    {currentUser.role}
+                    {userDetails?.user?.role
+                      ? userDetails.user.role[0].toUpperCase() +
+                        userDetails.user.role.slice(1)
+                      : "User"}
                   </span>
                 </div>
                 {userRole === "student" && (
                   <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300">
                     <div className="flex items-center gap-2">
-                      <span>{currentUser.branch}</span> &bull;{" "}
-                      <span>{currentUser.semester}</span>
+                      <span>
+                        {userDetails?.user?.branch
+                          ? String(userDetails?.user?.branch)
+                          : "Branch"}
+                      </span>
+                      &bull;{" "}
+                      <span>
+                        Semester - {String(userDetails?.user?.semester)}
+                      </span>
                     </div>
                   </div>
                 )}
@@ -268,19 +268,21 @@ const Profile = () => {
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Branch:</span>
                         <span className="font-medium">
-                          {currentUser.branch}
+                          {userDetails?.user?.branch
+                            ? String(userDetails?.user?.branch)
+                            : "Branch"}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Semester:</span>
                         <span className="font-medium">
-                          {currentUser.semester}
+                          {String(userDetails?.user?.semester)}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Total Points:</span>
                         <span className="font-medium text-orange-400">
-                          {currentUser.points}
+                          {String(userDetails?.user?.points)}
                         </span>
                       </div>
                     </div>
@@ -293,7 +295,10 @@ const Profile = () => {
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Notes Uploaded:</span>
                         <span className="font-medium">
-                          {currentUser.notesUploaded.length}
+                          {String(
+                            userDetails?.user?.contributions?.notesUploaded
+                              ?.length
+                          )}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
@@ -301,7 +306,10 @@ const Profile = () => {
                           Questions Answered:
                         </span>
                         <span className="font-medium">
-                          {currentUser.questionsAnswered.length}
+                          {
+                            userDetails?.user?.contributions?.questionsAnswered
+                              .length
+                          }
                         </span>
                       </div>
                       <div className="flex justify-between items-center">

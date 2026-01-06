@@ -92,6 +92,20 @@ const loginUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+
+      // academic info
+      branch: user.branch,
+      semester: user.semester,
+
+      // gamification / system info
+      points: user.points,
+      contributions: user.contributions,
+      subjectsHandled: user.subjectsHandled,
+
+      // metadata
+      createdAt: user.createdAt,
+
+      // auth
       token: generateToken(user._id),
     },
   });
