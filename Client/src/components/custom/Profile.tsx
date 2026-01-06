@@ -1,10 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import { cn } from "../../../lib/utils";
 import Sidebar from "./Navbar";
-import { FileText, Edit2, Plus } from "lucide-react";
+import { FileText, Edit2, Plus, Save } from "lucide-react";
 import BottomGradient from "../ui/buttonGradient";
 import { useAuth } from "../../context/AuthContext";
 import GlassLoader from "../ui/loading.tsx";
+import { IconCancel } from "@tabler/icons-react";
+import axios from "axios";
 
 interface UserInfo {
   user: {
@@ -43,11 +45,12 @@ const Profile = () => {
       profileImage: file,
       profilePreview: URL.createObjectURL(file),
     }));
+    console.log(editProfileDetails.profileImage);
   };
 
   const [editProfileDetails, setEditProfileDetails] = useState({
     profileImage: null as File | null, // actual file
-
+    profilePreview: null as string | null, // preview URL
     name: "",
     email: "",
     branch: "",
@@ -194,55 +197,80 @@ const Profile = () => {
       ],
     },
   };
+  const uploadProfileImage = async () => {
+    if (!editProfileDetails.profileImage) return null;
+
+    const formData = new FormData();
+    formData.append("file", editProfileDetails.profileImage);
+    formData.append("upload_preset", import.meta.env.VITE_CLOUD_PRESET_NAME);
+    formData.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
+
+    const response = await axios.post(
+      `https://api.cloudinary.com/v1_1/${
+        import.meta.env.VITE_CLOUD_NAME
+      }/image/upload`,
+      formData
+    );
+
+    return response.data.secure_url as string;
+  };
 
   const handleEditProfile = async () => {
     try {
-      const formData = new FormData();
+      let uploadedImageUrl = "";
 
-      formData.append(
-        "name",
-        editProfileDetails.name || userDetails?.user?.name || ""
-      );
+      if (
+        editProfileDetails.profileImage &&
+        editProfileDetails.profileImage !== userDetails?.user?.profileImage
+      ) {
+        console.log("Hello");
 
-      formData.append(
-        "email",
-        editProfileDetails.email || userDetails?.user?.email || ""
-      );
+        const formData = new FormData();
+        formData.append("file", editProfileDetails.profileImage);
+        formData.append(
+          "upload_preset",
+          import.meta.env.VITE_CLOUD_PRESET_NAME
+        );
+        formData.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
 
-      formData.append(
-        "branch",
-        editProfileDetails.branch || userDetails?.user?.branch || ""
-      );
-
-      formData.append(
-        "semester",
-        String(editProfileDetails.semester || userDetails?.user?.semester || 0)
-      );
-
-      if (editProfileDetails.profileImage) {
-        formData.append("profileImage", editProfileDetails.profileImage);
+        const response = await axios.post(
+          `https://api.cloudinary.com/v1_1/${
+            import.meta.env.VITE_CLOUD_NAME
+          }/image/upload`,
+          formData
+        );
+        uploadedImageUrl = response.data.secure_url as string;
+        setUserDetails((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            user: { ...prev.user, profileImage: uploadedImageUrl },
+          };
+        });
       }
-      
-      const response = await fetch(
+
+      const payload = {
+        name: editProfileDetails.name || userDetails?.user?.name,
+        email: editProfileDetails.email || userDetails?.user?.email,
+        branch: editProfileDetails.branch || userDetails?.user?.branch,
+        semester: editProfileDetails.semester ?? userDetails?.user?.semester,
+        profileImage: uploadedImageUrl || userDetails?.user?.profileImage,
+      };
+
+      const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/user/update-profile`,
+        payload,
         {
-          method: "PUT",
           headers: {
             Authorization: `Bearer ${userDetails?.user?.token}`,
           },
-          body: formData,
+          withCredentials: true,
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Profile update failed");
-      }
-
-      const data = await response.json();
-
-      localStorage.setItem("userInfo", JSON.stringify(data.user));
-
-      setUserDetails({ user: data.user });
+      // Update local storage & state
+      localStorage.setItem("userInfo", JSON.stringify(response.data.user));
+      setUserDetails({ user: response.data.user });
 
       setEdiProfile(false);
     } catch (error) {
@@ -268,7 +296,7 @@ const Profile = () => {
             />
 
             {/* Modal */}
-            <div className="relative z-10 w-[90%] max-w-md rounded-2xl bg-neutral-800 border border-white/20 p-6 shadow-xl text-white">
+            <div className="relative z-10 w-[90%] max-w-md rounded-2xl bg-black border border-white/20 p-6 shadow-xl text-white">
               <h2 className="text-lg font-semibold mb-4">Edit Profile</h2>
 
               {/* Profile Picture */}
@@ -280,9 +308,11 @@ const Profile = () => {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <span className="flex h-full w-full items-center justify-center text-xs text-white/60">
-                      IMG
-                    </span>
+                    <img
+                      src={String(userDetails?.user?.profileImage)}
+                      alt={userDetails?.user?.name}
+                      className="flex h-full w-full items-center justify-center text-xs text-white/60"
+                    />
                   )}
                 </div>
 
@@ -332,7 +362,7 @@ const Profile = () => {
                   name="branch"
                   value={editProfileDetails.branch}
                   onChange={handleChange}
-                  className="mt-1 w-full rounded-md bg-white/10 px-3 py-2 text-sm outline-none border border-white/20 focus:border-blue-400"
+                  className="mt-1 w-full rounded-md bg-white/10 px-3 py-2 text-sm outline-none border border-white/20 focus:border-blue-400 cursor-pointer"
                 />
               </div>
 
@@ -353,17 +383,22 @@ const Profile = () => {
               {/* Actions */}
               <div className="flex justify-end gap-3">
                 <button
-                  onClick={() => setEdiProfile(false)}
-                  className="px-4 py-2 rounded-md bg-white/10 hover:bg-white/20 text-sm"
+                  className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-1 rounded-md bg-gray-600 font-medium border border-zinc-700 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                  onClick={() => {
+                    setEdiProfile(false);
+                  }}
                 >
+                  <IconCancel />
                   Cancel
+                  <BottomGradient />
                 </button>
-
                 <button
-                  className="px-4 py-2 rounded-md bg-blue-500 hover:bg-blue-600 text-sm font-medium"
+                  className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-1 rounded-md bg-black font-medium border border-zinc-700 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
                   onClick={handleEditProfile}
                 >
+                  <Save />
                   Save Changes
+                  <BottomGradient />
                 </button>
               </div>
             </div>
