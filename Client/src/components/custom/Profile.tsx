@@ -4,6 +4,7 @@ import Sidebar from "./Navbar";
 import { FileText, Edit2, Plus } from "lucide-react";
 import BottomGradient from "../ui/buttonGradient";
 import { useAuth } from "../../context/AuthContext";
+import GlassLoader from "../ui/loading.tsx";
 
 interface UserInfo {
   user: {
@@ -20,8 +21,21 @@ const Profile = () => {
   const [userRole, setUserRole] = useState("student");
   const { checkUser } = useAuth();
   const [userDetails, setUserDetails] = useState<UserInfo | null>(null);
+  const [isLoading, setIsloading] = useState(false);
+
+  const formatJoinedDate = (dateString?: string) => {
+    if (!dateString) return "Joined on —";
+
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
 
   const fetchUserDetails = async () => {
+    setIsloading(true);
     try {
       const storedUser = localStorage.getItem("userInfo");
 
@@ -35,6 +49,8 @@ const Profile = () => {
       setUserRole(parsedUser.user.role);
     } catch (error) {
       console.error("Error fetching user details:", error);
+    } finally {
+      setIsloading(false);
     }
   };
 
@@ -137,12 +153,14 @@ const Profile = () => {
   };
 
   const currentUser = userData[userRole];
+
   return (
     <div
       className={cn(
         "mx-auto fixed flex w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-black h-screen text-white"
       )}
     >
+      {isLoading ? <GlassLoader destination={"Profile"} /> : <></>}
       <style>
         {`
           ::-webkit-scrollbar {
@@ -193,28 +211,11 @@ const Profile = () => {
                       : "User"}
                   </span>
                 </div>
-                {userRole === "student" && (
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300">
-                    <div className="flex items-center gap-2">
-                      <span>
-                        {userDetails?.user?.branch
-                          ? String(userDetails?.user?.branch)
-                          : "Branch"}
-                      </span>
-                      &bull;{" "}
-                      <span>
-                        Semester - {String(userDetails?.user?.semester)}
-                      </span>
-                    </div>
-                  </div>
-                )}
-                {userRole === "professor" && (
-                  <div className="flex flex-wrap gap-4 text-sm text-gray-300">
-                    <div className="flex items-center gap-2">
-                      <span>{String(userDetails?.user?.department)}</span>
-                    </div>
-                  </div>
-                )}
+                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300">
+                  <span>
+                    Joined on {formatJoinedDate(userDetails?.user?.createdAt)}
+                  </span>
+                </div>
               </div>
               <button className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-3 rounded-md bg-black font-medium border border-zinc-700 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer">
                 <Edit2 className="w-4 h-4" />
