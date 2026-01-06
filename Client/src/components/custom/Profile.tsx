@@ -8,14 +8,24 @@ import GlassLoader from "../ui/loading.tsx";
 import { IconCancel } from "@tabler/icons-react";
 import axios from "axios";
 
+interface Contributions {
+  notesUploaded: string[];
+  questionsAnswered: string[];
+}
+
 interface UserInfo {
-  user: {
-    name: string;
-    email: string;
-    role: string;
-    [key: string]: unknown;
-  };
-  [key: string]: unknown;
+  id: string;
+  name: string;
+  email: string;
+  role: "student" | "professor" | "admin";
+  profileImage: string;
+  branch: string;
+  semester: number;
+  points: number;
+  contributions: Contributions;
+  subjectsHandled: string[];
+  createdAt: string;
+  token: string;
 }
 
 const Profile = () => {
@@ -54,7 +64,7 @@ const Profile = () => {
     name: "",
     email: "",
     branch: "",
-    semester: 0,
+    semester: userDetails?.semester,
   });
   useEffect(() => {
     if (userDetails) {
@@ -64,7 +74,7 @@ const Profile = () => {
         name: userDetails?.name || "",
         email: userDetails?.email || "",
         branch: userDetails?.branch || "",
-        semester: userDetails?.semester || 0,
+        semester: userDetails?.semester,
       });
     }
   }, [userDetails]);
@@ -91,8 +101,9 @@ const Profile = () => {
       }
 
       const parsedUser = JSON.parse(storedUser);
+
       setUserDetails(parsedUser);
-      setUserRole(parsedUser.user.role);
+      setUserRole(parsedUser.role);
     } catch (error) {
       console.error("Error fetching user details:", error);
     } finally {
@@ -197,23 +208,6 @@ const Profile = () => {
       ],
     },
   };
-  const uploadProfileImage = async () => {
-    if (!editProfileDetails.profileImage) return null;
-
-    const formData = new FormData();
-    formData.append("file", editProfileDetails.profileImage);
-    formData.append("upload_preset", import.meta.env.VITE_CLOUD_PRESET_NAME);
-    formData.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
-
-    const response = await axios.post(
-      `https://api.cloudinary.com/v1_1/${
-        import.meta.env.VITE_CLOUD_NAME
-      }/image/upload`,
-      formData
-    );
-
-    return response.data.secure_url as string;
-  };
 
   const handleEditProfile = async () => {
     try {
@@ -221,7 +215,7 @@ const Profile = () => {
 
       if (
         editProfileDetails.profileImage &&
-        editProfileDetails.profileImage !== userDetails?.user?.profileImage
+        editProfileDetails.profileImage !== userDetails?.profileImage
       ) {
         console.log("Hello");
 
@@ -244,33 +238,41 @@ const Profile = () => {
           if (!prev) return prev;
           return {
             ...prev,
-            user: { ...prev.user, profileImage: uploadedImageUrl },
+            profileImage: uploadedImageUrl,
           };
         });
       }
 
       const payload = {
-        name: editProfileDetails.name || userDetails?.user?.name,
-        email: editProfileDetails.email || userDetails?.user?.email,
-        branch: editProfileDetails.branch || userDetails?.user?.branch,
-        semester: editProfileDetails.semester ?? userDetails?.user?.semester,
-        profileImage: uploadedImageUrl || userDetails?.user?.profileImage,
+        name: editProfileDetails.name || userDetails?.name,
+        email: editProfileDetails.email || userDetails?.email,
+        branch: editProfileDetails.branch || userDetails?.branch,
+        semester: editProfileDetails.semester ?? userDetails?.semester,
+        profileImage: uploadedImageUrl || userDetails?.profileImage,
       };
 
       const response = await axios.put(
-        `${import.meta.env.VITE_API_URL}/user/update-profile`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/update-profile`,
         payload,
         {
           headers: {
-            Authorization: `Bearer ${userDetails?.user?.token}`,
+            authorization: `Bearer ${userDetails?.token}`,
           },
           withCredentials: true,
         }
       );
+      const existingUser = JSON.parse(localStorage.getItem("userInfo") || "{}");
+
+      const updatedUser = {
+        ...response.data.user,
+        token: existingUser.token,
+      };
 
       // Update local storage & state
-      localStorage.setItem("userInfo", JSON.stringify(response.data.user));
-      setUserDetails({ user: response.data.user });
+      localStorage.setItem("userInfo", JSON.stringify(updatedUser));
+      setUserDetails(updatedUser);
+
+      console.log(response.data);
 
       setEdiProfile(false);
     } catch (error) {
@@ -309,8 +311,8 @@ const Profile = () => {
                     />
                   ) : (
                     <img
-                      src={String(userDetails?.user?.profileImage)}
-                      alt={userDetails?.user?.name}
+                      src={String(userDetails?.profileImage)}
+                      alt={userDetails?.name}
                       className="flex h-full w-full items-center justify-center text-xs text-white/60"
                     />
                   )}
@@ -436,29 +438,29 @@ const Profile = () => {
               <div className="relative group">
                 <div className="absolute inset-0  rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity"></div>
                 <img
-                  src={String(userDetails?.user?.profileImage)}
-                  alt={userDetails?.user?.name}
+                  src={String(userDetails?.profileImage)}
+                  alt={userDetails?.name}
                   className="relative w-36 h-36 rounded-full border-4 border-gray-800 shadow-xl"
                 />
               </div>
               <div className="flex-1 text-center md:text-left">
                 <h1 className="text-4xl py-2 font-bold mb-2 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                  {userDetails?.user?.name}
+                  {userDetails?.name}
                 </h1>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-3">
                   <div className="flex items-center gap-2 text-gray-400">
-                    <span>{userDetails?.user?.email}</span>
+                    <span>{userDetails?.email}</span>
                   </div>
                   <span className="px-4 py-1 rounded-full text-sm font-medium bg-amber-600/20 text-amber-400 border border-amber-600/30">
-                    {userDetails?.user?.role
-                      ? userDetails.user.role[0].toUpperCase() +
-                        userDetails.user.role.slice(1)
+                    {userDetails?.role
+                      ? userDetails.role[0].toUpperCase() +
+                        userDetails.role.slice(1)
                       : "User"}
                   </span>
                 </div>
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-300">
                   <span>
-                    Joined on {formatJoinedDate(userDetails?.user?.createdAt)}
+                    Joined on {formatJoinedDate(userDetails?.createdAt)}
                   </span>
                 </div>
               </div>
@@ -519,21 +521,21 @@ const Profile = () => {
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Branch:</span>
                         <span className="font-medium">
-                          {userDetails?.user?.branch
-                            ? String(userDetails?.user?.branch)
+                          {userDetails?.branch
+                            ? String(userDetails?.branch)
                             : "Branch"}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Semester:</span>
                         <span className="font-medium">
-                          {String(userDetails?.user?.semester)}
+                          {String(userDetails?.semester)}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Total Points:</span>
                         <span className="font-medium text-orange-400">
-                          {String(userDetails?.user?.points)}
+                          {String(userDetails?.points)}
                         </span>
                       </div>
                     </div>
@@ -547,8 +549,7 @@ const Profile = () => {
                         <span className="text-gray-400">Notes Uploaded:</span>
                         <span className="font-medium">
                           {String(
-                            userDetails?.user?.contributions?.notesUploaded
-                              ?.length
+                            userDetails?.contributions?.notesUploaded?.length
                           )}
                         </span>
                       </div>
@@ -557,10 +558,7 @@ const Profile = () => {
                           Questions Answered:
                         </span>
                         <span className="font-medium">
-                          {
-                            userDetails?.user?.contributions?.questionsAnswered
-                              .length
-                          }
+                          {userDetails?.contributions?.questionsAnswered.length}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
@@ -586,13 +584,13 @@ const Profile = () => {
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Department:</span>
                         <span className="font-medium">
-                          {userDetails?.user?.department}
+                          {userDetails?.department}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Total Subjects:</span>
                         <span className="font-medium">
-                          {userDetails?.user?.subjectsHandled?.length}
+                          {userDetails?.subjectsHandled?.length}
                         </span>
                       </div>
                     </div>

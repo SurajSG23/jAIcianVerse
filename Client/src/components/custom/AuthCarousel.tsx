@@ -86,7 +86,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
         }
       );
       if (res.status == 200) {
-        localStorage.setItem("userInfo", JSON.stringify(res.data));
+        localStorage.setItem("userInfo", JSON.stringify(res.data.user));
         checkUser("homepage");
       }
     } catch (error) {
