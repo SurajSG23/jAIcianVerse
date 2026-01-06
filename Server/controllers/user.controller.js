@@ -93,7 +93,8 @@ const loginUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
-
+      profileImage: user.profileImage,
+      
       // academic info
       branch: user.branch,
       semester: user.semester,
