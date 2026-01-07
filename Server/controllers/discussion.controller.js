@@ -1,3 +1,4 @@
+import Announcement from "../models/announcements.model.js";
 import Answer from "../models/answer.model.js";
 import Discussion from "../models/discussion.model.js";
 import asyncHandler from "express-async-handler";
@@ -50,6 +51,18 @@ const fetchDiscussion = asyncHandler(async (req, res) => {
   });
 });
 
+const fetchAnnouncements = asyncHandler(async (req, res) => {
+  const announcements = await Announcement.find()
+    .sort({ createdAt: -1 })
+    .limit(10);
+
+  res.status(200).json({
+    success: true,
+    count: announcements.length,
+    announcements,
+  });
+});
+
 const postAnswer = asyncHandler(async (req, res) => {
   const { text, discussionId } = req.body;
 
@@ -71,4 +84,9 @@ const postAnswer = asyncHandler(async (req, res) => {
   res.status(201).json({ answer: populatedAnswer });
 });
 
-export default { uploadDiscussion, fetchDiscussion, postAnswer };
+export default {
+  uploadDiscussion,
+  fetchDiscussion,
+  postAnswer,
+  fetchAnnouncements,
+};

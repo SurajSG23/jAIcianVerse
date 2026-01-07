@@ -9,6 +9,7 @@ router
   .post(protect, discussionController.uploadDiscussion);
 
 router.route("/fetch-discussion").get(discussionController.fetchDiscussion);
+router.route("/fetch-announcements").get(discussionController.fetchAnnouncements);
 
 router
   .route("/answers")

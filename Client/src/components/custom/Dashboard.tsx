@@ -6,7 +6,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const Dashboard = () => {
-  const announcements = [
+  const [announcements, setAnnouncements] = useState([
     {
       quote:
         "Reminder to all students: the midterm exams will begin next Monday. Please make sure you’ve reviewed the syllabus and submitted all pending assignments by Friday.",
@@ -14,35 +14,7 @@ const Dashboard = () => {
       designation: "Head of Academics",
       src: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3",
     },
-    {
-      quote:
-        "We’re excited to announce that the annual science fair will take place on November 15th. Participants are encouraged to register their projects by the end of this month.",
-      name: "Mr. Rajesh Nair",
-      designation: "Science Department Coordinator",
-      src: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3",
-    },
-    {
-      quote:
-        "The library will be open for extended hours during exam week. Take advantage of the quiet study environment and additional reference materials available.",
-      name: "Ms. Priya Desai",
-      designation: "Librarian",
-      src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3",
-    },
-    {
-      quote:
-        "All students participating in the cultural fest must attend the practice session on Saturday. Attendance will be recorded, so please be on time.",
-      name: "Mr. Arvind Singh",
-      designation: "Cultural Coordinator",
-      src: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3",
-    },
-    {
-      quote:
-        "Congratulations to the debate team for winning the inter-school championship! Your hard work and preparation truly paid off, and we’re proud of your achievement.",
-      name: "Mrs. Neha Kapoor",
-      designation: "English Department Head",
-      src: "https://images.unsplash.com/photo-1603052875659-8f88c5ea2309?q=80&w=2592&auto=format&fit=crop&ixlib=rb-4.0.3",
-    },
-  ];
+  ]);
 
   const [discussions, setDiscussions] = useState([
     {
@@ -74,45 +46,6 @@ const Dashboard = () => {
           timestamp: "45 mins ago",
         },
       ],
-    },
-    {
-      id: 2,
-      question:
-        "What's the difference between supervised and unsupervised learning?",
-      questionType: "text",
-      postedBy: "James Wilson",
-      profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=James",
-      subject: "Machine Learning",
-      unit: "Unit 1",
-      semester: 6,
-      postedAt: "5 hours ago",
-      tags: ["ML", "AI", "Classification"],
-      views: 567,
-      bookmarked: false,
-      answers: [
-        {
-          text: "Supervised learning uses labeled data to train models, while unsupervised learning finds patterns in unlabeled data. Think classification vs clustering.",
-          answeredBy: "Dr. Emily Park",
-          upvotes: 24,
-          isBestAnswer: true,
-          timestamp: "4 hours ago",
-        },
-      ],
-    },
-    {
-      id: 3,
-      question: "Can someone explain the concept of closures in JavaScript?",
-      questionType: "text",
-      postedBy: "Priya Sharma",
-      profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya",
-      subject: "Web Development",
-      unit: "Unit 2",
-      semester: 6,
-      postedAt: "1 day ago",
-      tags: ["JavaScript", "Closures", "Functions"],
-      views: 892,
-      bookmarked: false,
-      answers: [],
     },
   ]);
 
@@ -164,15 +97,15 @@ const Dashboard = () => {
           withCredentials: true,
         }
       );
-
+      toast.success("Question uploaded successfully!");
       console.log("Discussion uploaded:", response.data);
+      fetchDiscussions();
     } catch (error) {
       console.error(
         "Error uploading discussion:",
         error.response?.data || error.message
       );
     } finally {
-      fetchDiscussions();
       setShowQuestionModal(false);
       setQuestionForm({
         question: "",
@@ -191,7 +124,23 @@ const Dashboard = () => {
       );
 
       setDiscussions(response.data.discussions);
-      console.log(response.data.discussions);
+    } catch (error) {
+      console.error(
+        "Error fetching discussions:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
+  const fetchAnnouncements = async () => {
+    try {
+      const response = await axios.get(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/discussions/fetch-announcements`
+      );
+
+      setAnnouncements(response.data.announcements);
     } catch (error) {
       console.error(
         "Error fetching discussions:",
@@ -202,6 +151,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchDiscussions();
+    fetchAnnouncements();
   }, []);
 
   const toggleAnswers = (discussionId) => {
