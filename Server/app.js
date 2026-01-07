@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 // import Error from "./middleware/error.middleware.js";
 // import { Server } from "socket.io";
 import userRoutes from "./routes/user.route.js";
+import discussionRoutes from "./routes/discussion.route.js";
 
 connectDB();
 dotenv.config();
@@ -26,7 +27,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/user",userRoutes)
-app.use("/api/discussion",discussionRoutes)
+app.use("/api/discussions",discussionRoutes)
 
 const server = app.listen(3000, () => {
     console.log("Server is running on port 3000");

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { AnimatedTestimonials } from "../../components/ui/animated-testimonials";
+import axios from "axios";
 
 const Dashboard = () => {
   const announcements = [
@@ -135,6 +136,41 @@ const Dashboard = () => {
   const filters = ["All", "Unanswered", "Answered", "Bookmarked"];
   const sortOptions = ["Recent", "Most Viewed", "Most Answered"];
 
+  const uploadDiscussion = async () => {
+    const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
+
+    const payload = {
+      question: questionForm.question,
+      subject: questionForm.subject,
+      unit: questionForm.unit,
+      tags: questionForm.tags
+        ? questionForm.tags.split(",").map((t) => t.trim())
+        : [],
+      imageURL: questionForm.image || "", 
+    };
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/discussions/upload-discussion`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${userDetails.token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      console.log("Discussion uploaded:", response.data);
+    } catch (error) {
+      console.error(
+        "Error uploading discussion:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   const toggleAnswers = (index) => {
     setExpandedIndex(expandedIndex === index ? null : index);
     // Increment view count
@@ -158,16 +194,16 @@ const Dashboard = () => {
     setDiscussions(updatedDiscussions);
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setQuestionForm((prev) => ({ ...prev, image: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const handleImageUpload = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setQuestionForm((prev) => ({ ...prev, image: reader.result }));
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   const postQuestion = () => {
     if (!questionForm.question.trim()) return;
@@ -695,7 +731,7 @@ const Dashboard = () => {
                     </div>
 
                     {/* Image Upload */}
-                    <div>
+                    {/* <div>
                       <label className="block text-sm font-medium text-neutral-400 mb-2">
                         Attach Image (Optional)
                       </label>
@@ -712,13 +748,13 @@ const Dashboard = () => {
                           className="mt-3 w-full rounded-lg border border-neutral-800 max-h-48 object-cover"
                         />
                       )}
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* Buttons */}
                   <div className="flex gap-3 mt-6">
                     <button
-                      onClick={postQuestion}
+                      onClick={uploadDiscussion}
                       className="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
                     >
                       Post Question
