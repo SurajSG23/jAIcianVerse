@@ -4,6 +4,9 @@ import protect from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.route("/upload-discussion").post(protect, discussionController.uploadDiscussion);
+router
+  .route("/upload-discussion")
+  .post(protect, discussionController.uploadDiscussion);
+router.route("/fetch-discussion").get(discussionController.fetchDiscussion);
 
-export default router
+export default router;

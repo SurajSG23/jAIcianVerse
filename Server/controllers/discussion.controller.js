@@ -29,4 +29,18 @@ const uploadDiscussion = asyncHandler(async (req, res) => {
   });
 });
 
-export default { uploadDiscussion };
+const fetchDiscussion = asyncHandler(async (req, res) => {
+  const discussions = await Discussion.find()
+    .sort({ createdAt: -1 }) // newest first
+    .limit(20)
+    .populate("postedBy", "name email profileImage role")
+    // .populate("answers");
+
+  res.status(200).json({
+    success: true,
+    count: discussions.length,
+    discussions,
+  });
+});
+
+export default { uploadDiscussion, fetchDiscussion };

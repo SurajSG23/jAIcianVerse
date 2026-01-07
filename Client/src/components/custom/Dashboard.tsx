@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { AnimatedTestimonials } from "../../components/ui/animated-testimonials";
@@ -124,6 +124,7 @@ const Dashboard = () => {
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [sortBy, setSortBy] = useState("Recent");
   const [answerText, setAnswerText] = useState("");
+  const [expandedId, setExpandedId] = useState(null);
 
   const [questionForm, setQuestionForm] = useState({
     question: "",
@@ -146,7 +147,7 @@ const Dashboard = () => {
       tags: questionForm.tags
         ? questionForm.tags.split(",").map((t) => t.trim())
         : [],
-      imageURL: questionForm.image || "", 
+      imageURL: questionForm.image || "",
     };
 
     try {
@@ -171,12 +172,34 @@ const Dashboard = () => {
     }
   };
 
-  const toggleAnswers = (index) => {
-    setExpandedIndex(expandedIndex === index ? null : index);
-    // Increment view count
-    const updatedDiscussions = [...discussions];
-    updatedDiscussions[index].views += 1;
-    setDiscussions(updatedDiscussions);
+  const fetchDiscussions = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/discussions/fetch-discussion`
+      );
+
+      setDiscussions(response.data.discussions);
+      console.log(response.data.discussions);
+    } catch (error) {
+      console.error(
+        "Error fetching discussions:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchDiscussions();
+  }, []);
+
+  const toggleAnswers = (discussionId) => {
+    setExpandedId((prev) => (prev === discussionId ? null : discussionId));
+
+    setDiscussions((prevDiscussions) =>
+      prevDiscussions.map((disc) =>
+        disc._id === discussionId ? { ...disc, views: disc.views + 1 } : disc
+      )
+    );
   };
 
   const handleUpvote = (discIndex, ansIndex) => {
@@ -204,38 +227,6 @@ const Dashboard = () => {
   //     reader.readAsDataURL(file);
   //   }
   // };
-
-  const postQuestion = () => {
-    if (!questionForm.question.trim()) return;
-
-    const newQuestion = {
-      id: discussions.length + 1,
-      question: questionForm.question,
-      questionType: questionForm.image ? "image" : "text",
-      mediaUrl: questionForm.image || null,
-      postedBy: "Current User",
-      profilePic: "https://api.dicebear.com/7.x/avataaars/svg?seed=User",
-      subject: questionForm.subject || "General",
-      unit: questionForm.unit || "N/A",
-      tags: questionForm.tags
-        ? questionForm.tags.split(",").map((t) => t.trim())
-        : [],
-      postedAt: "Just now",
-      views: 0,
-      bookmarked: false,
-      answers: [],
-    };
-
-    setDiscussions([newQuestion, ...discussions]);
-    setQuestionForm({
-      question: "",
-      subject: "",
-      unit: "",
-      tags: "",
-      image: null,
-    });
-    setShowQuestionModal(false);
-  };
 
   const openAnswerModal = (index) => {
     setSelectedDiscussionIndex(index);
@@ -265,11 +256,12 @@ const Dashboard = () => {
 
   const filteredAndSortedDiscussions = discussions
     .filter((disc) => {
+      const search = searchQuery.toLowerCase();
+
       const matchesSearch =
-        disc.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        disc.tags.some((tag) =>
-          tag.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        disc.question.toLowerCase().includes(search) ||
+        (disc.tags || []).some((tag) => tag.toLowerCase().includes(search));
+
       const matchesFilter =
         selectedFilter === "All"
           ? true
@@ -277,8 +269,6 @@ const Dashboard = () => {
           ? disc.answers.length === 0
           : selectedFilter === "Answered"
           ? disc.answers.length > 0
-          : selectedFilter === "Bookmarked"
-          ? disc.bookmarked
           : true;
 
       return matchesSearch && matchesFilter;
@@ -287,7 +277,7 @@ const Dashboard = () => {
       if (sortBy === "Most Viewed") return b.views - a.views;
       if (sortBy === "Most Answered")
         return b.answers.length - a.answers.length;
-      return 0; // Recent is default order
+      return 0;
     });
 
   return (
@@ -388,58 +378,46 @@ const Dashboard = () => {
           </div>
         )}
         <div className="flex flex-col space-y-4 w-[70%]">
-          {filteredAndSortedDiscussions.map((disc, i) => (
+          {filteredAndSortedDiscussions.map((disc) => (
             <div
-              key={disc.id}
+              key={disc._id}
               className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 hover:border-neutral-700 transition-colors"
             >
               <div className="flex items-start gap-4 mb-4">
                 <img
-                  src={disc.profilePic}
-                  alt={disc.postedBy}
-                  className="w-12 h-12 rounded-full bg-neutral-800"
+                  src={disc.postedBy?.profileImage || "/default-avatar.png"}
+                  alt={disc.postedBy?.name || "User"}
+                  className="w-12 h-12 rounded-full bg-neutral-800 object-cover"
                 />
+
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-white font-medium">
-                        {disc.postedBy}
+                        {disc.postedBy?.name || "Unknown User"}
                       </h3>
                       <p className="text-sm text-neutral-500">
-                        {disc.postedAt} &bull; {disc.semester} Sem &bull;{" "}
-                        {disc.subject} / {disc.unit}
+                        {new Date(disc.createdAt).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}{" "}
+                        • {disc.subject}
+                        {disc.unit ? ` / Unit ${disc.unit}` : ""}
                       </p>
                     </div>
-
-                    <button
-                      onClick={() => toggleBookmark(discussions.indexOf(disc))}
-                      className="text-neutral-500 hover:text-white transition-colors"
-                    >
-                      <svg
-                        className={`w-6 h-6 ${
-                          disc.bookmarked ? "fill-white" : "fill-none"
-                        }`}
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                        />
-                      </svg>
-                    </button>
                   </div>
                 </div>
               </div>
 
-              <div className="ml-16 ">
+              {/* ===== BODY ===== */}
+              <div className="ml-16">
                 <h2 className="text-xl text-white font-medium mb-3">
                   {disc.question}
                 </h2>
 
-                {disc.tags.length > 0 && (
+                {/* ===== TAGS ===== */}
+                {disc.tags?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-3">
                     {disc.tags.map((tag, idx) => (
                       <span
@@ -452,73 +430,36 @@ const Dashboard = () => {
                   </div>
                 )}
 
-                {disc.questionType === "image" && disc.mediaUrl && (
+                {/* ===== IMAGE ===== */}
+                {disc.imageURL && (
                   <img
-                    src={disc.mediaUrl}
-                    alt="discussion-media"
+                    src={disc.imageURL}
+                    alt="discussion"
                     className="w-full rounded-lg mb-4 border border-neutral-800 max-h-96 object-cover"
                   />
                 )}
 
-                <div className="flex items-center gap-4 text-sm text-neutral-500 mb-4">
-                  <div className="flex items-center gap-1">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                    <span>{disc.views} views</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                      />
-                    </svg>
-                    <span>{disc.answers.length} answers</span>
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
+                {/* ===== ACTIONS ===== */}
+                <div className="flex gap-3 items-center">
                   <button
-                    onClick={() => toggleAnswers(discussions.indexOf(disc))}
-                    className="px-4 py-2 text-sm font-medium text-neutral-400 hover:text-white bg-neutral-950 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors cursor-pointer"
+                    onClick={() => toggleAnswers(disc._id)}
+                    className="px-4 py-2 text-sm font-medium text-neutral-400 hover:text-white bg-neutral-950 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors"
                   >
-                    {expandedIndex === discussions.indexOf(disc)
+                    {expandedId === disc._id
                       ? "Hide Answers"
                       : `View Answers (${disc.answers.length})`}
                   </button>
+
                   <button
-                    onClick={() => openAnswerModal(discussions.indexOf(disc))}
-                    className="px-4 py-2 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors cursor-pointer"
+                    onClick={() => openAnswerModal(disc._id)}
+                    className="px-4 py-2 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
                   >
                     Add Answer
                   </button>
                 </div>
 
-                {expandedIndex === discussions.indexOf(disc) && (
+                {/* ===== ANSWERS ===== */}
+                {expandedId === disc._id && (
                   <div className="mt-6 space-y-3">
                     {disc.answers.length === 0 && (
                       <p className="text-neutral-600 text-sm py-4">
@@ -526,66 +467,19 @@ const Dashboard = () => {
                       </p>
                     )}
 
-                    {disc.answers.map((ans, j) => {
-                      const voteKey = `${discussions.indexOf(disc)}-${j}`;
-                      const totalUpvotes = ans.upvotes + (votes[voteKey] || 0);
-
-                      return (
-                        <div
-                          key={j}
-                          className={`p-4 rounded-lg bg-black ${
-                            ans.isBestAnswer
-                              ? "border border-emerald-900"
-                              : "border border-neutral-800"
-                          }`}
-                        >
-                          <p className="text-neutral-200 leading-relaxed mb-3">
-                            {ans.text}
-                          </p>
-                          <div className="flex items-center justify-between text-sm">
-                            <div className="flex items-center gap-3">
-                              <span className="text-neutral-500">
-                                by{" "}
-                                <span className="text-neutral-400">
-                                  {ans.answeredBy}
-                                </span>
-                              </span>
-                              <span className="text-neutral-600">·</span>
-                              <span className="text-neutral-600">
-                                {ans.timestamp}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-4">
-                              {ans.isBestAnswer && (
-                                <span className="flex items-center gap-1 text-emerald-500 text-xs font-medium">
-                                  <svg
-                                    className="w-4 h-4"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                  >
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                  </svg>
-                                  Best Answer
-                                </span>
-                              )}
-                              <div className="flex items-center gap-2">
-                                <button
-                                  onClick={() =>
-                                    handleUpvote(discussions.indexOf(disc), j)
-                                  }
-                                  className="px-3 py-1 text-xs font-medium text-neutral-400 hover:text-white bg-neutral-900 border border-neutral-800 rounded hover:border-neutral-700 transition-colors"
-                                >
-                                  Upvote
-                                </button>
-                                <span className="text-neutral-500">
-                                  {totalUpvotes}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
+                    {disc.answers.map((ans) => (
+                      <div
+                        key={ans._id}
+                        className="p-4 rounded-lg bg-black border border-neutral-800"
+                      >
+                        <p className="text-neutral-200 leading-relaxed mb-2">
+                          {ans.text}
+                        </p>
+                        <p className="text-xs text-neutral-500">
+                          by {ans.answeredBy?.name || "Anonymous"}
+                        </p>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>

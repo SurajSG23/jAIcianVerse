@@ -7,7 +7,11 @@ import connectDB from "./config/db.js";
 // import { Server } from "socket.io";
 import userRoutes from "./routes/user.route.js";
 import discussionRoutes from "./routes/discussion.route.js";
-
+import answerRoutes from "./routes/answer.route.js";
+// import chatsRoutes from "./routes/chats.route.js";
+// import messageRoutes from "./routes/message.route.js";
+// import Chat from "./models/chat.model.js";
+// import Message from "./models/message.model.js";
 connectDB();
 dotenv.config();
 
