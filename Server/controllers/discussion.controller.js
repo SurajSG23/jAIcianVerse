@@ -31,10 +31,16 @@ const uploadDiscussion = asyncHandler(async (req, res) => {
 
 const fetchDiscussion = asyncHandler(async (req, res) => {
   const discussions = await Discussion.find()
-    .sort({ createdAt: -1 }) // newest first
+    .sort({ createdAt: -1 })
     .limit(20)
     .populate("postedBy", "name email profileImage role")
-    // .populate("answers");
+    .populate({
+      path: "answers",
+      populate: {
+        path: "answeredBy",
+        select: "name email profileImage role",
+      },
+    });
 
   res.status(200).json({
     success: true,

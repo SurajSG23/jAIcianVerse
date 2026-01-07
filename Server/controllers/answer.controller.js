@@ -7,7 +7,7 @@ const fetchDiscussion = asyncHandler(async (req, res) => {
     .limit(20)
     .populate("postedBy", "name email profileImage role")
     .populate("answers");
-
+  
   res.status(200).json({
     success: true,
     count: discussions.length,

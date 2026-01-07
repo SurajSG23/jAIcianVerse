@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { RefreshCcw, X } from "lucide-react";
 import { AnimatedTestimonials } from "../../components/ui/animated-testimonials";
 import axios from "axios";
 
@@ -115,7 +115,6 @@ const Dashboard = () => {
     },
   ]);
 
-  const [expandedIndex, setExpandedIndex] = useState(null);
   const [votes, setVotes] = useState({});
   const [showQuestionModal, setShowQuestionModal] = useState(false);
   const [showAnswerModal, setShowAnswerModal] = useState(false);
@@ -134,10 +133,11 @@ const Dashboard = () => {
     image: null,
   });
 
-  const filters = ["All", "Unanswered", "Answered", "Bookmarked"];
-  const sortOptions = ["Recent", "Most Viewed", "Most Answered"];
+  const filters = ["All", "Unanswered", "Answered"];
+  const sortOptions = ["Recent", "Most Answered"];
 
-  const uploadDiscussion = async () => {
+  const uploadDiscussion = async (e: React.FormEvent) => {
+    e.preventDefault();
     const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
 
     const payload = {
@@ -169,6 +169,16 @@ const Dashboard = () => {
         "Error uploading discussion:",
         error.response?.data || error.message
       );
+    } finally {
+      fetchDiscussions();
+      setShowQuestionModal(false);
+      setQuestionForm({
+        question: "",
+        subject: "",
+        unit: "",
+        tags: "",
+        image: null,
+      });
     }
   };
 
@@ -208,13 +218,6 @@ const Dashboard = () => {
       ...prev,
       [key]: (prev[key] || 0) + 1,
     }));
-  };
-
-  const toggleBookmark = (index) => {
-    const updatedDiscussions = [...discussions];
-    updatedDiscussions[index].bookmarked =
-      !updatedDiscussions[index].bookmarked;
-    setDiscussions(updatedDiscussions);
   };
 
   // const handleImageUpload = (e) => {
@@ -365,6 +368,12 @@ const Dashboard = () => {
                 ))}
               </select>
             </div>
+            <div
+              className="ml-auto flex items-center gap-2 cursor-pointer"
+              onClick={fetchDiscussions}
+            >
+              <RefreshCcw className="text-gray-600" />
+            </div>
           </div>
         </div>
       </div>
@@ -472,12 +481,39 @@ const Dashboard = () => {
                         key={ans._id}
                         className="p-4 rounded-lg bg-black border border-neutral-800"
                       >
-                        <p className="text-neutral-200 leading-relaxed mb-2">
+                        {/* Answer text */}
+                        <p className="text-neutral-200 leading-relaxed mb-3">
                           {ans.text}
                         </p>
-                        <p className="text-xs text-neutral-500">
-                          by {ans.answeredBy?.name || "Anonymous"}
-                        </p>
+
+                        {/* Answer footer */}
+                        <div className="flex items-center gap-3 text-xs text-neutral-500">
+                          <img
+                            src={
+                              ans.answeredBy?.profileImage ||
+                              "/default-avatar.png"
+                            }
+                            alt={ans.answeredBy?.name || "User"}
+                            className="w-6 h-6 rounded-full object-cover bg-neutral-800"
+                          />
+
+                          <span className="text-neutral-400">
+                            {ans.answeredBy?.name || "Anonymous"}
+                          </span>
+
+                          <span className="text-neutral-600">•</span>
+
+                          <span>
+                            {new Date(ans.createdAt).toLocaleDateString(
+                              "en-IN",
+                              {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              }
+                            )}
+                          </span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -523,7 +559,10 @@ const Dashboard = () => {
                 transition={{ duration: 0.2 }}
                 className="fixed inset-0 flex items-center justify-center z-50 p-4"
               >
-                <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+                <form
+                  onSubmit={uploadDiscussion}
+                  className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative"
+                >
                   {/* Header */}
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-bold text-white">
@@ -564,6 +603,7 @@ const Dashboard = () => {
                         placeholder="What would you like to know?"
                         className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700 resize-none"
                         rows={4}
+                        required
                       />
                     </div>
 
@@ -584,6 +624,7 @@ const Dashboard = () => {
                           }
                           placeholder="e.g., Data Structures"
                           className="w-full px-4 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700"
+                          required
                         />
                       </div>
                       <div>
@@ -601,6 +642,7 @@ const Dashboard = () => {
                           }
                           placeholder="e.g., Unit 3"
                           className="w-full px-4 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700"
+                          required
                         />
                       </div>
                     </div>
@@ -621,6 +663,7 @@ const Dashboard = () => {
                         }
                         placeholder="e.g., Python, BST, Algorithms"
                         className="w-full px-4 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700"
+                        required
                       />
                     </div>
 
@@ -648,7 +691,7 @@ const Dashboard = () => {
                   {/* Buttons */}
                   <div className="flex gap-3 mt-6">
                     <button
-                      onClick={uploadDiscussion}
+                      type="submit"
                       className="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
                     >
                       Post Question
@@ -669,7 +712,7 @@ const Dashboard = () => {
                       Cancel
                     </button>
                   </div>
-                </div>
+                </form>
               </motion.div>
             </>
           )}
