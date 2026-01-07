@@ -551,8 +551,8 @@ const Dashboard = () => {
           ))}
         </div>
 
-        <div className="w-[30%] flex flex-col items-center">
-          <h1 className="text-2xl text-white">Announcements</h1>
+        <div className="w-[30%] flex flex-col items-center sticky top-6 self-start">
+          <h1 className="text-2xl text-white mb-4">Announcements</h1>
           <AnimatedTestimonials testimonials={announcements} />
         </div>
       </div>
