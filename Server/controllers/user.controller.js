@@ -140,7 +140,6 @@ const updateProfile = asyncHandler(async (req, res) => {
   user.profileImage = profileImage ?? user.profileImage;
 
   const updatedUser = await user.save();
-  console.log(updatedUser);
   
   res.status(200).json({
     message: "Profile updated successfully",

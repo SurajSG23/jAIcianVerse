@@ -26,6 +26,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/user",userRoutes)
+app.use("/api/discussion",discussionRoutes)
 
 const server = app.listen(3000, () => {
     console.log("Server is running on port 3000");
