@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { RefreshCcw, X } from "lucide-react";
 import { AnimatedTestimonials } from "../../components/ui/animated-testimonials";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const announcements = [
@@ -124,6 +125,7 @@ const Dashboard = () => {
   const [sortBy, setSortBy] = useState("Recent");
   const [answerText, setAnswerText] = useState("");
   const [expandedId, setExpandedId] = useState(null);
+  const [selectedDiscussionId, setSelectedDiscussionId] = useState(null);
 
   const [questionForm, setQuestionForm] = useState({
     question: "",
@@ -231,30 +233,56 @@ const Dashboard = () => {
   //   }
   // };
 
-  const openAnswerModal = (index) => {
-    setSelectedDiscussionIndex(index);
+  const openAnswerModal = (discussionId) => {
+    setSelectedDiscussionId(discussionId);
     setShowAnswerModal(true);
     setAnswerText("");
   };
 
-  const postAnswer = () => {
-    if (!answerText.trim() || selectedDiscussionIndex === null) return;
+  const postAnswer = async () => {
+    if (!answerText.trim() || !selectedDiscussionId) {
+      toast.error("Answer cannot be empty.");
+      return;
+    }
 
-    const newAnswer = {
-      text: answerText,
-      answeredBy: "Current User",
-      upvotes: 0,
-      isBestAnswer: false,
-      timestamp: "Just now",
-    };
+    try {
+      const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
 
-    const updatedDiscussions = [...discussions];
-    updatedDiscussions[selectedDiscussionIndex].answers.push(newAnswer);
-    setDiscussions(updatedDiscussions);
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/discussions/answers`,
+        {
+          text: answerText,
+          discussionId: selectedDiscussionId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userDetails.token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
 
-    setShowAnswerModal(false);
-    setAnswerText("");
-    setSelectedDiscussionIndex(null);
+      const savedAnswer = response.data.answer;
+
+      setDiscussions((prev) =>
+        prev.map((disc) =>
+          disc._id === selectedDiscussionId
+            ? { ...disc, answers: [...disc.answers, savedAnswer] }
+            : disc
+        )
+      );
+
+      setShowAnswerModal(false);
+      setAnswerText("");
+      setSelectedDiscussionId(null);
+      toast.success("Answer posted successfully!");
+    } catch (error) {
+      console.error(
+        "Error posting answer:",
+        error.response?.data || error.message
+      );
+    }
   };
 
   const filteredAndSortedDiscussions = discussions
@@ -371,8 +399,9 @@ const Dashboard = () => {
             <div
               className="ml-auto flex items-center gap-2 cursor-pointer"
               onClick={fetchDiscussions}
+              title="Refresh"
             >
-              <RefreshCcw className="text-gray-600" />
+              <RefreshCcw className="text-gray-600 hover:text-gray-700" />
             </div>
           </div>
         </div>

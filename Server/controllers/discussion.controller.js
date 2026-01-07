@@ -1,3 +1,4 @@
+import Answer from "../models/answer.model.js";
 import Discussion from "../models/discussion.model.js";
 import asyncHandler from "express-async-handler";
 
@@ -49,4 +50,25 @@ const fetchDiscussion = asyncHandler(async (req, res) => {
   });
 });
 
-export default { uploadDiscussion, fetchDiscussion };
+const postAnswer = asyncHandler(async (req, res) => {
+  const { text, discussionId } = req.body;
+
+  const answer = await Answer.create({
+    text,
+    answeredTo: discussionId,
+    answeredBy: req.user._id,
+  });
+
+  await Discussion.findByIdAndUpdate(discussionId, {
+    $push: { answers: answer._id },
+  });
+
+  const populatedAnswer = await answer.populate(
+    "answeredBy",
+    "name profileImage"
+  );
+
+  res.status(201).json({ answer: populatedAnswer });
+});
+
+export default { uploadDiscussion, fetchDiscussion, postAnswer };

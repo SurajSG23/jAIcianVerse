@@ -7,6 +7,11 @@ const router = express.Router();
 router
   .route("/upload-discussion")
   .post(protect, discussionController.uploadDiscussion);
+
 router.route("/fetch-discussion").get(discussionController.fetchDiscussion);
+
+router
+  .route("/answers")
+  .post(protect, discussionController.postAnswer);
 
 export default router;
