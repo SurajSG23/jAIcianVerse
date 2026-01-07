@@ -64,11 +64,14 @@ const Navbar = () => {
         <div className="flex flex-col items-start">
           <SidebarLink
             link={{
-              label: "Suraj S G",
+              label: JSON.parse(localStorage.getItem("userInfo") || "{}").name,
               href: "#",
               icon: (
                 <img
-                  src="suraj.jpg"
+                  src={
+                    JSON.parse(localStorage.getItem("userInfo") || "{}")
+                      .profileImage
+                  }
                   className="h-7 w-7 shrink-0 rounded-full"
                   width={50}
                   height={50}
