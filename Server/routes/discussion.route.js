@@ -14,5 +14,9 @@ router.route("/fetch-announcements").get(discussionController.fetchAnnouncements
 router
   .route("/answers")
   .post(protect, discussionController.postAnswer);
+  
+router
+  .route("/announcements")
+  .post(protect, discussionController.postAnnouncement);
 
 export default router;

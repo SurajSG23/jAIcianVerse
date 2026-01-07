@@ -84,9 +84,31 @@ const postAnswer = asyncHandler(async (req, res) => {
   res.status(201).json({ answer: populatedAnswer });
 });
 
+const postAnnouncement = asyncHandler(async (req, res) => {
+  const { quote, src } = req.body;
+
+  if (!quote) {
+    res.status(400);
+    throw new Error("Announcement text is required");
+  }
+
+  const announcement = await Announcement.create({
+    quote,
+    name: req.user.name,
+    designation: req.user.role, // or req.user.designation if you have one
+    src: src || req.user.profileImage,
+  });
+
+  res.status(201).json({
+    message: "Announcement posted successfully",
+    announcement,
+  });
+});
+
 export default {
   uploadDiscussion,
   fetchDiscussion,
   postAnswer,
   fetchAnnouncements,
+  postAnnouncement,
 };

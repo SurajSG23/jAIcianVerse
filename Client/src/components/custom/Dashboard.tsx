@@ -52,11 +52,13 @@ const Dashboard = () => {
   const [votes, setVotes] = useState({});
   const [showQuestionModal, setShowQuestionModal] = useState(false);
   const [showAnswerModal, setShowAnswerModal] = useState(false);
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [selectedDiscussionIndex, setSelectedDiscussionIndex] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [sortBy, setSortBy] = useState("Recent");
   const [answerText, setAnswerText] = useState("");
+  const [announcementText, setAnnouncementText] = useState("");
   const [expandedId, setExpandedId] = useState(null);
   const [selectedDiscussionId, setSelectedDiscussionId] = useState(null);
 
@@ -164,14 +166,6 @@ const Dashboard = () => {
     );
   };
 
-  const handleUpvote = (discIndex, ansIndex) => {
-    const key = `${discIndex}-${ansIndex}`;
-    setVotes((prev) => ({
-      ...prev,
-      [key]: (prev[key] || 0) + 1,
-    }));
-  };
-
   // const handleImageUpload = (e) => {
   //   const file = e.target.files[0];
   //   if (file) {
@@ -227,6 +221,46 @@ const Dashboard = () => {
       setAnswerText("");
       setSelectedDiscussionId(null);
       toast.success("Answer posted successfully!");
+    } catch (error) {
+      console.error(
+        "Error posting answer:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
+  const postAnnouncement = async () => {
+    if (!announcementText.trim()) {
+      toast.error("Announcement cannot be empty.");
+      return;
+    }
+
+    try {
+      const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/discussions/announcements`,
+        {
+          quote: announcementText,
+          src: userDetails.profileImage || "",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userDetails.token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      const savedAnnouncement = response.data.announcement;
+
+      // Optional: update local state list
+      setAnnouncements((prev) => [savedAnnouncement, ...prev]);
+      setShowAnnouncementModal(false);
+      setAnnouncementText("");
+      fetchAnnouncements();
+      toast.success("Announcement posted successfully!");
     } catch (error) {
       console.error(
         "Error posting answer:",
@@ -297,7 +331,7 @@ const Dashboard = () => {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-white">Discussion Forum</h1>
           <button
-            onClick={() => setShowQuestionModal(true)}
+            onClick={() => setShowAnnouncementModal(true)}
             className="px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
           >
             Make Announcement
@@ -360,7 +394,10 @@ const Dashboard = () => {
             </div>
             <div
               className="ml-auto flex items-center gap-2 cursor-pointer"
-              onClick={fetchDiscussions}
+              onClick={() => {
+                fetchDiscussions();
+                fetchAnnouncements();
+              }}
               title="Refresh"
             >
               <RefreshCcw className="text-gray-600 hover:text-gray-700" />
@@ -767,6 +804,70 @@ const Dashboard = () => {
                     setShowAnswerModal(false);
                     setAnswerText("");
                     setSelectedDiscussionIndex(null);
+                  }}
+                  className="px-6 py-2.5 text-sm font-medium text-neutral-400 bg-neutral-950 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
+          </>
+        </AnimatePresence>
+      )}
+      {showAnnouncementModal && (
+        <AnimatePresence>
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => {
+                setShowAnswerModal(false);
+                setAnswerText("");
+                setSelectedDiscussionIndex(null);
+              }}
+              className="fixed inset-0 backdrop-blur-md bg-black/60 z-40"
+            />
+
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl bg-neutral-900 border border-neutral-800 rounded-xl p-6 shadow-xl"
+            >
+              {/* Header */}
+              <h2 className="text-2xl font-bold text-white mb-6">
+                Announcement Form
+              </h2>
+
+              {/* Textarea */}
+              <div>
+                <label className="block text-sm font-medium text-neutral-400 mb-2">
+                  Your Announcement
+                </label>
+                <textarea
+                  value={announcementText}
+                  onChange={(e) => setAnnouncementText(e.target.value)}
+                  placeholder="Type here..."
+                  className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700 resize-none"
+                  rows={6}
+                />
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={postAnnouncement}
+                  className="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-900 transition-colors cursor-pointer"
+                >
+                  Post Announcement
+                </button>
+                <button
+                  onClick={() => {
+                    setShowAnnouncementModal(false);
                   }}
                   className="px-6 py-2.5 text-sm font-medium text-neutral-400 bg-neutral-950 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors cursor-pointer"
                 >
