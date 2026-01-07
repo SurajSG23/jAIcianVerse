@@ -332,16 +332,28 @@ const Dashboard = () => {
           }
         `}
       </style>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-white">Discussion Forum</h1>
-        <button
-          onClick={() => setShowQuestionModal(true)}
-          className="px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
-        >
-          Ask Question
-        </button>
-      </div>
-
+      {JSON.parse(localStorage.getItem("userInfo") || "{}").role ===
+      "student" ? (
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-white">Discussion Forum</h1>
+          <button
+            onClick={() => setShowQuestionModal(true)}
+            className="px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
+          >
+            Ask Question
+          </button>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-white">Discussion Forum</h1>
+          <button
+            onClick={() => setShowQuestionModal(true)}
+            className="px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
+          >
+            Make Announcement
+          </button>
+        </div>
+      )}
       {/* Search and Filters */}
       <div className="mb-6 space-y-4">
         <div className="relative">
@@ -593,6 +605,7 @@ const Dashboard = () => {
                   className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative"
                 >
                   {/* Header */}
+
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-bold text-white">
                       Ask a Question
