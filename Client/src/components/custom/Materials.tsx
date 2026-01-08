@@ -72,6 +72,7 @@ const Materials = () => {
       });
 
       setSubjects(formattedSubjects);
+      console.log(formattedSubjects);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -203,47 +204,55 @@ const Materials = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {subjects.map((subject, index) => (
-                <motion.div
-                  key={subject._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  onClick={() => handleCardClick(subject)}
-                  className="bg-neutral-900 border border-neutral-800 hover:border-gray-700 rounded-lg overflow-hidden transition-all cursor-pointer group"
-                >
-                  <div className="p-6">
-                    <div className="flex items-start gap-3 mb-4">
-                      <h3 className="text-xl font-semibold text-white group-hover:text-gray-400 transition-colors">
+              {subjects
+                .filter(
+                  (subject) =>
+                    Number(subject.semester) ===
+                    Number(
+                      JSON.parse(localStorage.getItem("userInfo") || "{}")?.semester
+                    )
+                )
+                .map((subject, index) => (
+                  <motion.div
+                    key={subject._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.05 }}
+                    onClick={() => handleCardClick(subject)}
+                    className="bg-neutral-900 border border-neutral-800 hover:border-neutral-600 rounded-lg overflow-hidden transition-all cursor-pointer group hover:shadow-lg"
+                  >
+                    <div className="p-6">
+                      {/* Subject Name */}
+                      <h3 className="text-lg font-semibold text-white group-hover:text-gray-300 transition-colors mb-4 line-clamp-2">
                         {subject.name}
                       </h3>
+
+                      {/* Meta Info */}
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-neutral-400">Branch</span>
+                          <span className="text-neutral-200 font-medium">
+                            {subject.branch}
+                          </span>
+                        </div>
+
+                        <div className="flex justify-between">
+                          <span className="text-neutral-400">Semester</span>
+                          <span className="text-orange-400 font-semibold">
+                            {subject.semester}
+                          </span>
+                        </div>
+
+                        {/* Units */}
+                        <div className="pt-3 mt-2 border-t border-neutral-800">
+                          <span className="text-xs text-neutral-500">
+                            {subject.units.length} Units Available
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-neutral-400">
-                          Branch:
-                        </span>
-                        <span className="text-sm text-neutral-200 font-medium">
-                          {subject.branch}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-neutral-400">
-                          Semester:
-                        </span>
-                        <span className="text-sm text-orange-400 font-semibold">
-                          {subject.semester}
-                        </span>
-                      </div>
-                      <div className="pt-2 border-t border-neutral-800">
-                        <span className="text-xs text-neutral-500">
-                          {subject.units.length} units available
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
             </div>
           )}
 
