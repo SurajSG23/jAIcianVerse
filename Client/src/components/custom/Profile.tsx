@@ -34,7 +34,7 @@ const Profile = () => {
   const { checkUser } = useAuth();
   const [userDetails, setUserDetails] = useState<UserInfo | null>(null);
   const [isLoading, setIsloading] = useState(false);
-  const [editProfile, setEdiProfile] = useState(false);
+  const [editProfile, setEditProfile] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -274,7 +274,7 @@ const Profile = () => {
 
       console.log(response.data);
 
-      setEdiProfile(false);
+      setEditProfile(false);
     } catch (error) {
       console.error("Error updating profile:", error);
     }
@@ -294,7 +294,7 @@ const Profile = () => {
             {/* Glass Background */}
             <div
               className="absolute inset-0 bg-white/10 backdrop-blur-md"
-              onClick={() => setEdiProfile(false)}
+              onClick={() => setEditProfile(false)}
             />
 
             {/* Modal */}
@@ -387,7 +387,7 @@ const Profile = () => {
                 <button
                   className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-1 rounded-md bg-gray-600 font-medium border border-zinc-700 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
                   onClick={() => {
-                    setEdiProfile(false);
+                    setEditProfile(false);
                   }}
                 >
                   <IconCancel />
@@ -467,7 +467,7 @@ const Profile = () => {
               <button
                 className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-3 rounded-md bg-black font-medium border border-zinc-700 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
                 onClick={() => {
-                  setEdiProfile(true);
+                  setEditProfile(true);
                 }}
               >
                 <Edit2 className="w-4 h-4" />

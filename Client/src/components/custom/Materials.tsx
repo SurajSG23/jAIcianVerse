@@ -1,7 +1,7 @@
 import { cn } from "../../../lib/utils";
 import Sidebar from "./Navbar";
-import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { File, Notebook, Save, X } from "lucide-react";
 import { unitOptions } from "../../data/unitOptions";
 import { motion, AnimatePresence } from "framer-motion";
 import AIAvatar from "./AiAvatar";
@@ -12,6 +12,10 @@ import TrendingPage from "./TrendingPage";
 import QuickQuiz from "./QuickQuiz";
 import { useAuth } from "../../context/AuthContext";
 import semestersData from "../../data/semesters.ts";
+import BottomGradient from "../ui/buttonGradient.tsx";
+import { IconCancel } from "@tabler/icons-react";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 interface Unit {
   name: string;
@@ -40,6 +44,21 @@ const Materials = () => {
   const [isTrendingPageVisible, setIsTrendingPageVisible] = useState(false);
   const [isQuickQuizVisible, setIsQuickQuizVisible] = useState(false);
   const { checkUser } = useAuth();
+  const [editProfile, setEditProfile] = useState(false);
+  const [selectedPdf, setSelectedPdf] = useState<File | null>(null);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePdfSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      alert("Only PDF files are allowed");
+      return;
+    }
+
+    setSelectedPdf(file);
+  };
 
   useEffect(() => {
     checkUser("materials");
@@ -115,6 +134,56 @@ const Materials = () => {
     }
   };
 
+  const handleUpload = async () => {
+    if (!selectedPdf) {
+      toast.error("Please select a PDF file.");
+      return;
+    }
+
+    // Validate file type
+    if (selectedPdf.type !== "application/pdf") {
+      toast.error("Only PDF files are allowed.");
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (selectedPdf.size > 5 * 1024 * 1024) {
+      toast.error("PDF must be less than 5MB.");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("pdf", selectedPdf);
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/materials/upload-notes`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const { url, fileId } = response.data.data;
+
+      toast.success("PDF uploaded successfully!");
+
+      // Optional: reset state
+      setSelectedPdf(null);
+      setEditProfile(false);
+
+      // Optional: store URL if needed
+      console.log("PDF URL:", url);
+      console.log("PDF ID:", fileId);
+    } catch (error: any) {
+      console.error("Upload failed:", error);
+      toast.error("Failed to upload PDF.");
+    }
+  };
+
   if (error) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-4">
@@ -158,6 +227,70 @@ const Materials = () => {
           }
         `}
       </style>
+      {editProfile && (
+        <div className="fixed inset-0 z-100 flex items-center justify-center">
+          {/* Glass Background */}
+          <div
+            className="absolute inset-0 bg-white/10 backdrop-blur-md"
+            onClick={() => setEditProfile(false)}
+          />
+
+          {/* Modal */}
+          <div className="relative z-10 w-[90%] max-w-md rounded-2xl bg-black border border-white/20 p-6 shadow-xl text-white space-y-4">
+            {/* PDF Selector */}
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-white/70">Upload PDF</p>
+
+              <input
+                type="file"
+                accept="application/pdf"
+                ref={pdfInputRef}
+                onChange={handlePdfSelect}
+                className="hidden"
+              />
+
+              <button
+                type="button"
+                onClick={() => pdfInputRef.current?.click()}
+                className="group/btn relative h-10 flex items-center gap-2 w-full rounded-md bg-zinc-900 border border-zinc-700 px-3 text-sm cursor-pointer"
+              >
+                <File />
+                Select PDF
+                <BottomGradient />
+              </button>
+
+              {selectedPdf && (
+                <p className="text-xs text-green-400 truncate">
+                  Selected: {selectedPdf.name}
+                </p>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex justify-end gap-3 pt-4">
+              <button
+                className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-3 rounded-md bg-gray-600 font-medium border border-zinc-700 text-white cursor-pointer"
+                onClick={() => setEditProfile(false)}
+              >
+                <IconCancel />
+                Cancel
+                <BottomGradient />
+              </button>
+
+              <button
+                className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-3 rounded-md bg-black font-medium border border-zinc-700 text-white cursor-pointer"
+                onClick={handleUpload}
+                disabled={!selectedPdf}
+              >
+                <Save />
+                Upload
+                <BottomGradient />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Sidebar />
       <div className="min-h-screen w-full bg-black p-4 md:p-8  overflow-auto">
         <div className="max-w-7xl mx-auto">
@@ -408,6 +541,16 @@ const Materials = () => {
                         })}
                       </div>
                     </div>
+                    <button
+                      className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-1 rounded-md bg-black font-medium border border-zinc-700 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer mx-auto my-2"
+                      onClick={() => {
+                        setEditProfile(true);
+                      }}
+                    >
+                      <Notebook />
+                      Contribute Note
+                      <BottomGradient />
+                    </button>
                   </div>
                 </motion.div>
               </>
