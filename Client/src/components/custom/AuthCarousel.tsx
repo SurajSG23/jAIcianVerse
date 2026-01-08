@@ -15,6 +15,7 @@ import BottomGradient from "../ui/buttonGradient";
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext.jsx";
+import Branches from "../../data/allBranches.ts";
 
 interface props {
   setGetStarted: React.Dispatch<React.SetStateAction<boolean>>;
@@ -103,6 +104,24 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setRegisterLoading(true);
+    if (
+      (userType === "student" && Number(formData?.semester) < 1) ||
+      Number(formData?.semester) > 8
+    ) {
+      toast.error("Semester must be between 1 and 8.");
+      setRegisterLoading(false);
+      return;
+    }
+    if (formData?.branch && !Branches.includes(formData?.branch)) {
+      toast.error("Please select from the suggested branches.");
+      setRegisterLoading(false);
+      return;
+    }
+    if (formData?.department && !Branches.includes(formData?.department)) {
+      toast.error("Please select from the suggested branches.");
+      setRegisterLoading(false);
+      return;
+    }
     const payload = {
       userType, // "student" or "professor"
       ...formData,
@@ -342,27 +361,39 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
                     type="text"
                     placeholder="Branch (e.g., Computer Science)"
                     value={formData.branch}
+                    list="branches"
                     onChange={(e) =>
                       handleInputChange("branch", e.target.value)
                     }
                     className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all duration-300"
                     required
                   />
+                  <datalist id="branches">
+                    {Branches.map((branch) => (
+                      <option key={branch} value={branch} />
+                    ))}
+                  </datalist>
                 </div>
 
                 <div className="relative">
                   <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                   <input
-                    type="text"
+                    type="number"
                     placeholder="Semester"
                     value={formData.semester}
                     onChange={(e) =>
                       handleInputChange("semester", e.target.value)
                     }
+                    list="semesters"
                     className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-blue-500/50 focus:bg-white/10 transition-all duration-300"
                     required
                   />
                 </div>
+                <datalist id="semesters">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
+                    <option key={sem} value={sem} />
+                  ))}
+                </datalist>
               </div>
               <button
                 type="submit"
@@ -457,8 +488,14 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
                     onChange={(e) =>
                       handleInputChange("department", e.target.value)
                     }
+                    list="branches"
                     className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:border-purple-500/50 focus:bg-white/10 transition-all duration-300"
                   />
+                  <datalist id="branches">
+                    {Branches.map((branch) => (
+                      <option key={branch} value={branch} />
+                    ))}
+                  </datalist>
                 </div>
 
                 <div className="relative">
@@ -487,7 +524,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
 
                     <input
                       type="text"
-                      placeholder="Type subject and press Enter"
+                      placeholder="Type subject you handle and press Enter"
                       value={subjectInput}
                       onChange={(e) => setSubjectInput(e.target.value)}
                       onKeyDown={addSubject}
