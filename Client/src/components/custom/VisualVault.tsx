@@ -7,19 +7,24 @@ import { RxArrowTopRight } from "react-icons/rx";
 
 interface Unit {
   _id: string;
-  title: string;
+  name: string;
   description: string;
 }
 interface props {
   setIsVisualVaultVisible: (visible: boolean) => void;
   selectedUnit: Unit | null;
+  selectedSubject?: { name: string } | null;
 }
 
 const VisualVault: React.FC<props> = ({
   setIsVisualVaultVisible,
   selectedUnit,
+  selectedSubject,
 }) => {
-  const keywords = [selectedUnit?.title || "Data Structure"];
+  const keywords = [
+    selectedSubject?.name,
+    selectedUnit?.name || "Data Structure",
+  ];
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -165,7 +170,7 @@ const VisualVault: React.FC<props> = ({
               target="_blank"
               className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black border border-gray-700 to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
             >
-              LinkedIn 
+              LinkedIn
               <RxArrowTopRight className="w-5 h-5" />
               <BottomGradient />
             </a>

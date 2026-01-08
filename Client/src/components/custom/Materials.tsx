@@ -209,7 +209,8 @@ const Materials = () => {
                   (subject) =>
                     Number(subject.semester) ===
                     Number(
-                      JSON.parse(localStorage.getItem("userInfo") || "{}")?.semester
+                      JSON.parse(localStorage.getItem("userInfo") || "{}")
+                        ?.semester
                     )
                 )
                 .map((subject, index) => (
@@ -304,12 +305,13 @@ const Materials = () => {
                       <h3 className="text-lg font-semibold text-white mb-4">
                         Course Units
                       </h3>
+
                       {selectedSubject.units.map((unit, index) => (
                         <motion.div
-                          key={unit._id}
+                          key={`${selectedSubject._id}-${index}`}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.1 }}
+                          transition={{ delay: index * 0.08 }}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleUnitClick(unit);
@@ -322,15 +324,11 @@ const Materials = () => {
                                 {index + 1}
                               </span>
                             </div>
+
                             <div className="flex-1">
-                              <h4 className="text-white font-semibold mb-1">
-                                {unit.title}
+                              <h4 className="text-white font-semibold">
+                                {unit.name}
                               </h4>
-                              {unit.description && (
-                                <p className="text-neutral-400 text-sm">
-                                  {unit.description}
-                                </p>
-                              )}
                             </div>
                           </div>
                         </motion.div>
@@ -364,17 +362,13 @@ const Materials = () => {
                     <div className="flex items-start justify-between mb-6">
                       <div className="flex-1">
                         <h2 className="text-2xl font-bold text-white mb-1">
-                          {selectedUnit.title}
+                          {selectedSubject?.name} | {selectedUnit?.name}
                         </h2>
-                        {selectedUnit.description && (
-                          <p className="text-neutral-400 text-sm">
-                            {selectedUnit.description}
-                          </p>
-                        )}
                       </div>
+
                       <button
                         onClick={handleCloseUnitDialog}
-                        className="ml-4 text-neutral-400 hover:text-white transition-colors p-1 rounded-md hover:bg-neutral-800 cursor-pointer  "
+                        className="ml-4 text-neutral-400 hover:text-white transition-colors p-1 rounded-md hover:bg-neutral-800 cursor-pointer"
                       >
                         <X className="h-6 w-6" />
                       </button>
@@ -384,6 +378,7 @@ const Materials = () => {
                       <h3 className="text-lg font-semibold text-white mb-4">
                         Choose an action
                       </h3>
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {unitOptions.map((option, index) => {
                           const Icon = option.icon;
@@ -394,14 +389,13 @@ const Materials = () => {
                               animate={{ opacity: 1, scale: 1 }}
                               transition={{ delay: index * 0.05 }}
                               onClick={() => handleOptionClick(option.id)}
-                              className={`bg-black border border-neutral-800 hover:border-gray-600 rounded-lg p-4 transition-all hover:scale-102 active:scale-95 group text-left cursor-pointer`}
+                              className="bg-black border border-neutral-800 hover:border-gray-600 rounded-lg p-4 transition-all hover:scale-102 active:scale-95 group text-left cursor-pointer"
                             >
                               <div className="flex items-center gap-3">
-                                <div
-                                  className={`bg-neutral-900/80 rounded-lg p-3 group-hover:scale-110 transition-transform`}
-                                >
-                                  <Icon className={`h-6 w-6 text-gray-100`} />
+                                <div className="bg-neutral-900/80 rounded-lg p-3 group-hover:scale-110 transition-transform">
+                                  <Icon className="h-6 w-6 text-gray-100" />
                                 </div>
+
                                 <div className="text-white font-medium group-hover:text-neutral-200 transition-colors flex flex-col">
                                   <span>{option.label}</span>
                                   <span className="text-sm text-gray-400">
@@ -431,6 +425,7 @@ const Materials = () => {
         <VisualVault
           setIsVisualVaultVisible={setIsVisualVaultVisible}
           selectedUnit={selectedUnit}
+          selectedSubject={selectedSubject}
         />
       )}
       {isStudyHubVisible && (
