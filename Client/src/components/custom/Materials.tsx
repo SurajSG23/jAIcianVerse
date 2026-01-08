@@ -47,6 +47,7 @@ const Materials = () => {
   const [editProfile, setEditProfile] = useState(false);
   const [selectedPdf, setSelectedPdf] = useState<File | null>(null);
   const pdfInputRef = useRef<HTMLInputElement>(null);
+  const [pdfTitle, setPdfTitle] = useState("");
 
   const handlePdfSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -133,8 +134,22 @@ const Materials = () => {
       setIsVisualVaultVisible(true);
     }
   };
-
   const handleUpload = async () => {
+    if (!pdfTitle.trim()) {
+      toast.error("Title is required.");
+      return;
+    }
+
+    if (!selectedSubject) {
+      toast.error("Please select a subject.");
+      return;
+    }
+
+    if (!selectedUnit) {
+      toast.error("Please select a unit.");
+      return;
+    }
+
     if (!selectedPdf) {
       toast.error("Please select a PDF file.");
       return;
@@ -154,7 +169,16 @@ const Materials = () => {
 
     try {
       const formData = new FormData();
+
+      // File
       formData.append("pdf", selectedPdf);
+
+      // Metadata
+      formData.append("title", pdfTitle);
+      formData.append("subject", selectedSubject.name);
+      formData.append("unit", selectedUnit.name);
+
+      const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
 
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/materials/upload-notes`,
@@ -163,6 +187,7 @@ const Materials = () => {
           withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${userDetails.token}`,
           },
         }
       );
@@ -171,11 +196,11 @@ const Materials = () => {
 
       toast.success("PDF uploaded successfully!");
 
-      // Optional: reset state
+      // Reset state
       setSelectedPdf(null);
+      setPdfTitle("");
       setEditProfile(false);
 
-      // Optional: store URL if needed
       console.log("PDF URL:", url);
       console.log("PDF ID:", fileId);
     } catch (error: any) {
@@ -237,6 +262,23 @@ const Materials = () => {
 
           {/* Modal */}
           <div className="relative z-10 w-[90%] max-w-md rounded-2xl bg-black border border-white/20 p-6 shadow-xl text-white space-y-4">
+            {/* Title Input */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm text-white/70">
+                Title <span className="text-red-400">*</span>
+              </label>
+              <input
+                type="text"
+                value={pdfTitle}
+                onChange={(e) => {
+                  setPdfTitle(e.target.value);
+                }}
+                placeholder="Enter document title"
+                className="h-10 w-full rounded-md bg-zinc-900 border border-zinc-700 px-3 text-sm outline-none focus:border-blue-400"
+                required
+              />
+            </div>
+
             {/* PDF Selector */}
             <div className="flex flex-col gap-2">
               <p className="text-sm text-white/70">Upload PDF</p>
@@ -278,9 +320,9 @@ const Materials = () => {
               </button>
 
               <button
-                className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-3 rounded-md bg-black font-medium border border-zinc-700 text-white cursor-pointer"
+                className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-3 rounded-md bg-black font-medium border border-zinc-700 text-white cursor-pointer disabled:opacity-50"
                 onClick={handleUpload}
-                disabled={!selectedPdf}
+                disabled={!selectedPdf || !pdfTitle.trim()}
               >
                 <Save />
                 Upload

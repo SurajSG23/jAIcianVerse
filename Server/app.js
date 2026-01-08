@@ -7,6 +7,8 @@ import connectDB from "./config/db.js";
 // import { Server } from "socket.io";
 import userRoutes from "./routes/user.route.js";
 import discussionRoutes from "./routes/discussion.route.js";
+import materialRoutes from "./routes/material.route.js";
+
 // import chatsRoutes from "./routes/chats.route.js";
 // import messageRoutes from "./routes/message.route.js";
 // import Chat from "./models/chat.model.js";
@@ -31,6 +33,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/user",userRoutes)
 app.use("/api/discussions",discussionRoutes)
+app.use("/api/materials",materialRoutes)
 
 const server = app.listen(3000, () => {
     console.log("Server is running on port 3000");
