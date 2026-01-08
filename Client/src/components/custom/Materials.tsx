@@ -11,11 +11,10 @@ import ChatBot from "./ChatBot";
 import TrendingPage from "./TrendingPage";
 import QuickQuiz from "./QuickQuiz";
 import { useAuth } from "../../context/AuthContext";
+import semestersData from "../../data/semesters.ts";
 
 interface Unit {
-  _id: string;
-  title: string;
-  description: string;
+  name: string;
 }
 
 interface Subject {
@@ -52,164 +51,33 @@ const Materials = () => {
       setLoading(true);
       setError(null);
 
-      // Mock data for demonstration
-      const mockData: Subject[] = [
-        {
-          _id: "671f10a1a1a1a1a1a1a10101",
-          name: "Data Structures",
-          branch: "Computer Science",
-          semester: 3,
-          units: [
-            {
-              _id: "671f10b2b2b2b2b2b2b20101",
-              title: "Introduction",
-              description: "Overview of data structures",
-            },
-            {
-              _id: "671f10b2b2b2b2b2b2b20102",
-              title: "Arrays",
-              description: "Static and dynamic arrays",
-            },
-            {
-              _id: "671f10b2b2b2b2b2b2b20103",
-              title: "Linked Lists",
-              description: "Single and double linked lists",
-            },
-          ],
-        },
-        {
-          _id: "671f10a1a1a1a1a1a1a10102",
-          name: "Database Management Systems",
-          branch: "Computer Science",
-          semester: 4,
-          units: [
-            {
-              _id: "671f10b2b2b2b2b2b2b20201",
-              title: "Relational Model",
-              description: "Understanding relational databases",
-            },
-            {
-              _id: "671f10b2b2b2b2b2b2b20202",
-              title: "SQL Basics",
-              description: "Structured Query Language fundamentals",
-            },
-            {
-              _id: "671f10b2b2b2b2b2b2b20203",
-              title: "Normalization",
-              description: "Database design and normal forms",
-            },
-          ],
-        },
-        {
-          _id: "671f10a1a1a1a1a1a1a10103",
-          name: "Operating Systems",
-          branch: "Computer Science",
-          semester: 5,
-          units: [
-            {
-              _id: "671f10b2b2b2b2b2b2b20301",
-              title: "Process Management",
-              description: "Processes and threads",
-            },
-            {
-              _id: "671f10b2b2b2b2b2b2b20302",
-              title: "Memory Management",
-              description: "Virtual memory and paging",
-            },
-            {
-              _id: "671f10b2b2b2b2b2b2b20303",
-              title: "File Systems",
-              description: "File system implementation",
-            },
-          ],
-        },
-        {
-          _id: "671f10a1a1a1a1a1a1a10104",
-          name: "Computer Networks",
-          branch: "Computer Science",
-          semester: 5,
-          units: [
-            {
-              _id: "671f10b2b2b2b2b2b2b20401",
-              title: "OSI Model",
-              description: "Seven layers of networking",
-            },
-            {
-              _id: "671f10b2b2b2b2b2b2b20402",
-              title: "TCP/IP",
-              description: "Internet protocol suite",
-            },
-            {
-              _id: "671f10b2b2b2b2b2b2b20403",
-              title: "Network Security",
-              description: "Cryptography and secure communication",
-            },
-          ],
-        },
-        {
-          _id: "671f10a1a1a1a1a1a1a10105",
-          name: "Machine Learning",
-          branch: "Computer Science",
-          semester: 6,
-          units: [
-            {
-              _id: "671f10b2b2b2b2b2b2b20501",
-              title: "Supervised Learning",
-              description: "Classification and regression",
-            },
-            {
-              _id: "671f10b2b2b2b2b2b2b20502",
-              title: "Unsupervised Learning",
-              description: "Clustering and dimensionality reduction",
-            },
-            {
-              _id: "671f10b2b2b2b2b2b2b20503",
-              title: "Neural Networks",
-              description: "Deep learning fundamentals",
-            },
-          ],
-        },
-        {
-          _id: "671f10a1a1a1a1a1a1a10106",
-          name: "Software Engineering",
-          branch: "Computer Science",
-          semester: 6,
-          units: [
-            {
-              _id: "671f10b2b2b2b2b2b2b20601",
-              title: "SDLC Models",
-              description: "Waterfall, Agile, and DevOps",
-            },
-            {
-              _id: "671f10b2b2b2b2b2b2b20602",
-              title: "Requirements Analysis",
-              description: "Gathering and documenting requirements",
-            },
-            {
-              _id: "671f10b2b2b2b2b2b2b20603",
-              title: "Testing",
-              description: "Unit, integration, and system testing",
-            },
-          ],
-        },
-      ];
+      const formattedSubjects: Subject[] = [];
 
-      // Uncomment below to use real API
-      // const response = await fetch('/api/subjects');
-      // if (!response.ok) throw new Error('Failed to fetch subjects');
-      // const data = await response.json();
-      // setSubjects(data);
+      Object.entries(semestersData).forEach(([branchName, semesters]) => {
+        Object.entries(semesters).forEach(([semesterKey, subjects]) => {
+          const semesterNumber = Number(semesterKey.replace(/\D/g, ""));
 
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      setSubjects(mockData);
+          Object.entries(subjects).forEach(([subjectName, units]) => {
+            formattedSubjects.push({
+              _id: crypto.randomUUID(),
+              name: subjectName,
+              branch: branchName,
+              semester: semesterNumber,
+              units: units.map((unit) => ({
+                name: unit,
+              })),
+            });
+          });
+        });
+      });
+
+      setSubjects(formattedSubjects);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
   };
-
   const handleCardClick = (subject: Subject) => {
     setSelectedSubject(subject);
     setIsDialogOpen(true);
