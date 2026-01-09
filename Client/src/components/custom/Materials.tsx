@@ -638,7 +638,8 @@ const Materials = () => {
       {isStudyHubVisible && (
         <StudyHub
           setIsStdudyHubVisible={setIsStdudyHubVisible}
-          selectedUnit={selectedUnit}
+          selectedUnit={selectedUnit.name}
+          selectedSubject={selectedSubject.name}
         />
       )}
       {isChatBotVisible && (

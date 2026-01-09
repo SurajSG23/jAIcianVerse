@@ -1,65 +1,63 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-
-interface Unit {
-  _id: string;
-  title: string;
-  description: string;
-}
-
-interface Material {
-  _id: string;
-  title: string;
-  fileUrl: string;
-  uploadedBy: string;
-  subject: string;
-  unit: string;
-  approved: boolean;
-}
+import axios from "axios";
 
 interface Props {
   setIsStdudyHubVisible: (visible: boolean) => void;
-  selectedUnit: Unit | null;
+  selectedUnit: string | null;
+  selectedSubject: string | null;
 }
 
-const StudyHub: React.FC<Props> = ({ setIsStdudyHubVisible, selectedUnit }) => {
+const StudyHub: React.FC<Props> = ({
+  setIsStdudyHubVisible,
+  selectedUnit,
+  selectedSubject,
+}) => {
   const [loading, setLoading] = useState(true);
+  const [materials, setMaterials] = useState([]);
 
-  const sampleMaterials: Material[] = [
-    {
-      _id: "1",
-      title: "Introduction to AI",
-      fileUrl: "https://example.com/ai_intro.pdf",
-      uploadedBy: "John Doe",
-      subject: "Artificial Intelligence",
-      unit: "Unit 1",
-      approved: true,
-    },
-    {
-      _id: "2",
-      title: "Machine Learning Basics",
-      fileUrl: "https://example.com/ml_basics.pdf",
-      uploadedBy: "Alice Smith",
-      subject: "Machine Learning",
-      unit: "Unit 2",
-      approved: true,
-    },
-    {
-      _id: "3",
-      title: "Neural Networks Notes",
-      fileUrl: "https://example.com/neural_networks.pdf",
-      uploadedBy: "Bob Kumar",
-      subject: "Deep Learning",
-      unit: "Unit 3",
-      approved: true,
-    },
-  ];
+  const fetchMaterials = async () => {
+    setLoading(true);
+    try {
+      const idResponse = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/materials/fetchSubjectUnitID`,
+        {
+          params: {
+            subjectName: selectedSubject,
+            unitName: selectedUnit,
+          },
+          withCredentials: true,
+        }
+      );
 
-  // Simulate loading time
+      const { subjectId, unitId } = idResponse.data;
+
+      if (!subjectId || !unitId) {
+        throw new Error("Invalid subject or unit ID");
+      }
+
+      const materialResponse = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/materials/getMaterials`,
+        {
+          params: {
+            subjectId,
+            unitId,
+          },
+          withCredentials: true,
+        }
+      );
+
+      setMaterials(materialResponse.data.data);
+    } catch (error) {
+      console.error("Failed to fetch materials:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500);
-    return () => clearTimeout(timer);
+    fetchMaterials();
   }, []);
 
   return (
@@ -86,55 +84,63 @@ const StudyHub: React.FC<Props> = ({ setIsStdudyHubVisible, selectedUnit }) => {
             <X className="h-6 w-6" />
           </button>
 
-          <h1 className="text-white text-3xl text-center">{selectedUnit?.title}</h1>
+          <h1 className="text-white text-3xl text-center">{selectedUnit}</h1>
           <h2 className="text-xl font-semibold text-gray-500 mb-6 text-center">
             Study Materials
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {loading
-              ? 
-                Array.from({ length: 3 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="bg-neutral-800 border border-neutral-700 p-5 rounded-xl shadow-md animate-pulse"
-                  >
-                    <div className="h-6 bg-neutral-700 rounded w-3/4 mb-3" />
-                    <div className="h-4 bg-neutral-700 rounded w-1/2 mb-2" />
-                    <div className="h-4 bg-neutral-700 rounded w-1/3 mb-2" />
-                    <div className="h-4 bg-neutral-700 rounded w-2/3 mb-4" />
-                    <div className="h-4 bg-neutral-800 rounded w-1/4 mt-4" />
+            {loading ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="bg-neutral-800 border border-neutral-700 p-5 rounded-xl shadow-md animate-pulse"
+                >
+                  <div className="h-6 bg-neutral-700 rounded w-3/4 mb-3" />
+                  <div className="h-4 bg-neutral-700 rounded w-1/2 mb-2" />
+                  <div className="h-4 bg-neutral-700 rounded w-1/3 mb-2" />
+                  <div className="h-4 bg-neutral-700 rounded w-2/3 mb-4" />
+                  <div className="h-4 bg-neutral-800 rounded w-1/4 mt-4" />
+                </div>
+              ))
+            ) : materials.length > 0 ? (
+              materials.map((material) => (
+                <motion.a
+                  key={material._id}
+                  href={material.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-neutral-800 border border-neutral-700 p-5 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between hover:border-gray-500"
+                >
+                  <div>
+                    <h3 className="text-lg font-bold text-white mb-2">
+                      {material.title}
+                    </h3>
+
+                    <p className="text-sm text-gray-400 mb-1">
+                      Subject: {material.subject?.name || "N/A"}
+                    </p>
+
+                    <p className="text-sm text-gray-400 mb-1">
+                      Unit: {material.unit?.name || "N/A"}
+                    </p>
+
+                    <p className="text-sm text-gray-500">
+                      Uploaded by: {material.uploadedBy?.name || "Unknown"}
+                    </p>
                   </div>
-                ))
-              : 
-                sampleMaterials.map((material) => (
-                  <motion.a
-                    key={material._id}
-                    href={material.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.02 }}
-                    className="bg-neutral-800 border border-neutral-700 p-5 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between hover:border-gray-500"
-                  >
-                    <div>
-                      <h3 className="text-lg font-bold text-white mb-2">
-                        {material.title}
-                      </h3>
-                      <p className="text-sm text-gray-400 mb-1">
-                        Subject: {material.subject}
-                      </p>
-                      <p className="text-sm text-gray-400 mb-1">
-                        Unit: {material.unit}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Uploaded by: {material.uploadedBy}
-                      </p>
-                    </div>
-                    <div className="mt-3 text-orange-400 text-sm">
-                      Open Material →
-                    </div>
-                  </motion.a>
-                ))}
+
+                  <div className="mt-3 text-orange-400 text-sm">
+                    Open Material →
+                  </div>
+                </motion.a>
+              ))
+            ) : (
+              <p className="text-gray-400 col-span-full text-center">
+                No materials available for this unit.
+              </p>
+            )}
           </div>
 
           <style>
