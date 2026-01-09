@@ -117,4 +117,18 @@ const getMaterials = asyncHandler(async (req, res) => {
   });
 });
 
-export default { uploadNotes, fetchSubjectUnitID, getMaterials };
+export const getUserNotes = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const notes = await Material.find({ uploadedBy: userId })
+    .populate("subject", "name")
+    .populate("unit", "title")
+    .sort({ createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    notes,
+  });
+});
+
+export default { uploadNotes, fetchSubjectUnitID, getMaterials, getUserNotes };

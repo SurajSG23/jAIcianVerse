@@ -37,7 +37,7 @@ const Profile = () => {
   const [userDetails, setUserDetails] = useState<UserInfo | null>(null);
   const [isLoading, setIsloading] = useState(false);
   const [editProfile, setEditProfile] = useState(false);
-  const [userMaterials, setUserMaterials] = useState(false);
+  const [userMaterials, setUserMaterials] = useState([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -120,7 +120,7 @@ const Profile = () => {
     }
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/notes/user-notes`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/materials/getUserNotes`,
         {
           headers: {
             authorization: `Bearer ${userDetails?.token}`,
@@ -459,7 +459,7 @@ const Profile = () => {
       <style>
         {`
           ::-webkit-scrollbar {
-            width: 0px;
+            width: 10px;
           }
           ::-webkit-scrollbar-track {
             background-color: black;
@@ -670,33 +670,50 @@ const Profile = () => {
                 <h3 className="text-2xl font-semibold mb-4 flex items-center gap-2">
                   Notes Uploaded
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {currentUser.notesUploaded.map((note) => (
-                    <div
-                      key={note.id}
-                      className="group bg-black rounded-xl p-4 border border-gray-700/50 hover:border-zinc-700 transition-all hover:shadow-lg"
-                    >
-                      <div className="flex items-start gap-3 mb-3">
-                        <div className="p-2  rounded-lg">
-                          <FileText className="w-5 h-5" />
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-semibold transition-colors">
-                            {note.title}
-                          </h4>
-                          <p className="text-sm text-gray-400">
-                            {note.subject}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-gray-500">{note.date}</span>
-                        <span className="text-orange-400">
-                          {note.downloads} downloads
-                        </span>
-                      </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-60 overflow-y-auto px-2">
+                  {userMaterials.length === 0 ? (
+                    <div className="text-center py-12">
+                      <p className="text-gray-400 text-sm">
+                        No notes uploaded yet
+                      </p>
                     </div>
-                  ))}
+                  ) : (
+                    userMaterials.map((note) => (
+                      <div
+                        key={note._id}
+                        className="group bg-black rounded-xl p-4 border border-gray-700/50 hover:border-zinc-700 transition-all hover:shadow-lg"
+                      >
+                        <div className="flex items-start gap-3 mb-3">
+                          <div className="p-2 rounded-lg">
+                            <FileText className="w-5 h-5" />
+                          </div>
+
+                          <div className="flex-1">
+                            <h4 className="font-semibold">{note.title}</h4>
+
+                            <p className="text-sm text-gray-400">
+                              {note.subject?.name} • {note.unit?.title}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-gray-500">
+                            {new Date(note.createdAt).toLocaleDateString()}
+                          </span>
+
+                          <a
+                            href={note.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-orange-400 hover:underline"
+                          >
+                            View
+                          </a>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
 
