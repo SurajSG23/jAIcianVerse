@@ -7,6 +7,8 @@ import { useAuth } from "../../context/AuthContext";
 import GlassLoader from "../ui/loading.tsx";
 import { IconCancel } from "@tabler/icons-react";
 import axios from "axios";
+import Branches from "../../data/allBranches.ts";
+import { toast } from "react-toastify";
 
 interface Contributions {
   notesUploaded: string[];
@@ -210,6 +212,18 @@ const Profile = () => {
   };
 
   const handleEditProfile = async () => {
+    if (
+      (Number(editProfileDetails?.semester) < 1) ||
+      Number(editProfileDetails?.semester) > 8
+    ) {
+      toast.error("Semester must be between 1 and 8.");
+      return;
+    }
+    if (editProfileDetails?.branch && !Branches.includes(editProfileDetails?.branch)) {
+      toast.error("Please select from the suggested branches.");
+      return;
+    }
+
     try {
       let uploadedImageUrl = "";
 
@@ -217,8 +231,6 @@ const Profile = () => {
         editProfileDetails.profileImage &&
         editProfileDetails.profileImage !== userDetails?.profileImage
       ) {
-        console.log("Hello");
-
         const formData = new FormData();
         formData.append("file", editProfileDetails.profileImage);
         formData.append(
@@ -364,8 +376,14 @@ const Profile = () => {
                   name="branch"
                   value={editProfileDetails.branch}
                   onChange={handleChange}
+                  list="branches"
                   className="mt-1 w-full rounded-md bg-white/10 px-3 py-2 text-sm outline-none border border-white/20 focus:border-blue-400 cursor-pointer"
                 />
+                <datalist id="branches">
+                  {Branches.map((branch) => (
+                    <option key={branch} value={branch} />
+                  ))}
+                </datalist>
               </div>
 
               {/* Semester */}
@@ -378,8 +396,14 @@ const Profile = () => {
                   max={8}
                   value={editProfileDetails.semester}
                   onChange={handleChange}
+                  list="semesters"
                   className="mt-1 w-full rounded-md bg-white/10 px-3 py-2 text-sm outline-none border border-white/20 focus:border-blue-400"
                 />
+                <datalist id="semesters">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
+                    <option key={sem} value={sem} />
+                  ))}
+                </datalist>
               </div>
 
               {/* Actions */}
