@@ -92,7 +92,6 @@ const Materials = () => {
       });
 
       setSubjects(formattedSubjects);
-      console.log(formattedSubjects);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -165,6 +164,35 @@ const Materials = () => {
     if (selectedPdf.size > 5 * 1024 * 1024) {
       toast.error("PDF must be less than 5MB.");
       return;
+    }
+    
+    let subjectId = "";
+    let unitId = "";
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/materials/fetchSubjectUnitID`,
+        {
+          params: {
+            subjectName: selectedSubject.name,
+            unitName: selectedUnit.name,
+          },
+          withCredentials: true,
+        }
+      );
+
+      subjectId = response.data.subjectId;
+      unitId = response.data.unitId;
+
+      // optional: validate
+      if (!subjectId || !unitId) {
+        throw new Error("Invalid subject or unit ID");
+      }
+
+      console.log("Subject ID:", subjectId);
+      console.log("Unit ID:", unitId);
+    } catch (error) {
+      console.error("Failed to fetch subject/unit IDs:", error);
     }
 
     try {
