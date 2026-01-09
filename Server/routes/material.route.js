@@ -1,10 +1,11 @@
 import express from "express";
 import materialController from "../controllers/material.controller.js";
 import protect from "../middleware/auth.middleware.js";
+import upload from "../middleware/multer.middleware.js"
 
 const router = express.Router();
 
-router.route("/upload-notes").post(protect, materialController.uploadNotes);
+router.post("/upload-notes", protect, upload.single("file"), materialController.uploadNotes);
 router.route("/fetchSubjectUnitID").get(materialController.fetchSubjectUnitID);
 
 export default router;

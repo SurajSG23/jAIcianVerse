@@ -165,7 +165,7 @@ const Materials = () => {
       toast.error("PDF must be less than 5MB.");
       return;
     }
-    
+
     let subjectId = "";
     let unitId = "";
 
@@ -198,13 +198,13 @@ const Materials = () => {
     try {
       const formData = new FormData();
 
-      // File
-      formData.append("pdf", selectedPdf);
+      // match multer field name
+      formData.append("file", selectedPdf);
 
-      // Metadata
+      // Metadata (ObjectIds)
       formData.append("title", pdfTitle);
-      formData.append("subject", selectedSubject.name);
-      formData.append("unit", selectedUnit.name);
+      formData.append("subject", subjectId);
+      formData.append("unit", unitId);
 
       const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
 
@@ -214,24 +214,19 @@ const Materials = () => {
         {
           withCredentials: true,
           headers: {
-            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${userDetails.token}`,
           },
         }
       );
 
-      const { url, fileId } = response.data.data;
-
       toast.success("PDF uploaded successfully!");
 
-      // Reset state
       setSelectedPdf(null);
       setPdfTitle("");
       setEditProfile(false);
 
-      console.log("PDF URL:", url);
-      console.log("PDF ID:", fileId);
-    } catch (error: any) {
+      console.log("Uploaded:", response.data);
+    } catch (error) {
       console.error("Upload failed:", error);
       toast.error("Failed to upload PDF.");
     }
