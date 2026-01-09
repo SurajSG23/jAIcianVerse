@@ -37,6 +37,7 @@ const Profile = () => {
   const [userDetails, setUserDetails] = useState<UserInfo | null>(null);
   const [isLoading, setIsloading] = useState(false);
   const [editProfile, setEditProfile] = useState(false);
+  const [userMaterials, setUserMaterials] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -110,6 +111,26 @@ const Profile = () => {
       console.error("Error fetching user details:", error);
     } finally {
       setIsloading(false);
+    }
+  };
+
+  const fetchUserNotes = async () => {
+    if (userDetails?.role === "professor") {
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/notes/user-notes`,
+        {
+          headers: {
+            authorization: `Bearer ${userDetails?.token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      setUserMaterials(response.data.notes);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -213,13 +234,16 @@ const Profile = () => {
 
   const handleEditProfile = async () => {
     if (
-      (Number(editProfileDetails?.semester) < 1) ||
+      Number(editProfileDetails?.semester) < 1 ||
       Number(editProfileDetails?.semester) > 8
     ) {
       toast.error("Semester must be between 1 and 8.");
       return;
     }
-    if (editProfileDetails?.branch && !Branches.includes(editProfileDetails?.branch)) {
+    if (
+      editProfileDetails?.branch &&
+      !Branches.includes(editProfileDetails?.branch)
+    ) {
       toast.error("Please select from the suggested branches.");
       return;
     }
@@ -228,8 +252,8 @@ const Profile = () => {
       let uploadedImageUrl = "";
 
       if (
-        editProfileDetails.profileImage &&
-        editProfileDetails.profileImage !== userDetails?.profileImage
+        editProfileDetails?.profileImage &&
+        editProfileDetails?.profileImage !== userDetails?.profileImage
       ) {
         const formData = new FormData();
         formData.append("file", editProfileDetails.profileImage);
@@ -515,11 +539,12 @@ const Profile = () => {
             Overview
           </button>
           <button
-            onClick={() =>
+            onClick={() => {
               setActiveTab(
                 userRole === "student" ? "contributions" : "announcements"
-              )
-            }
+              );
+              fetchUserNotes();
+            }}
             className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all cursor-pointer ${
               activeTab ===
               (userRole === "student" ? "contributions" : "announcements")
