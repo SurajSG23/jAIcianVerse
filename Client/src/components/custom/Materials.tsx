@@ -219,16 +219,15 @@ const Materials = () => {
         }
       );
 
-      toast.success("PDF uploaded successfully!");
-
-      setSelectedPdf(null);
-      setPdfTitle("");
-      setEditProfile(false);
-
+      toast.success("Notes uploaded successfully!");
       console.log("Uploaded:", response.data);
     } catch (error) {
       console.error("Upload failed:", error);
       toast.error("Failed to upload PDF.");
+    } finally {
+      setSelectedPdf(null);
+      setPdfTitle("");
+      setEditProfile(false);
     }
   };
 
