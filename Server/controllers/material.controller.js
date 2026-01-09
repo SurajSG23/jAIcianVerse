@@ -86,4 +86,35 @@ const fetchSubjectUnitID = asyncHandler(async (req, res) => {
   });
 });
 
-export default { uploadNotes, fetchSubjectUnitID };
+const getMaterials = asyncHandler(async (req, res) => {
+  const { subjectId, unitId } = req.query;
+
+  if (!subjectId || !unitId) {
+    res.status(400);
+    throw new Error("subjectId and unitId are required");
+  }
+
+  if (
+    !mongoose.Types.ObjectId.isValid(subjectId) ||
+    !mongoose.Types.ObjectId.isValid(unitId)
+  ) {
+    res.status(400);
+    throw new Error("Invalid subjectId or unitId");
+  }
+
+  const materials = await Material.find({
+    subject: subjectId,
+    unit: unitId,
+  })
+    .populate("subject", "name")
+    .populate("unit", "name")
+    .populate("uploadedBy", "name")
+    .sort({ createdAt: -1 });
+
+  res.status(200).json({
+    count: materials.length,
+    data: materials,
+  });
+});
+
+export default { uploadNotes, fetchSubjectUnitID, getMaterials };

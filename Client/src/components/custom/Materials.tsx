@@ -114,7 +114,7 @@ const Materials = () => {
   };
 
   const handleCloseUnitDialog = () => {
-    setIsUnitDialogOpen(false);
+    setIsStdudyHubVisible(false);
     setTimeout(() => setSelectedUnit(null), 200);
   };
 
@@ -638,8 +638,8 @@ const Materials = () => {
       {isStudyHubVisible && (
         <StudyHub
           setIsStdudyHubVisible={setIsStdudyHubVisible}
-          selectedUnit={selectedUnit.name}
-          selectedSubject={selectedSubject.name}
+          selectedUnit={selectedUnit?.name || ""}
+          selectedSubject={selectedSubject?.name || ""}
         />
       )}
       {isChatBotVisible && (
