@@ -63,6 +63,21 @@ const fetchAnnouncements = asyncHandler(async (req, res) => {
   });
 });
 
+const fetchAnnouncementsById = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const announcements = await Announcement.find({ createdBy: userId })
+    .populate("createdBy", "name role profileImage")
+    .sort({ createdAt: -1 })
+    .limit(10);
+
+  res.status(200).json({
+    success: true,
+    count: announcements.length,
+    announcements,
+  });
+});
+
 const postAnswer = asyncHandler(async (req, res) => {
   const { text, discussionId } = req.body;
 
@@ -95,11 +110,13 @@ const postAnnouncement = asyncHandler(async (req, res) => {
   const announcement = await Announcement.create({
     quote,
     name: req.user.name,
-    designation: req.user.role, // or req.user.designation if you have one
+    designation: req.user.role, // or req.user.designation
     src: src || req.user.profileImage,
+    createdBy: req.user._id,
   });
 
   res.status(201).json({
+    success: true,
     message: "Announcement posted successfully",
     announcement,
   });
@@ -111,4 +128,5 @@ export default {
   postAnswer,
   fetchAnnouncements,
   postAnnouncement,
+  fetchAnnouncementsById,
 };

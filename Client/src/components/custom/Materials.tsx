@@ -189,8 +189,6 @@ const Materials = () => {
         throw new Error("Invalid subject or unit ID");
       }
 
-      console.log("Subject ID:", subjectId);
-      console.log("Unit ID:", unitId);
     } catch (error) {
       console.error("Failed to fetch subject/unit IDs:", error);
     }

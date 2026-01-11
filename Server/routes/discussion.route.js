@@ -9,12 +9,16 @@ router
   .post(protect, discussionController.uploadDiscussion);
 
 router.route("/fetch-discussion").get(discussionController.fetchDiscussion);
-router.route("/fetch-announcements").get(discussionController.fetchAnnouncements);
+router
+  .route("/fetch-announcements")
+  .get(discussionController.fetchAnnouncements);
 
 router
-  .route("/answers")
-  .post(protect, discussionController.postAnswer);
-  
+  .route("/fetch-announcements-byId")
+  .get(protect, discussionController.fetchAnnouncementsById);
+
+router.route("/answers").post(protect, discussionController.postAnswer);
+
 router
   .route("/announcements")
   .post(protect, discussionController.postAnnouncement);

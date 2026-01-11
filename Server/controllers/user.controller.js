@@ -159,8 +159,5 @@ const updateProfile = asyncHandler(async (req, res) => {
   });
 });
 
-const fetchAnnouncements = asyncHandler(async (req, res) => {
 
-});
-
-export default { registerUser, loginUser, updateProfile, fetchAnnouncements };
+export default { registerUser, loginUser, updateProfile };
