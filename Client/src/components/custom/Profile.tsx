@@ -38,6 +38,7 @@ const Profile = () => {
   const [isLoading, setIsloading] = useState(false);
   const [editProfile, setEditProfile] = useState(false);
   const [userMaterials, setUserMaterials] = useState([]);
+  const [userAnnouncements, setUserAnnouncements] = useState([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -131,6 +132,28 @@ const Profile = () => {
       setUserMaterials(response.data.notes);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const fetchUserAnnouncements = async () => {
+    if (userDetails?.role === "student") return;
+
+    try {
+      const response = await axios.get(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/discussions/fetch-announcements-byId`,
+        {
+          headers: {
+            Authorization: `Bearer ${userDetails?.token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      setUserAnnouncements(response.data.announcements);
+    } catch (error) {
+      console.error("Failed to fetch user announcements", error);
     }
   };
 
@@ -540,10 +563,12 @@ const Profile = () => {
           </button>
           <button
             onClick={() => {
+              z;
               setActiveTab(
                 userRole === "student" ? "contributions" : "announcements"
               );
               fetchUserNotes();
+              fetchUserAnnouncements();
             }}
             className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all cursor-pointer ${
               activeTab ===
@@ -755,32 +780,40 @@ const Profile = () => {
                   </button>
                 </div>
                 <div className="space-y-4">
-                  {currentUser.announcements.map((announcement) => (
-                    <div
-                      key={announcement.id}
-                      className="bg-black rounded-xl p-5 border border-gray-700/50 hover:border-zinc-700 transition-all"
-                    >
-                      <div className="flex items-start justify-between mb-3">
-                        <h4 className="text-xl font-semibold">
-                          {announcement.title}
-                        </h4>
-                        <span className="text-sm text-gray-500">
-                          {announcement.date}
-                        </span>
-                      </div>
-                      <p className="text-gray-300 mb-4">
-                        {announcement.message}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        <span className="px-3 py-1 rounded-lg text-sm border border-gray-700">
-                          {announcement.semester}
-                        </span>
-                        <span className="px-3 py-1 rounded-lg text-sm border border-gray-700">
-                          {announcement.subject}
-                        </span>
-                      </div>
+                  {userAnnouncements.length === 0 ? (
+                    <div className="text-center py-12 text-gray-400 text-sm">
+                      No announcements posted yet
                     </div>
-                  ))}
+                  ) : (
+                    userAnnouncements.map((announcement) => (
+                      <div
+                        key={announcement._id}
+                        className="bg-black rounded-xl p-5 border border-gray-700/50 hover:border-zinc-700 transition-all"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <h4 className="text-lg font-semibold">
+                            {announcement.name}
+                          </h4>
+
+                          <span className="text-sm text-gray-500">
+                            {new Date(
+                              announcement.createdAt
+                            ).toLocaleDateString()}
+                          </span>
+                        </div>
+
+                        <p className="text-gray-300 mb-4">
+                          {announcement.quote}
+                        </p>
+
+                        <div className="flex items-center gap-3">
+                          <span className="px-3 py-1 rounded-lg text-xs border border-gray-700 text-gray-400">
+                            {announcement.designation}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
