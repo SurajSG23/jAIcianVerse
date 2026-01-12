@@ -204,7 +204,9 @@ const Profile = () => {
   const handleDeleteAnnouncement = async (announcementId) => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/api/discussions/deleteAnnouncement/${announcementId}`,
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/discussions/deleteAnnouncement/${announcementId}`,
         {
           headers: {
             Authorization: `Bearer ${userDetails?.token}`,
@@ -216,6 +218,7 @@ const Profile = () => {
       setUserAnnouncements((prev) =>
         prev.filter((a) => a._id !== announcementId)
       );
+      toast.success("Announcement deleted successfully!");
     } catch (error) {
       console.error("Failed to delete announcement", error);
     }
