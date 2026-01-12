@@ -5,11 +5,6 @@ import BottomGradient from "../ui/buttonGradient";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-interface Unit {
-  _id: string;
-  title: string;
-  description: string;
-}
 interface Props {
   setIsStdudyHubVisible: (visible: boolean) => void;
   selectedUnit: string | null;

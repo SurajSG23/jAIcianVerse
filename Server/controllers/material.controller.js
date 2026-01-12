@@ -6,6 +6,7 @@ import Unit from "../models/unit.model.js";
 import mongoose from "mongoose";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import { geminiModel } from "../gemini/config/gemini.config.js";
+import { generateWithOpenRouter } from "../gemini/config/openrouter.config.ts";
 import summaryPrompt from "../gemini/prompts/summary.prompt.js";
 
 const sanitizeFileName = (filename) => {
@@ -206,11 +207,30 @@ const generateSummary = asyncHandler(async (req, res) => {
     context += `Source ${i + 1}: \n${item.context}\n\n`;
   });
 
+  // try {
+  //   const prompt = summaryPrompt(context);
+
+  //   const result = await geminiModel.generateContent(prompt);
+  //   const text = result.response?.text();
+
+  //   res.status(200).json({
+  //     message: "Summary generated successfully",
+  //     summary: text,
+  //   });
+  //   console.log(text);
+  // } catch (error) {
+  //   console.error("Gemini API error:", error.message);
+  //   res.status(500).json({ error: "Failed to generate summary" });
+  // }
+
   try {
     const prompt = summaryPrompt(context);
-
-    const result = await geminiModel.generateContent(prompt);
-    const text = result.response?.text();
+    const text = await generateWithOpenRouter([
+      {
+        role: "user",
+        content: prompt,
+      },
+    ]);
 
     res.status(200).json({
       message: "Summary generated successfully",
