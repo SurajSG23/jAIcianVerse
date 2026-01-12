@@ -212,19 +212,15 @@ const generateSummary = asyncHandler(async (req, res) => {
     const result = await geminiModel.generateContent(prompt);
     const text = result.response?.text();
 
-    // res.json({
-    //   success: true,
-    //   summary: text,
-    // });
+    res.status(200).json({
+      message: "Summary generated successfully",
+      summary: text,
+    });
     console.log(text);
   } catch (error) {
     console.error("Gemini API error:", error.message);
     res.status(500).json({ error: "Failed to generate summary" });
   }
-  res.status(200).json({
-    message: "Context extracted successfully",
-    filesRead: contextParas.length,
-  });
 });
 
 export const getUserNotes = asyncHandler(async (req, res) => {

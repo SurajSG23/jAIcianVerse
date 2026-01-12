@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Play, Pause, Square, X } from "lucide-react";
+import { Play, Pause, Square, X, Loader } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import BottomGradient from "../ui/buttonGradient";
 import axios from "axios";
@@ -34,25 +34,13 @@ const AIAvatar: React.FC<Props> = ({
   const pausedTimeRef = useRef(0);
   const totalPausedDurationRef = useRef(0);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [text, setText] = useState(
+    `Hello, welcome to JaisianVerse! I’m here to summarize this unit for you a quick, clear walkthrough to help you understand the key points`
+  );
+  const [isGenerating, setIsGenerating] = useState(false);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [textDisplaying]);
-
-  const text = `Hello, welcome to JaisianVerse! I’m here to summarize this unit for you a quick, clear walkthrough to help you understand the key points before you move ahead Today, we’re exploring one of the most fascinating processes in nature Photosynthesis.
-
-Photosynthesis is how green plants, algae, and some bacteria make their own food using sunlight. Imagine a plant as a tiny, solar-powered factory — it takes in sunlight, carbon dioxide from the air, and water from the soil, and transforms them into glucose — a type of sugar that serves as food and energy. In the process, it also releases oxygen, which we humans rely on to breathe. Pretty amazing, right?
-
-Let’s break it down a bit. The green pigment in leaves called chlorophyll captures sunlight. This energy is then used to split water molecules into hydrogen and oxygen. The hydrogen combines with carbon dioxide to form glucose, while oxygen is released into the air as a by-product. The simple equation looks like this:  
-Carbon Dioxide plus Water, in the presence of sunlight and chlorophyll, gives Glucose and Oxygen.  
-
-In plants, this process mostly happens in tiny cell parts called chloroplasts — they’re like the powerhouses where all the magic happens. The glucose made isn’t just used right away; some of it is stored as starch for later, helping the plant survive during low-light or dry periods.  
-
-But photosynthesis isn’t just important for plants — it’s the foundation of all life on Earth. It’s what keeps our atmosphere balanced by reducing carbon dioxide and producing oxygen. It’s also the first step in every food chain — without it, there’d be no plants, no animals, and no us.
-
-So, in summary: Photosynthesis is nature’s way of turning sunlight into life. It’s one of the most efficient, elegant, and essential systems ever created — a perfect example of how energy flows through the living world.
-
-Thank you for listening! I’ll see you again here on JaycianVerse — where learning is simple, engaging, and full of discovery.
-`;
 
   useEffect(() => {
     const loadVoices = () => {
@@ -113,9 +101,11 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
       setTextDisplaying(displayText);
     }
   };
-
   const speakText = async () => {
-    if (!text || isSpeaking) return;
+    if (isSpeaking) return;
+    setIsGenerating(true);
+
+    let finalText = text;
 
     try {
       const idResponse = await axios.get(
@@ -145,142 +135,157 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
           withCredentials: true,
         }
       );
+
+      finalText = `
+Hello, welcome to JaisianVerse! I’m here to summarize this unit for you a quick, clear walkthrough to help you understand the key points in
+${" "}
+${selectedSubject || ""}
+${" "}
+${selectedUnit || ""}
+${" "}
+${summary.data.summary}
+`;
+
+      setText(finalText);
     } catch (error) {
       console.error("Failed to fetch materials:", error);
+      return;
     }
 
-  //   subtitleTimeoutRefs.current.forEach(clearTimeout);
-  //   subtitleTimeoutRefs.current = [];
-  //   if (subtitleIntervalRef.current) {
-  //     clearInterval(subtitleIntervalRef.current);
-  //   }
+    // 🔹 CLEAR PREVIOUS SUBTITLES / INTERVALS
+    subtitleTimeoutRefs.current.forEach(clearTimeout);
+    subtitleTimeoutRefs.current = [];
 
-  //   setIsSpeaking(true);
-  //   setIsPaused(false);
-  //   setTextDisplaying("");
+    if (subtitleIntervalRef.current) {
+      clearInterval(subtitleIntervalRef.current);
+    }
 
-  //   wordsRef.current = text.split(" ");
-  //   currentWordIndexRef.current = 0;
-  //   totalPausedDurationRef.current = 0;
+    // 🔹 SPEECH STATE
+    setIsSpeaking(true);
+    setIsPaused(false);
+    setTextDisplaying("");
 
-  //   if (videoRef.current) {
-  //     videoRef.current.currentTime = 0;
-  //   }
+    wordsRef.current = finalText.split(" ");
+    currentWordIndexRef.current = 0;
+    totalPausedDurationRef.current = 0;
 
-  //   const utterance = new SpeechSynthesisUtterance(text);
-  //   utteranceRef.current = utterance;
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+    }
 
-  //   if (hindiVoice) {
-  //     utterance.voice = hindiVoice;
-  //   }
+    const utterance = new SpeechSynthesisUtterance(finalText);
+    utteranceRef.current = utterance;
 
-  //   utterance.rate = 0.9;
-  //   utterance.pitch = 1.0;
-  //   utterance.volume = 1.0;
+    if (hindiVoice) {
+      utterance.voice = hindiVoice;
+    }
 
-  //   let hasStarted = false;
+    utterance.rate = 0.9;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
 
-  //   utterance.onstart = () => {
-  //     if (!hasStarted) {
-  //       hasStarted = true;
-  //       speechStartTimeRef.current = Date.now();
-  //       startVideoPlayback();
+    let hasStarted = false;
 
-  //       subtitleIntervalRef.current = setInterval(updateSubtitles, 100);
-  //     }
-  //   };
+    utterance.onstart = () => {
+      if (!hasStarted) {
+        hasStarted = true;
+        speechStartTimeRef.current = Date.now();
+        startVideoPlayback();
+        subtitleIntervalRef.current = setInterval(updateSubtitles, 100);
+      }
+    };
 
-  //   utterance.onend = () => {
-  //     if (subtitleIntervalRef.current) {
-  //       clearInterval(subtitleIntervalRef.current);
-  //     }
+    utterance.onend = () => {
+      if (subtitleIntervalRef.current) {
+        clearInterval(subtitleIntervalRef.current);
+      }
 
-  //     setTextDisplaying(text);
+      setTextDisplaying(finalText);
+      setIsSpeaking(false);
+      setIsPaused(false);
 
-  //     setIsSpeaking(false);
-  //     setIsPaused(false);
+      if (videoRef.current) {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+      }
+    };
 
-  //     if (videoRef.current) {
-  //       videoRef.current.pause();
-  //       videoRef.current.currentTime = 0;
-  //     }
-  //   };
+    utterance.onerror = (e) => {
+      console.error("Speech synthesis error:", e);
 
-  //   utterance.onerror = (e) => {
-  //     console.error("Speech synthesis error:", e);
+      if (subtitleIntervalRef.current) {
+        clearInterval(subtitleIntervalRef.current);
+      }
 
-  //     if (subtitleIntervalRef.current) {
-  //       clearInterval(subtitleIntervalRef.current);
-  //     }
+      setIsSpeaking(false);
+      setIsPaused(false);
 
-  //     setIsSpeaking(false);
-  //     setIsPaused(false);
+      if (videoRef.current) {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+      }
+    };
 
-  //     if (videoRef.current) {
-  //       videoRef.current.pause();
-  //       videoRef.current.currentTime = 0;
-  //     }
-  //   };
+    window.speechSynthesis.cancel(); // safety
+    window.speechSynthesis.speak(utterance);
+  };
 
-  //   window.speechSynthesis.speak(utterance);
-  // };
+  const togglePause = () => {
+    if (!isSpeaking) return;
 
-  // const togglePause = () => {
-  //   if (!isSpeaking) return;
+    if (isPaused) {
+      const pauseDuration = Date.now() - pausedTimeRef.current;
+      totalPausedDurationRef.current += pauseDuration;
 
-  //   if (isPaused) {
-  //     const pauseDuration = Date.now() - pausedTimeRef.current;
-  //     totalPausedDurationRef.current += pauseDuration;
+      window.speechSynthesis.resume();
+      if (videoRef.current) {
+        videoRef.current.play().catch((err) => {
+          console.error("Video play error:", err);
+        });
+      }
 
-  //     window.speechSynthesis.resume();
-  //     if (videoRef.current) {
-  //       videoRef.current.play().catch((err) => {
-  //         console.error("Video play error:", err);
-  //       });
-  //     }
+      subtitleIntervalRef.current = setInterval(updateSubtitles, 100);
 
-  //     subtitleIntervalRef.current = setInterval(updateSubtitles, 100);
+      setIsPaused(false);
+    } else {
+      pausedTimeRef.current = Date.now();
 
-  //     setIsPaused(false);
-  //   } else {
-  //     pausedTimeRef.current = Date.now();
+      window.speechSynthesis.pause();
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
 
-  //     window.speechSynthesis.pause();
-  //     if (videoRef.current) {
-  //       videoRef.current.pause();
-  //     }
+      if (subtitleIntervalRef.current) {
+        clearInterval(subtitleIntervalRef.current);
+      }
 
-  //     if (subtitleIntervalRef.current) {
-  //       clearInterval(subtitleIntervalRef.current);
-  //     }
+      setIsPaused(true);
+    }
+  };
 
-  //     setIsPaused(true);
-  //   }
-  // };
+  useEffect(() => {
+    stopSpeech();
+  }, []);
 
-  // useEffect(() => {
-  //   stopSpeech();
-  // }, []);
+  const stopSpeech = () => {
+    window.speechSynthesis.cancel();
+    subtitleTimeoutRefs.current.forEach(clearTimeout);
+    subtitleTimeoutRefs.current = [];
 
-  // const stopSpeech = () => {
-  //   window.speechSynthesis.cancel();
-  //   subtitleTimeoutRefs.current.forEach(clearTimeout);
-  //   subtitleTimeoutRefs.current = [];
+    if (subtitleIntervalRef.current) {
+      clearInterval(subtitleIntervalRef.current);
+    }
+    setIsGenerating(false);
+    setIsSpeaking(false);
+    setIsPaused(false);
+    setTextDisplaying("");
+    currentWordIndexRef.current = 0;
+    totalPausedDurationRef.current = 0;
 
-  //   if (subtitleIntervalRef.current) {
-  //     clearInterval(subtitleIntervalRef.current);
-  //   }
-
-  //   setIsSpeaking(false);
-  //   setIsPaused(false);
-  //   setTextDisplaying("");
-  //   currentWordIndexRef.current = 0;
-  //   totalPausedDurationRef.current = 0;
-
-  //   if (videoRef.current) {
-  //     videoRef.current.pause();
-  //     videoRef.current.currentTime = 0;
-  //   }
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
   };
 
   return (
@@ -329,64 +334,86 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
         .delay-300 { animation-delay: 300ms; }
         `}
           </style>
+
           <div className="max-w-7xl w-full flex flex-col justify-center items-center gap-2">
             <p className="text-4xl font-bold">{selectedUnit?.title}</p>
             <p className="text-sm text-gray-400">{selectedUnit?.description}</p>
             {/* Main Content Grid */}
-            <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
-              {/* Left Side - Video */}
-              <div className="flex flex-col">
-                <div className="relative rounded-2xl overflow-hidden transition-all duration-500 ease-out bg-neutral-900">
-                  <video
-                    ref={videoRef}
-                    src="AI-Teacher-Video-1.mp4"
-                    className="w-full h-auto"
-                    muted
-                    preload="auto"
-                    playsInline
-                    loop
-                  />
+            <div className="grid lg:grid-cols-2 gap-3 lg:gap-8">
+              <div className="flex flex-col justify-center">
+                <div className="relative">
+                  {/* Decorative corners */}
+                  <div className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-orange-500/50 rounded-tl-lg"></div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 border-t-2 border-r-2 border-orange-500/50 rounded-tr-lg"></div>
+                  <div className="absolute -bottom-2 -left-2 w-8 h-8 border-b-2 border-l-2 border-orange-500/50 rounded-bl-lg"></div>
+                  <div className="absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 border-orange-500/50 rounded-br-lg"></div>
 
-                  {/* Status Indicator */}
-                  <div className="absolute top-4 right-4">
-                    <div
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md ${
-                        isSpeaking && !isPaused
-                          ? "bg-green-500/20 border border-green-500/50"
-                          : isPaused
-                          ? "bg-yellow-500/20 border border-yellow-500/50"
-                          : "bg-gray-500/20 border border-gray-500/50"
-                      }`}
-                    >
-                      <div
-                        className={`w-2 h-2 rounded-full ${
-                          isSpeaking && !isPaused
-                            ? "bg-green-400 animate-pulse"
-                            : isPaused
-                            ? "bg-yellow-400"
-                            : "bg-gray-400"
-                        }`}
-                      ></div>
-                      <span className="text-xs font-medium text-white">
-                        {isSpeaking && !isPaused
-                          ? "Speaking"
-                          : isPaused
-                          ? "Paused"
-                          : "Ready"}
-                      </span>
+                  <div className="relative bg-neutral-900 backdrop-blur-xl rounded-2xl p-8 border border-orange-500/20 min-h-[400px] flex items-center justify-center">
+                    <div className="relative z-10 w-full">
+                      {textDisplaying ? (
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-2 mb-4">
+                            <div className="flex gap-1">
+                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
+                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-150"></div>
+                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-300"></div>
+                            </div>
+                            <span className="text-xs font-semibold text-orange-300 uppercase tracking-wider">
+                              Live Transcript
+                            </span>
+                          </div>
+
+                          <p className="text-lg md:text-xl leading-relaxed text-gray-100 font-light h-80 overflow-y-auto">
+                            {textDisplaying}
+                            <div ref={messagesEndRef} />
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="text-center space-y-6 flex flex-col justify-center items-center">
+                          <div className="flex items-center gap-2 mb-4">
+                            <div className="flex gap-1">
+                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
+                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-150"></div>
+                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-300"></div>
+                            </div>
+                            <span className="text-xs font-semibold text-orange-300 uppercase tracking-wider">
+                              Live Transcript
+                            </span>
+                          </div>
+
+                          <p className="text-xl text-gray-300 font-medium mb-2">
+                            Ready to Learn
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Press the speak button to begin your lesson
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
-
+              </div>
+              <div className="flex flex-col justify-center">
                 {/* Controls */}
                 <div className="mt-6 flex justify-center gap-3">
                   {!isSpeaking ? (
                     <button
+                      disabled={isGenerating || isSpeaking}
                       className="group/btn relative block h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
                       onClick={speakText}
                     >
-                      <Play className="w-5 h-5" />
-                      Start Speaking
+                      {isGenerating ? (
+                        <>
+                          <Loader className="w-5 h-5 animate-spin" />
+                          Generating summary...
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-5 h-5" />
+                          Start Speaking
+                        </>
+                      )}
+
                       <BottomGradient />
                     </button>
                   ) : (
@@ -424,58 +451,6 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
                       </button>
                     </>
                   )}
-                </div>
-              </div>
-
-              {/* Right Side - Subtitles */}
-              <div className="flex flex-col justify-center">
-                <div className="relative">
-                  {/* Decorative corner elements */}
-                  <div className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-orange-500/50 rounded-tl-lg"></div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 border-t-2 border-r-2 border-orange-500/50 rounded-tr-lg"></div>
-                  <div className="absolute -bottom-2 -left-2 w-8 h-8 border-b-2 border-l-2 border-orange-500/50 rounded-bl-lg"></div>
-                  <div className="absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 border-orange-500/50 rounded-br-lg"></div>
-
-                  <div className="relative bg-neutral-900 backdrop-blur-xl rounded-2xl p-8 border border-orange-500/20 min-h-[400px] flex items-center justify-center">
-                    <div className="relative z-10 w-full">
-                      {textDisplaying ? (
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-2 mb-4">
-                            <div className="flex gap-1">
-                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
-                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-150"></div>
-                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-300"></div>
-                            </div>
-                            <span className="text-xs font-semibold text-orange-300 uppercase tracking-wider">
-                              Live Transcript
-                            </span>
-                          </div>
-                          <p className="text-lg md:text-xl leading-relaxed text-gray-100 font-light h-80 overflow-y-auto">
-                            {textDisplaying} <div ref={messagesEndRef} />
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="text-center space-y-6 flex flex-col justify-center items-center">
-                          <div className="flex items-center gap-2 mb-4">
-                            <div className="flex gap-1">
-                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
-                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-150"></div>
-                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-300"></div>
-                            </div>
-                            <span className="text-xs font-semibold text-orange-300 uppercase tracking-wider">
-                              Live Transcript
-                            </span>
-                          </div>
-                          <p className="text-xl text-gray-300 font-medium mb-2">
-                            Ready to Learn
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Press the speak button to begin your lesson
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
