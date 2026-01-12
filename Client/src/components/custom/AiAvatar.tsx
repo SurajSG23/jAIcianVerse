@@ -3,6 +3,7 @@ import { Play, Pause, Square, X, Loader } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import BottomGradient from "../ui/buttonGradient";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 interface Unit {
   _id: string;
@@ -137,22 +138,24 @@ const AIAvatar: React.FC<Props> = ({
       );
 
       finalText = `
-Hello, welcome to JaisianVerse! I’m here to summarize this unit for you a quick, clear walkthrough to help you understand the key points in
-${" "}
-${selectedSubject || ""}
-${" "}
-${selectedUnit || ""}
-${" "}
-${summary.data.summary}
-`;
+        Hello, welcome to JaisianVerse! I’m here to summarize this unit for you a quick, clear walkthrough to help you understand the key points in
+        ${" "}
+        ${selectedSubject || ""}
+        ${" "}
+        ${selectedUnit || ""}
+        ${" "}
+        ${summary.data.summary}
+        `;
 
       setText(finalText);
     } catch (error) {
+      setIsGenerating(false);
+      toast.error("Failed to generate summary.");
       console.error("Failed to fetch materials:", error);
       return;
     }
 
-    // 🔹 CLEAR PREVIOUS SUBTITLES / INTERVALS
+    // CLEAR PREVIOUS SUBTITLES / INTERVALS
     subtitleTimeoutRefs.current.forEach(clearTimeout);
     subtitleTimeoutRefs.current = [];
 
@@ -160,7 +163,7 @@ ${summary.data.summary}
       clearInterval(subtitleIntervalRef.current);
     }
 
-    // 🔹 SPEECH STATE
+    // SPEECH STATE
     setIsSpeaking(true);
     setIsPaused(false);
     setTextDisplaying("");
