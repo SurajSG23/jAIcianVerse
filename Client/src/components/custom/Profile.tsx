@@ -9,6 +9,7 @@ import { IconCancel } from "@tabler/icons-react";
 import axios from "axios";
 import Branches from "../../data/allBranches.ts";
 import { toast } from "react-toastify";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Contributions {
   notesUploaded: string[];
@@ -39,6 +40,8 @@ const Profile = () => {
   const [editProfile, setEditProfile] = useState(false);
   const [userMaterials, setUserMaterials] = useState([]);
   const [userAnnouncements, setUserAnnouncements] = useState([]);
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
+  const [announcementText, setAnnouncementText] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -162,6 +165,41 @@ const Profile = () => {
     fetchUserDetails();
   }, []);
 
+  const postAnnouncement = async () => {
+    if (!announcementText.trim()) {
+      toast.error("Announcement cannot be empty.");
+      return;
+    }
+
+    try {
+      const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/discussions/announcements`,
+        {
+          quote: announcementText,
+          src: userDetails.profileImage || "",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userDetails.token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      fetchUserAnnouncements();
+      setShowAnnouncementModal(false);
+      setAnnouncementText("");
+      toast.success("Announcement posted successfully!");
+    } catch (error) {
+      console.error(
+        "Error posting answer:",
+        error.response?.data || error.message
+      );
+    }
+  };
   const userData = {
     student: {
       name: "Suraj S G Dhanva",
@@ -563,7 +601,6 @@ const Profile = () => {
           </button>
           <button
             onClick={() => {
-              z;
               setActiveTab(
                 userRole === "student" ? "contributions" : "announcements"
               );
@@ -773,7 +810,12 @@ const Profile = () => {
                   <h3 className="text-2xl font-semibold flex items-center gap-2">
                     Announcements
                   </h3>
-                  <button className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-3 rounded-md bg-black font-medium border border-zinc-700 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer">
+                  <button
+                    className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-3 rounded-md bg-black font-medium border border-zinc-700 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                    onClick={() => {
+                      setShowAnnouncementModal(true);
+                    }}
+                  >
                     <Plus className="w-4 h-4" />
                     New Announcement
                     <BottomGradient />
@@ -820,6 +862,65 @@ const Profile = () => {
           )}
         </div>
       </div>
+      {showAnnouncementModal && (
+        <AnimatePresence>
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 backdrop-blur-md bg-black/60 z-40"
+            />
+
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl bg-neutral-900 border border-neutral-800 rounded-xl p-6 shadow-xl"
+            >
+              {/* Header */}
+              <h2 className="text-2xl font-bold text-white mb-6">
+                Announcement Form
+              </h2>
+
+              {/* Textarea */}
+              <div>
+                <label className="block text-sm font-medium text-neutral-400 mb-2">
+                  Your Announcement
+                </label>
+                <textarea
+                  value={announcementText}
+                  onChange={(e) => setAnnouncementText(e.target.value)}
+                  placeholder="Type here..."
+                  className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700 resize-none"
+                  rows={6}
+                />
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={postAnnouncement}
+                  className="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-900 transition-colors cursor-pointer"
+                >
+                  Post Announcement
+                </button>
+                <button
+                  onClick={() => {
+                    setShowAnnouncementModal(false);
+                  }}
+                  className="px-6 py-2.5 text-sm font-medium text-neutral-400 bg-neutral-950 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
+          </>
+        </AnimatePresence>
+      )}
     </div>
   );
 };
