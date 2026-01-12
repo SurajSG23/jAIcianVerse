@@ -2,18 +2,24 @@ import React, { useEffect, useRef, useState } from "react";
 import { Play, Pause, Square, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import BottomGradient from "../ui/buttonGradient";
+import axios from "axios";
 
 interface Unit {
   _id: string;
   title: string;
   description: string;
 }
-interface props {
-  setIsAiTeacherVisible: (visible: boolean) => void;
-  selectedUnit: Unit | null;
+interface Props {
+  setIsStdudyHubVisible: (visible: boolean) => void;
+  selectedUnit: string | null;
+  selectedSubject: string | null;
 }
 
-const AIAvatar: React.FC<props> = ({ setIsAiTeacherVisible, selectedUnit }) => {
+const AIAvatar: React.FC<Props> = ({
+  setIsAiTeacherVisible,
+  selectedUnit,
+  selectedSubject,
+}) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [textDisplaying, setTextDisplaying] = useState("");
@@ -108,141 +114,173 @@ Thank you for listening! I’ll see you again here on JaycianVerse — where lea
     }
   };
 
-  const speakText = () => {
+  const speakText = async () => {
     if (!text || isSpeaking) return;
 
-    subtitleTimeoutRefs.current.forEach(clearTimeout);
-    subtitleTimeoutRefs.current = [];
-    if (subtitleIntervalRef.current) {
-      clearInterval(subtitleIntervalRef.current);
+    try {
+      const idResponse = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/materials/fetchSubjectUnitID`,
+        {
+          params: {
+            subjectName: selectedSubject,
+            unitName: selectedUnit,
+          },
+          withCredentials: true,
+        }
+      );
+
+      const { subjectId, unitId } = idResponse.data;
+
+      if (!subjectId || !unitId) {
+        throw new Error("Invalid subject or unit ID");
+      }
+
+      const summary = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/materials/generateSummary`,
+        {
+          params: {
+            subjectId,
+            unitId,
+          },
+          withCredentials: true,
+        }
+      );
+    } catch (error) {
+      console.error("Failed to fetch materials:", error);
     }
 
-    setIsSpeaking(true);
-    setIsPaused(false);
-    setTextDisplaying("");
+  //   subtitleTimeoutRefs.current.forEach(clearTimeout);
+  //   subtitleTimeoutRefs.current = [];
+  //   if (subtitleIntervalRef.current) {
+  //     clearInterval(subtitleIntervalRef.current);
+  //   }
 
-    wordsRef.current = text.split(" ");
-    currentWordIndexRef.current = 0;
-    totalPausedDurationRef.current = 0;
+  //   setIsSpeaking(true);
+  //   setIsPaused(false);
+  //   setTextDisplaying("");
 
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-    }
+  //   wordsRef.current = text.split(" ");
+  //   currentWordIndexRef.current = 0;
+  //   totalPausedDurationRef.current = 0;
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utteranceRef.current = utterance;
+  //   if (videoRef.current) {
+  //     videoRef.current.currentTime = 0;
+  //   }
 
-    if (hindiVoice) {
-      utterance.voice = hindiVoice;
-    }
+  //   const utterance = new SpeechSynthesisUtterance(text);
+  //   utteranceRef.current = utterance;
 
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
+  //   if (hindiVoice) {
+  //     utterance.voice = hindiVoice;
+  //   }
 
-    let hasStarted = false;
+  //   utterance.rate = 0.9;
+  //   utterance.pitch = 1.0;
+  //   utterance.volume = 1.0;
 
-    utterance.onstart = () => {
-      if (!hasStarted) {
-        hasStarted = true;
-        speechStartTimeRef.current = Date.now();
-        startVideoPlayback();
+  //   let hasStarted = false;
 
-        subtitleIntervalRef.current = setInterval(updateSubtitles, 100);
-      }
-    };
+  //   utterance.onstart = () => {
+  //     if (!hasStarted) {
+  //       hasStarted = true;
+  //       speechStartTimeRef.current = Date.now();
+  //       startVideoPlayback();
 
-    utterance.onend = () => {
-      if (subtitleIntervalRef.current) {
-        clearInterval(subtitleIntervalRef.current);
-      }
+  //       subtitleIntervalRef.current = setInterval(updateSubtitles, 100);
+  //     }
+  //   };
 
-      setTextDisplaying(text);
+  //   utterance.onend = () => {
+  //     if (subtitleIntervalRef.current) {
+  //       clearInterval(subtitleIntervalRef.current);
+  //     }
 
-      setIsSpeaking(false);
-      setIsPaused(false);
+  //     setTextDisplaying(text);
 
-      if (videoRef.current) {
-        videoRef.current.pause();
-        videoRef.current.currentTime = 0;
-      }
-    };
+  //     setIsSpeaking(false);
+  //     setIsPaused(false);
 
-    utterance.onerror = (e) => {
-      console.error("Speech synthesis error:", e);
+  //     if (videoRef.current) {
+  //       videoRef.current.pause();
+  //       videoRef.current.currentTime = 0;
+  //     }
+  //   };
 
-      if (subtitleIntervalRef.current) {
-        clearInterval(subtitleIntervalRef.current);
-      }
+  //   utterance.onerror = (e) => {
+  //     console.error("Speech synthesis error:", e);
 
-      setIsSpeaking(false);
-      setIsPaused(false);
+  //     if (subtitleIntervalRef.current) {
+  //       clearInterval(subtitleIntervalRef.current);
+  //     }
 
-      if (videoRef.current) {
-        videoRef.current.pause();
-        videoRef.current.currentTime = 0;
-      }
-    };
+  //     setIsSpeaking(false);
+  //     setIsPaused(false);
 
-    window.speechSynthesis.speak(utterance);
-  };
+  //     if (videoRef.current) {
+  //       videoRef.current.pause();
+  //       videoRef.current.currentTime = 0;
+  //     }
+  //   };
 
-  const togglePause = () => {
-    if (!isSpeaking) return;
+  //   window.speechSynthesis.speak(utterance);
+  // };
 
-    if (isPaused) {
-      const pauseDuration = Date.now() - pausedTimeRef.current;
-      totalPausedDurationRef.current += pauseDuration;
+  // const togglePause = () => {
+  //   if (!isSpeaking) return;
 
-      window.speechSynthesis.resume();
-      if (videoRef.current) {
-        videoRef.current.play().catch((err) => {
-          console.error("Video play error:", err);
-        });
-      }
+  //   if (isPaused) {
+  //     const pauseDuration = Date.now() - pausedTimeRef.current;
+  //     totalPausedDurationRef.current += pauseDuration;
 
-      subtitleIntervalRef.current = setInterval(updateSubtitles, 100);
+  //     window.speechSynthesis.resume();
+  //     if (videoRef.current) {
+  //       videoRef.current.play().catch((err) => {
+  //         console.error("Video play error:", err);
+  //       });
+  //     }
 
-      setIsPaused(false);
-    } else {
-      pausedTimeRef.current = Date.now();
+  //     subtitleIntervalRef.current = setInterval(updateSubtitles, 100);
 
-      window.speechSynthesis.pause();
-      if (videoRef.current) {
-        videoRef.current.pause();
-      }
+  //     setIsPaused(false);
+  //   } else {
+  //     pausedTimeRef.current = Date.now();
 
-      if (subtitleIntervalRef.current) {
-        clearInterval(subtitleIntervalRef.current);
-      }
+  //     window.speechSynthesis.pause();
+  //     if (videoRef.current) {
+  //       videoRef.current.pause();
+  //     }
 
-      setIsPaused(true);
-    }
-  };
+  //     if (subtitleIntervalRef.current) {
+  //       clearInterval(subtitleIntervalRef.current);
+  //     }
 
-  useEffect(() => {
-    stopSpeech();
-  }, []);
+  //     setIsPaused(true);
+  //   }
+  // };
 
-  const stopSpeech = () => {
-    window.speechSynthesis.cancel();
-    subtitleTimeoutRefs.current.forEach(clearTimeout);
-    subtitleTimeoutRefs.current = [];
+  // useEffect(() => {
+  //   stopSpeech();
+  // }, []);
 
-    if (subtitleIntervalRef.current) {
-      clearInterval(subtitleIntervalRef.current);
-    }
+  // const stopSpeech = () => {
+  //   window.speechSynthesis.cancel();
+  //   subtitleTimeoutRefs.current.forEach(clearTimeout);
+  //   subtitleTimeoutRefs.current = [];
 
-    setIsSpeaking(false);
-    setIsPaused(false);
-    setTextDisplaying("");
-    currentWordIndexRef.current = 0;
-    totalPausedDurationRef.current = 0;
+  //   if (subtitleIntervalRef.current) {
+  //     clearInterval(subtitleIntervalRef.current);
+  //   }
 
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
+  //   setIsSpeaking(false);
+  //   setIsPaused(false);
+  //   setTextDisplaying("");
+  //   currentWordIndexRef.current = 0;
+  //   totalPausedDurationRef.current = 0;
+
+  //   if (videoRef.current) {
+  //     videoRef.current.pause();
+  //     videoRef.current.currentTime = 0;
+  //   }
   };
 
   return (

@@ -188,7 +188,6 @@ const Materials = () => {
       if (!subjectId || !unitId) {
         throw new Error("Invalid subject or unit ID");
       }
-
     } catch (error) {
       console.error("Failed to fetch subject/unit IDs:", error);
     }
@@ -623,7 +622,8 @@ const Materials = () => {
       {isAiTeacherVisible && (
         <AIAvatar
           setIsAiTeacherVisible={setIsAiTeacherVisible}
-          selectedUnit={selectedUnit}
+          selectedUnit={selectedUnit?.name || ""}
+          selectedSubject={selectedSubject?.name || ""}
         />
       )}
       {isVisualVaultVisible && (
