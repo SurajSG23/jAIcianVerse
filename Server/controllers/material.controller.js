@@ -5,8 +5,8 @@ import Subject from "../models/subject.model.js";
 import Unit from "../models/unit.model.js";
 import mongoose from "mongoose";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
-import { geminiModel } from "../gemini/config/gemini.config.js";
-import { generateWithOpenRouter } from "../gemini/config/openrouter.config.ts";
+import { geminiModel } from "../aiConfig/config/gemini.config.js";
+import { generateWithOpenRouter } from "../aiConfig/config/openrouter.config.ts";
 import summaryPrompt from "../gemini/prompts/summary.prompt.js";
 
 const sanitizeFileName = (filename) => {
