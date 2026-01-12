@@ -204,7 +204,7 @@ const Profile = () => {
   const handleDeleteAnnouncement = async (announcementId) => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/api/discussions/${announcementId}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/discussions/deleteAnnouncement/${announcementId}`,
         {
           headers: {
             Authorization: `Bearer ${userDetails?.token}`,
@@ -389,8 +389,6 @@ const Profile = () => {
       // Update local storage & state
       localStorage.setItem("userInfo", JSON.stringify(updatedUser));
       setUserDetails(updatedUser);
-
-      console.log(response.data);
 
       setEditProfile(false);
     } catch (error) {

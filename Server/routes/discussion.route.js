@@ -23,4 +23,8 @@ router
   .route("/announcements")
   .post(protect, discussionController.postAnnouncement);
 
+router
+  .route("/deleteAnnouncement/:id")
+  .delete(protect, discussionController.deleteAnnouncements);
+
 export default router;

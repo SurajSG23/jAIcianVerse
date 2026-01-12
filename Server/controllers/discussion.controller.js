@@ -122,6 +122,30 @@ const postAnnouncement = asyncHandler(async (req, res) => {
   });
 });
 
+const deleteAnnouncements = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const announcement = await Announcement.findById(id);
+
+  if (!announcement) {
+    res.status(404);
+    throw new Error("Announcement not found");
+  }
+
+  // Only creator can delete
+  if (announcement.createdBy.toString() !== req.user._id.toString()) {
+    res.status(403);
+    throw new Error("You are not authorized to delete this announcement");
+  }
+
+  await announcement.deleteOne();
+
+  res.status(200).json({
+    success: true,
+    message: "Announcement deleted successfully",
+  });
+});
+
 export default {
   uploadDiscussion,
   fetchDiscussion,
@@ -129,4 +153,5 @@ export default {
   fetchAnnouncements,
   postAnnouncement,
   fetchAnnouncementsById,
+  deleteAnnouncements,
 };
