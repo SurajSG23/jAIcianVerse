@@ -4,8 +4,9 @@ import Material from "../models/material.model.js";
 import Subject from "../models/subject.model.js";
 import Unit from "../models/unit.model.js";
 import mongoose from "mongoose";
-import axios from "axios";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+import { geminiModel } from "../gemini/config/gemini.config.js";
+import summaryPrompt from "../gemini/prompts/summary.prompt.js";
 
 const sanitizeFileName = (filename) => {
   return filename.replace(/[.#$[\]]/g, "_").replace(/\s+/g, "_");
@@ -197,7 +198,7 @@ const generateSummary = asyncHandler(async (req, res) => {
   }
 
   // LOG FINAL CONTEXT
-  console.log("🔹 SAMPLE CONTEXT FOR SUMMARY 🔹");
+  console.log("🔹 SUMMARY 🔹");
 
   let context = "";
 
@@ -205,8 +206,21 @@ const generateSummary = asyncHandler(async (req, res) => {
     context += `Source ${i + 1}: \n${item.context}\n\n`;
   });
 
-  console.log(context);
+  try {
+    const prompt = summaryPrompt(context);
 
+    const result = await geminiModel.generateContent(prompt);
+    const text = result.response?.text();
+
+    // res.json({
+    //   success: true,
+    //   summary: text,
+    // });
+    console.log(text);
+  } catch (error) {
+    console.error("Gemini API error:", error.message);
+    res.status(500).json({ error: "Failed to generate summary" });
+  }
   res.status(200).json({
     message: "Context extracted successfully",
     filesRead: contextParas.length,

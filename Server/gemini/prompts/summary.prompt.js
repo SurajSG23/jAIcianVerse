@@ -5,7 +5,7 @@ The following content is extracted from multiple study materials related to the 
 The paragraphs may come from different files and random sections, but all belong to the same topic.
 
 Task:
-- Generate a clear, coherent summary of approximately 100 words.
+- Generate a clear, coherent summary of approximately 150 words.
 - Combine overlapping ideas instead of listing them.
 - Ignore repetition and unnecessary examples.
 - Maintain a neutral, textbook-style tone.

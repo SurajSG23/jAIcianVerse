@@ -8,10 +8,12 @@ if (!geminiApiKey) {
 const genAI = new GoogleGenerativeAI(geminiApiKey);
 
 export const geminiModel = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash", 
+  model: "gemini-2.5-flash-lite",
   geminiConfig: {
-    temperature: 0.7, 
-    maxOutputTokens: 300, 
+    temperature: 0.6, 
+    maxOutputTokens: 300,
+    topP: 0.9,
+    topK: 40,
   },
 });
 
