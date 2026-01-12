@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { cn } from "../../../lib/utils";
 import Sidebar from "./Navbar";
-import { FileText, Edit2, Plus, Save } from "lucide-react";
+import { FileText, Edit2, Plus, Save, Delete, Trash } from "lucide-react";
 import BottomGradient from "../ui/buttonGradient";
 import { useAuth } from "../../context/AuthContext";
 import GlassLoader from "../ui/loading.tsx";
@@ -200,6 +200,27 @@ const Profile = () => {
       );
     }
   };
+
+  const handleDeleteAnnouncement = async (announcementId) => {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}/api/discussions/${announcementId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${userDetails?.token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      setUserAnnouncements((prev) =>
+        prev.filter((a) => a._id !== announcementId)
+      );
+    } catch (error) {
+      console.error("Failed to delete announcement", error);
+    }
+  };
+
   const userData = {
     student: {
       name: "Suraj S G Dhanva",
@@ -822,7 +843,7 @@ const Profile = () => {
                   </button>
                 </div>
                 <div className="space-y-4">
-                  {userAnnouncements.length === 0 ? (
+                  {userAnnouncements?.length === 0 ? (
                     <div className="text-center py-12 text-gray-400 text-sm">
                       No announcements posted yet
                     </div>
@@ -848,10 +869,19 @@ const Profile = () => {
                           {announcement.quote}
                         </p>
 
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 justify-between">
                           <span className="px-3 py-1 rounded-lg text-xs border border-gray-700 text-gray-400">
                             {announcement.designation}
                           </span>
+                          <button
+                            onClick={() =>
+                              handleDeleteAnnouncement(announcement._id)
+                            }
+                            className="text-red-400 hover:text-red-500 text-sm cursor-pointer"
+                            title="Delete announcement"
+                          >
+                            <Trash className="size-4" />
+                          </button>
                         </div>
                       </div>
                     ))
