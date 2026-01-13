@@ -248,43 +248,46 @@ const generateSummary = asyncHandler(async (req, res) => {
     context += `Source ${i + 1}: \n${item.context}\n\n`;
   });
 
-  // try {
-  //   const prompt = summaryPrompt(context);
+  const useGemini = false;
 
-  //   const result = await geminiModel.generateContent(prompt);
-  //   const text = result.response?.text();
+  if (useGemini) {
+    try {
+      const prompt = summaryPrompt(context);
 
-  //   res.status(200).json({
-  //     message: "Summary generated successfully",
-  //     summary: text,
-  //   });
-  //   console.log(text);
-  // } catch (error) {
-  //   console.error("Gemini API error:", error.message);
-  //   res.status(500).json({ error: "Failed to generate summary" });
-  // }
-  console.log(context);
-  
-  try {
-    const prompt = summaryPrompt(context);
-    const text = await generateWithOpenRouter([
-      {
-        role: "user",
-        content: prompt,
-      },
-    ]);
+      const result = await geminiModel.generateContent(prompt);
+      const text = result.response?.text();
 
-    res.status(200).json({
-      message: "Summary generated successfully",
-      summary: text,
-    });
+      res.status(200).json({
+        message: "Summary generated successfully",
+        summary: text,
+      });
+      console.log(text);
+    } catch (error) {
+      console.error("Gemini API error:", error.message);
+      res.status(500).json({ error: "Failed to generate summary" });
+    }
+  } else {
+    try {
+      const prompt = summaryPrompt(context);
+      const text = await generateWithOpenRouter([
+        {
+          role: "user",
+          content: prompt,
+        },
+      ]);
 
-    storeCloudinary(text, subjectId, unitId);
+      res.status(200).json({
+        message: "Summary generated successfully",
+        summary: text,
+      });
 
-    console.log(text);
-  } catch (error) {
-    console.error("Gemini API error:", error.message);
-    res.status(500).json({ error: "Failed to generate summary" });
+      storeCloudinary(text, subjectId, unitId);
+
+      console.log(text);
+    } catch (error) {
+      console.error("Gemini API error:", error.message);
+      res.status(500).json({ error: "Failed to generate summary" });
+    }
   }
 });
 
