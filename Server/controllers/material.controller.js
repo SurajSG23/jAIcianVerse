@@ -189,7 +189,7 @@ const generateSummary = asyncHandler(async (req, res) => {
   const { subjectId, unitId, selectedSubject } = req.query;
 
   const useGemini = false;
-  const useLocalModel = true;
+  const useLocalModel = false;
 
   if (!subjectId || !unitId) {
     res.status(400);
@@ -252,7 +252,6 @@ const generateSummary = asyncHandler(async (req, res) => {
       ? (await geminiModel.generateContent(prompt)).response?.text()
       : await generateWithOpenRouter([{ role: "user", content: prompt }]);
   }
-  console.log(summaryText);
   
   res.status(200).json({
     message: "Summary generated successfully",

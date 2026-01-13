@@ -4,6 +4,7 @@ import { RefreshCcw, X } from "lucide-react";
 import { AnimatedTestimonials } from "../../components/ui/animated-testimonials";
 import axios from "axios";
 import { toast } from "react-toastify";
+import semestersData from "../../data/semesters.ts";
 
 const Dashboard = () => {
   const [announcements, setAnnouncements] = useState([
@@ -61,6 +62,7 @@ const Dashboard = () => {
   const [announcementText, setAnnouncementText] = useState("");
   const [expandedId, setExpandedId] = useState(null);
   const [selectedDiscussionId, setSelectedDiscussionId] = useState(null);
+  const [availableSubjects, setAvailableSubjects] = useState<string[]>([]);
 
   const [questionForm, setQuestionForm] = useState({
     question: "",
@@ -75,6 +77,18 @@ const Dashboard = () => {
 
   const uploadDiscussion = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!questionForm.question || !questionForm.subject || !questionForm.unit) {
+      toast.error("Please fill all the fields");
+      return;
+    }
+    if (Number(questionForm?.unit) < 1 || Number(questionForm?.unit) > 5) {
+      toast.error("Unit must be between 1 and 5.");
+      return;
+    }
+    if (!availableSubjects.includes(questionForm?.subject)) {
+      toast.error("Please select from the suggested subjects.");
+      return;
+    }
     const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
 
     const payload = {
@@ -150,10 +164,18 @@ const Dashboard = () => {
       );
     }
   };
-
+  const fetchSubjects = async () => {
+    const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    const userSem = userDetails?.semester;
+    const userBranch = userDetails?.branch;
+    setAvailableSubjects(
+      Object.keys(semestersData[userBranch]["Semester " + userSem])
+    );
+  };
   useEffect(() => {
     fetchDiscussions();
     fetchAnnouncements();
+    fetchSubjects();
   }, []);
 
   const toggleAnswers = (discussionId) => {
@@ -559,145 +581,159 @@ const Dashboard = () => {
 
       {showQuestionModal && (
         <AnimatePresence>
-          {showQuestionModal && (
-            <>
-              {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => {
-                  setShowQuestionModal(false);
-                  setQuestionForm({
-                    question: "",
-                    subject: "",
-                    unit: "",
-                    tags: "",
-                    image: null,
-                  });
-                }}
-                className="fixed inset-0 bg-black/60 backdrop-blur-xl z-40"
-              />
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => {
+                setShowQuestionModal(false);
+                setQuestionForm({
+                  question: "",
+                  subject: "",
+                  unit: "",
+                  tags: "",
+                  image: null,
+                });
+              }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-xl z-40"
+            />
 
-              {/* Modal Container */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                transition={{ duration: 0.2 }}
-                className="fixed inset-0 flex items-center justify-center z-50 p-4"
+            {/* Modal Container */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 flex items-center justify-center z-50 p-4"
+            >
+              <form
+                onSubmit={uploadDiscussion}
+                className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative"
               >
-                <form
-                  onSubmit={uploadDiscussion}
-                  className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative"
-                >
-                  {/* Header */}
+                {/* Header */}
 
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold text-white">
-                      Ask a Question
-                    </h2>
-                    <button
-                      onClick={() => {
-                        setShowQuestionModal(false);
-                        setQuestionForm({
-                          question: "",
-                          subject: "",
-                          unit: "",
-                          tags: "",
-                          image: null,
-                        });
-                      }}
-                      className="text-neutral-400 hover:text-white transition-colors p-1 rounded-md hover:bg-neutral-800 cursor-pointer"
-                    >
-                      <X className="h-5 w-5" />
-                    </button>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-white">
+                    Ask a Question
+                  </h2>
+                  <button
+                    onClick={() => {
+                      setShowQuestionModal(false);
+                      setQuestionForm({
+                        question: "",
+                        subject: "",
+                        unit: "",
+                        tags: "",
+                        image: null,
+                      });
+                    }}
+                    className="text-neutral-400 hover:text-white transition-colors p-1 rounded-md hover:bg-neutral-800 cursor-pointer"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {/* Form Content */}
+                <div className="space-y-4">
+                  {/* Question */}
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-400 mb-2">
+                      Question
+                    </label>
+                    <textarea
+                      value={questionForm.question}
+                      onChange={(e) =>
+                        setQuestionForm((prev) => ({
+                          ...prev,
+                          question: e.target.value,
+                        }))
+                      }
+                      placeholder="What would you like to know?"
+                      className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700 resize-none"
+                      rows={4}
+                      required
+                    />
                   </div>
 
-                  {/* Form Content */}
-                  <div className="space-y-4">
-                    {/* Question */}
+                  {/* Subject + Unit */}
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-neutral-400 mb-2">
-                        Question
-                      </label>
-                      <textarea
-                        value={questionForm.question}
-                        onChange={(e) =>
-                          setQuestionForm((prev) => ({
-                            ...prev,
-                            question: e.target.value,
-                          }))
-                        }
-                        placeholder="What would you like to know?"
-                        className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700 resize-none"
-                        rows={4}
-                        required
-                      />
-                    </div>
-
-                    {/* Subject + Unit */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-neutral-400 mb-2">
-                          Subject
-                        </label>
-                        <input
-                          type="text"
-                          value={questionForm.subject}
-                          onChange={(e) =>
-                            setQuestionForm((prev) => ({
-                              ...prev,
-                              subject: e.target.value,
-                            }))
-                          }
-                          placeholder="e.g., Data Structures"
-                          className="w-full px-4 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-neutral-400 mb-2">
-                          Unit
-                        </label>
-                        <input
-                          type="text"
-                          value={questionForm.unit}
-                          onChange={(e) =>
-                            setQuestionForm((prev) => ({
-                              ...prev,
-                              unit: e.target.value,
-                            }))
-                          }
-                          placeholder="e.g., Unit 3"
-                          className="w-full px-4 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    {/* Tags */}
-                    <div>
-                      <label className="block text-sm font-medium text-neutral-400 mb-2">
-                        Tags (comma separated)
+                        Subject
                       </label>
                       <input
                         type="text"
-                        value={questionForm.tags}
+                        list="branches"
+                        value={questionForm.subject}
                         onChange={(e) =>
                           setQuestionForm((prev) => ({
                             ...prev,
-                            tags: e.target.value,
+                            subject: e.target.value,
                           }))
                         }
-                        placeholder="e.g., Python, BST, Algorithms"
+                        placeholder="e.g., Data Structures"
                         className="w-full px-4 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700"
                         required
                       />
+                      <datalist id="branches">
+                        {availableSubjects.map((subject, index) => (
+                          <option key={index} value={subject} />
+                        ))}
+                      </datalist>
                     </div>
+                    <div>
+                      <label className="block text-sm font-medium text-neutral-400 mb-2">
+                        Unit
+                      </label>
+                      <input
+                        type="number"
+                        list="units"
+                        min={1}
+                        max={5}
+                        value={questionForm.unit}
+                        onChange={(e) =>
+                          setQuestionForm((prev) => ({
+                            ...prev,
+                            unit: e.target.value,
+                          }))
+                        }
+                        placeholder="e.g., Unit 3"
+                        className="w-full px-4 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700"
+                        required
+                      />
+                      <datalist id="units">
+                        {[1, 2, 3, 4, 5].map((unit) => (
+                          <option key={unit} value={unit} />
+                        ))}
+                      </datalist>
+                      <></>
+                    </div>
+                  </div>
 
-                    {/* Image Upload */}
-                    {/* <div>
+                  {/* Tags */}
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-400 mb-2">
+                      Tags (comma separated)
+                    </label>
+                    <input
+                      type="text"
+                      value={questionForm.tags}
+                      onChange={(e) =>
+                        setQuestionForm((prev) => ({
+                          ...prev,
+                          tags: e.target.value,
+                        }))
+                      }
+                      placeholder="e.g., Python, BST, Algorithms"
+                      className="w-full px-4 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700"
+                      required
+                    />
+                  </div>
+
+                  {/* Image Upload */}
+                  {/* <div>
                       <label className="block text-sm font-medium text-neutral-400 mb-2">
                         Attach Image (Optional)
                       </label>
@@ -715,36 +751,35 @@ const Dashboard = () => {
                         />
                       )}
                     </div> */}
-                  </div>
+                </div>
 
-                  {/* Buttons */}
-                  <div className="flex gap-3 mt-6">
-                    <button
-                      type="submit"
-                      className="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
-                    >
-                      Post Question
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowQuestionModal(false);
-                        setQuestionForm({
-                          question: "",
-                          subject: "",
-                          unit: "",
-                          tags: "",
-                          image: null,
-                        });
-                      }}
-                      className="px-6 py-2.5 text-sm font-medium text-neutral-400 bg-neutral-950 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </motion.div>
-            </>
-          )}
+                {/* Buttons */}
+                <div className="flex gap-3 mt-6">
+                  <button
+                    type="submit"
+                    className="flex-1 px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
+                  >
+                    Post Question
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowQuestionModal(false);
+                      setQuestionForm({
+                        question: "",
+                        subject: "",
+                        unit: "",
+                        tags: "",
+                        image: null,
+                      });
+                    }}
+                    className="px-6 py-2.5 text-sm font-medium text-neutral-400 bg-neutral-950 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </>
         </AnimatePresence>
       )}
 

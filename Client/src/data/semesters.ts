@@ -1,5 +1,5 @@
 const semestersData = {
-  "Computer Science Engineering": {
+  "Computer Science and Engineering": {
     "Semester 1": {
       "Engineering Mathematics-1": [
         "Unit 1",
