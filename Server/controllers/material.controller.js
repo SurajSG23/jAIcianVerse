@@ -171,9 +171,7 @@ const storeCloudinary = async (text, subjectId, unitId) => {
   formData.append("cloud_name", process.env.CLOUD_NAME);
 
   const response = await axios.post(
-    `https://api.cloudinary.com/v1_1/${
-      process.env.CLOUD_NAME
-    }/raw/upload`,
+    `https://api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/raw/upload`,
     formData
   );
 
@@ -187,7 +185,7 @@ const storeCloudinary = async (text, subjectId, unitId) => {
 };
 
 const generateSummary = asyncHandler(async (req, res) => {
-  const { subjectId, unitId } = req.query;
+  const { subjectId, unitId, selectedSubject } = req.query;
 
   if (!subjectId || !unitId) {
     res.status(400);
@@ -242,9 +240,9 @@ const generateSummary = asyncHandler(async (req, res) => {
   }
 
   // LOG FINAL CONTEXT
-  console.log("🔹 SUMMARY 🔹");
+  console.log("SUMMARY: ");
 
-  let context = "";
+  let context = "SUBJECT: " + selectedSubject + "\n";
 
   contextParas.forEach((item, i) => {
     context += `Source ${i + 1}: \n${item.context}\n\n`;
@@ -265,7 +263,8 @@ const generateSummary = asyncHandler(async (req, res) => {
   //   console.error("Gemini API error:", error.message);
   //   res.status(500).json({ error: "Failed to generate summary" });
   // }
-
+  console.log(context);
+  
   try {
     const prompt = summaryPrompt(context);
     const text = await generateWithOpenRouter([

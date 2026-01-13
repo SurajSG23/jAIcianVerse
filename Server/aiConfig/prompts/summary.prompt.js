@@ -6,6 +6,7 @@ The paragraphs may come from different files and random sections, but all belong
 
 Task:
 - Write ONLY the summary content.
+- The content should ONLY be related to the subject name provided.
 - Generate a clear, coherent summary of approximately 150 words.
 - Combine overlapping ideas instead of listing them.
 - Ignore repetition and unnecessary examples.

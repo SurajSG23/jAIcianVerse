@@ -127,6 +127,7 @@ const AIAvatar: React.FC<Props> = ({
           params: {
             subjectId,
             unitId,
+            selectedSubject,
           },
           withCredentials: true,
         }
