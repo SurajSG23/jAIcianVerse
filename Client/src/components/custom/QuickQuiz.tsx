@@ -266,6 +266,8 @@ const StudyHub: React.FC<Props> = ({
   }, []);
 
   const GenerateQuestions = async () => {
+    console.log("Called");
+
     setLoading(true);
     try {
       const idResponse = await axios.get(
@@ -294,7 +296,7 @@ const StudyHub: React.FC<Props> = ({
 
       const raw = response.data.questions;
       console.log(raw);
-      
+
       const cleanJson = raw
         .replace(/```json\s*/i, "")
         .replace(/```/g, "")

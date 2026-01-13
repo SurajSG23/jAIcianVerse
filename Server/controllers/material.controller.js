@@ -178,12 +178,11 @@ const storeCloudinary = async (text, subjectId, unitId) => {
 
   const fileUrl = response.data.secure_url;
 
-  const summary = await Summary.create({
+  await Summary.create({
     fileUrl,
     subjectId,
     unitId,
   });
-  return summary;
 };
 
 const generateSummary = asyncHandler(async (req, res) => {
@@ -226,10 +225,7 @@ const generateSummary = asyncHandler(async (req, res) => {
 
   for (const material of materials) {
     try {
-      const paras = await extractRandomParasFromPdf(
-        material.fileUrl,
-        3
-      );
+      const paras = await extractRandomParasFromPdf(material.fileUrl, 3);
       if (paras) {
         context += paras + "\n\n";
       }
@@ -247,9 +243,7 @@ const generateSummary = asyncHandler(async (req, res) => {
 
   const summaryText = useGemini
     ? (await geminiModel.generateContent(prompt)).response?.text()
-    : await generateWithOpenRouter([
-        { role: "user", content: prompt },
-      ]);
+    : await generateWithOpenRouter([{ role: "user", content: prompt }]);
 
   // Store summary ONCE
   await storeCloudinary(summaryText, subjectId, unitId);
@@ -261,10 +255,9 @@ const generateSummary = asyncHandler(async (req, res) => {
   });
 });
 
-
 const generateMCQ = asyncHandler(async (req, res) => {
   const { subjectId, unitId } = req.query;
-  const useGemini = false; 
+  const useGemini = false;
 
   if (!subjectId || !unitId) {
     res.status(400);
@@ -280,7 +273,7 @@ const generateMCQ = asyncHandler(async (req, res) => {
   }
 
   // Get or create summary
-  let summaryText;
+  let summaryText = "";
 
   const existingSummary = await Summary.findOne({ subjectId, unitId });
 
@@ -297,10 +290,7 @@ const generateMCQ = asyncHandler(async (req, res) => {
 
     for (const material of materials) {
       try {
-        const paras = await extractRandomParasFromPdf(
-          material.fileUrl,
-          3
-        );
+        const paras = await extractRandomParasFromPdf(material.fileUrl, 3);
         if (paras) {
           context += paras + "\n\n";
         }
@@ -317,18 +307,7 @@ const generateMCQ = asyncHandler(async (req, res) => {
 
     summaryText = useGemini
       ? (await geminiModel.generateContent(prompt)).response?.text()
-      : await generateWithOpenRouter([
-          { role: "user", content: prompt },
-        ]);
-
-    const storedSummary = await storeCloudinary(
-      summaryText,
-      subjectId,
-      unitId
-    );
-
-    const response = await fetch(storedSummary.fileUrl);
-    summaryText = await response.text();
+      : await generateWithOpenRouter([{ role: "user", content: prompt }]);
   }
 
   // Generate MCQs from summary
@@ -336,17 +315,15 @@ const generateMCQ = asyncHandler(async (req, res) => {
 
   const mcqText = useGemini
     ? (await geminiModel.generateContent(mcqPromptText)).response?.text()
-    : await generateWithOpenRouter([
-        { role: "user", content: mcqPromptText },
-      ]);
+    : await generateWithOpenRouter([{ role: "user", content: mcqPromptText }]);
 
   // Return response
   res.status(200).json({
     message: "Questions generated successfully",
     questions: mcqText,
   });
+  await storeCloudinary(summaryText, subjectId, unitId);
 });
-
 
 export const getUserNotes = asyncHandler(async (req, res) => {
   const userId = req.user._id;
