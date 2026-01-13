@@ -21,6 +21,7 @@
     "mongoose": "^8.19.2",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
+    "node-fetch": "^3.3.2",
     "path": "^0.12.7",
     "pdf-parse": "^2.4.5",
     "pdfjs-dist": "^5.4.530",
