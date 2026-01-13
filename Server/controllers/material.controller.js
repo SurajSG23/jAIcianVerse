@@ -7,7 +7,9 @@ import mongoose from "mongoose";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import { geminiModel } from "../aiConfig/config/gemini.config.js";
 import { generateWithOpenRouter } from "../aiConfig/config/openrouter.config.ts";
-import summaryPrompt from "../gemini/prompts/summary.prompt.js";
+import summaryPrompt from "../aiConfig/prompts/summary.prompt.js";
+import Summary from "../models/unitSummary.model.js";
+import axios from "axios";
 
 const sanitizeFileName = (filename) => {
   return filename.replace(/[.#$[\]]/g, "_").replace(/\s+/g, "_");
@@ -129,7 +131,7 @@ const getRandomPages = (totalPages, count) => {
   return pages.sort(() => 0.5 - Math.random()).slice(0, count);
 };
 
-const extractRandomParasFromPdf = async (pdfUrl, paraCount = 3) => {
+const extractRandomParasFromPdf = async (pdfUrl, paraCount = 5) => {
   const response = await fetch(pdfUrl);
   const buffer = await response.arrayBuffer();
 
@@ -140,7 +142,7 @@ const extractRandomParasFromPdf = async (pdfUrl, paraCount = 3) => {
 
   const pagesToRead = getRandomPages(
     pdf.numPages,
-    Math.min(5, pdf.numPages) // read 5 random pages max
+    Math.min(10, pdf.numPages) // read 5 random pages max
   );
 
   for (const pageNum of pagesToRead) {
@@ -157,6 +159,33 @@ const extractRandomParasFromPdf = async (pdfUrl, paraCount = 3) => {
   return pickRandom(paragraphs, paraCount).join("\n\n");
 };
 
+const storeCloudinary = async (text, subjectId, unitId) => {
+  const textBlob = new Blob([text], { type: "text/plain" });
+  const textFile = new File([textBlob], `summary-${Date.now()}.txt`, {
+    type: "text/plain",
+  });
+
+  const formData = new FormData();
+  formData.append("file", textFile);
+  formData.append("upload_preset", process.env.CLOUD_PRESET_NAME);
+  formData.append("cloud_name", process.env.CLOUD_NAME);
+
+  const response = await axios.post(
+    `https://api.cloudinary.com/v1_1/${
+      process.env.CLOUD_NAME
+    }/raw/upload`,
+    formData
+  );
+
+  const fileUrl = response.data.secure_url;
+
+  await Summary.create({
+    fileUrl,
+    subjectId,
+    unitId,
+  });
+};
+
 const generateSummary = asyncHandler(async (req, res) => {
   const { subjectId, unitId } = req.query;
 
@@ -165,6 +194,20 @@ const generateSummary = asyncHandler(async (req, res) => {
     throw new Error("subjectId and unitId are required");
   }
 
+  const existingSummary = await Summary.findOne({
+    subjectId,
+    unitId,
+  });
+
+  if (existingSummary) {
+    const response = await fetch(existingSummary.fileUrl);
+    const text = await response.text();
+
+    return res.status(200).json({
+      message: "Summary generated successfully",
+      summary: text,
+    });
+  }
   if (
     !mongoose.Types.ObjectId.isValid(subjectId) ||
     !mongoose.Types.ObjectId.isValid(unitId)
@@ -236,6 +279,9 @@ const generateSummary = asyncHandler(async (req, res) => {
       message: "Summary generated successfully",
       summary: text,
     });
+
+    storeCloudinary(text, subjectId, unitId);
+
     console.log(text);
   } catch (error) {
     console.error("Gemini API error:", error.message);

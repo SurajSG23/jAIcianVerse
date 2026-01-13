@@ -25,7 +25,7 @@ export const generateWithOpenRouter = async (messages) => {
   const completion = await openRouter.chat.send({
     ...openRouterModel,
     messages,
-    stream: true,
+    stream: false,
   });
 
   return completion.choices[0].message.content;
