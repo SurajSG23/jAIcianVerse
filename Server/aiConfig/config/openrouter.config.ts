@@ -15,7 +15,7 @@ const openRouter = new OpenRouter({
 });
 
 export const openRouterModel = {
-  model: "deepseek/deepseek-r1-0528:free",
+  model: "xiaomi/mimo-v2-flash:free",
   temperature: 0.6,
   max_tokens: 300,
   top_p: 0.9,

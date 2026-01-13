@@ -257,7 +257,7 @@ const generateSummary = asyncHandler(async (req, res) => {
 
 const generateMCQ = asyncHandler(async (req, res) => {
   const { subjectId, unitId } = req.query;
-  const useGemini = false;
+  const useGemini = true;
 
   if (!subjectId || !unitId) {
     res.status(400);
