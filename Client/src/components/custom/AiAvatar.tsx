@@ -6,7 +6,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 interface Props {
-  setIsStdudyHubVisible: (visible: boolean) => void;
+  setIsAiTeacherVisible: (visible: boolean) => void;
   selectedUnit: string | null;
   selectedSubject: string | null;
 }
@@ -339,7 +339,7 @@ const AIAvatar: React.FC<Props> = ({
             <div className="max-w-7xl w-full">
               {/* Header Section */}
               <div className="text-center mb-12">
-                <h1 className="text-5xl font-bold text-white mb-3">
+                <h1 className="text-3xl font-bold text-white mb-3">
                   {selectedSubject}
                 </h1>
                 <p className="text-base text-gray-400">{selectedUnit}</p>

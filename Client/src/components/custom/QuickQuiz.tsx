@@ -35,7 +35,7 @@ interface Props {
 }
 
 const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
-    useDetectTabSwitch();
+  useDetectTabSwitch();
   const [currentTime, setCurrentTime] = useState(10 * 60);
   const [userAnswers, setUserAnswers] = useState<(string | null)[]>(
     Array(10).fill(null)
@@ -52,6 +52,123 @@ const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
   const [submitConfirmation, setSubmitConfirmation] = useState(false);
   const [scoreBoard, setScoreBoard] = useState(false);
   const [score, setScore] = useState<number>(0);
+  const result = `
+    {
+      "questions": [
+        {
+          "question": "Software engineering primarily focuses on which aspect of software development?",
+          "options": [
+            "Quality assurance",
+            "Project management",
+            "Programming",
+            "Design"
+          ],
+          "answer": "Design",
+          "explanation": "Design focuses on structuring and organizing software components to meet user requirements."
+        },
+        {
+          "question": "Which statement best defines software engineering?",
+          "options": [
+            "Writing code quickly",
+            "Testing software manually",
+            "Process of creating, testing, and maintaining software systematically",
+            "Using tools to automate software creation"
+          ],
+          "answer": "Process of creating, testing, and maintaining software systematically",
+          "explanation": "Software engineering is a systematic approach that covers the entire software lifecycle."
+        },
+        {
+          "question": "Which of the following is NOT a phase of the software development life cycle (SDLC)?",
+          "options": [
+            "Planning",
+            "Design",
+            "Shopping",
+            "Testing"
+          ],
+          "answer": "Shopping",
+          "explanation": "Shopping is unrelated to software development processes and is not part of SDLC."
+        },
+        {
+          "question": "The main goal of requirement analysis in software engineering is to?",
+          "options": [
+            "Identify what the software must do",
+            "Build the software architecture",
+            "Deploy the system",
+            "Maintain existing code"
+          ],
+          "answer": "Identify what the software must do",
+          "explanation": "Requirement analysis defines the functional and non-functional needs of users."
+        },
+        {
+          "question": "Which software development model is also known as the linear-sequential model?",
+          "options": [
+            "Waterfall model",
+            "Spiral model",
+            "Prototyping model",
+            "Agile model"
+          ],
+          "answer": "Waterfall model",
+          "explanation": "The waterfall model follows a linear sequence of development phases."
+        },
+        {
+          "question": "What is the primary advantage of the prototyping model?",
+          "options": [
+            "Allows early user feedback",
+            "Reduces cost completely",
+            "Eliminates testing",
+            "Avoids user interaction"
+          ],
+          "answer": "Allows early user feedback",
+          "explanation": "Prototyping helps users evaluate early versions and refine requirements."
+        },
+        {
+          "question": "Which activity mainly ensures software quality during development?",
+          "options": [
+            "Code formatting",
+            "Software testing",
+            "Debugging",
+            "Documentation"
+          ],
+          "answer": "Software testing",
+          "explanation": "Testing verifies and validates software to ensure quality standards are met."
+        },
+        {
+          "question": "Who is primarily responsible for ensuring that software meets customer requirements?",
+          "options": [
+            "Project manager",
+            "Client",
+            "Software engineer",
+            "Database administrator"
+          ],
+          "answer": "Software engineer",
+          "explanation": "Software engineers translate customer requirements into working software."
+        },
+        {
+          "question": "Software maintenance mainly involves which of the following activities?",
+          "options": [
+            "Planning new software",
+            "Hiring developers",
+            "Designing new interfaces",
+            "Bug fixing and updating"
+          ],
+          "answer": "Bug fixing and updating",
+          "explanation": "Maintenance focuses on correcting defects and improving existing software."
+        },
+        {
+          "question": "Which of the following is a characteristic of good software?",
+          "options": [
+            "Complexity",
+            "Unreliability",
+            "Efficiency",
+            "Ambiguity"
+          ],
+          "answer": "Efficiency",
+          "explanation": "Efficient software uses resources optimally while delivering required functionality."
+        }
+      ]
+    }
+
+`;
 
   useEffect(() => {
     if (currentTime <= 0) return;
@@ -144,84 +261,30 @@ const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
   const GenerateQuestions = async () => {
     setLoading(true);
     try {
-      const result = `
-        <questions>
-        Software engineering primarily focuses on which of the following aspects of software development?***
-        Which of the following best defines software engineering?***
-        Which of the following is NOT a phase of the software development life cycle (SDLC)?***
-        The main goal of requirement analysis in software engineering is to?***
-        Which model is also known as the linear-sequential model in software development?***
-        What is the primary advantage of the prototyping model?***
-        Which of the following ensures software quality during development?***
-        Who is responsible for ensuring that software meets customer requirements?***
-        What does software maintenance mainly involve?***
-        Which of the following is a characteristic of good software?***
-        <questions>
+      const parsed = JSON.parse(result);
 
-        <options>
-        Quality assurance@*@Project management@*@Programming@*@Design ***
-        Process of creating, testing, and maintaining software systematically@*@Writing code quickly@*@Using tools to automate software creation@*@Testing software manually ***
-        Planning@*@Design@*@Shopping@*@Testing ***
-        Identify what the software must do@*@Build software architecture@*@Deploy the system@*@Maintain existing code ***
-        Waterfall model@*@Spiral model@*@Prototype model@*@Agile model ***
-        Allows early user feedback@*@Reduces cost completely@*@Eliminates testing@*@Avoids user interaction ***
-        Software testing@*@Code formatting@*@Debugging@*@Documentation ***
-        Project manager@*@Client@*@Software engineer@*@Database administrator ***
-        Bug fixing and updating@*@Planning new software@*@Hiring developers@*@Designing new interfaces ***
-        Complexity@*@Unreliability@*@Efficiency@*@Ambiguity ***
-        <options>
+      if (!parsed?.questions || !Array.isArray(parsed.questions)) {
+        throw new Error("Invalid Gemini response format");
+      }
 
-        <answers>
-        Design ***
-        Process of creating, testing, and maintaining software systematically ***
-        Shopping ***
-        Identify what the software must do ***
-        Waterfall model ***
-        Allows early user feedback ***
-        Software testing ***
-        Software engineer ***
-        Bug fixing and updating ***
-        Efficiency ***
-        <answers>
+      const geminiQues = parsed.questions.map((q) => q.question);
+      const geminiOps = parsed.questions.map((q) => q.options);
+      const geminiAns = parsed.questions.map((q) => q.answer);
+      const geminiExp = parsed.questions.map((q) => q.explanation);
 
-        <explaination>
-        Design focuses on how software components interact to meet user needs. ***
-        Software engineering is a systematic approach involving analysis, design, testing, and maintenance. ***
-        Shopping is not part of the SDLC; it’s unrelated to development processes. ***
-        Requirement analysis defines functional and non-functional expectations from users. ***
-        The waterfall model is also called the linear-sequential model. ***
-        The prototyping model provides early user feedback to refine requirements. ***
-        Software testing ensures software quality through verification and validation. ***
-        Software engineers ensure that software fulfills customer requirements. ***
-        Software maintenance involves fixing bugs and updating features. ***
-        Efficiency is a key quality attribute of well-designed software. ***
-        <explaination>
-        `;
-      const geminiQues = result
-        ?.split("<questions>")[1]
-        .split("</questions>")[0]
-        .split("***")
-        .map((question) => question.trim())
-        .filter(Boolean);
-      setGeminiQuestions(geminiQues ?? []);
+      parsed.questions.forEach((q, index) => {
+        if (q.options.length !== 4) {
+          throw new Error(`Question ${index + 1} does not have 4 options`);
+        }
+        if (!q.options.includes(q.answer)) {
+          throw new Error(`Answer mismatch in question ${index + 1}`);
+        }
+      });
 
-      const geminiOps = result
-        ?.split("<options>")[1]
-        .split("***")
-        .map((option) => option.trim().split("@*@"));
-      setGeminiOptions(geminiOps ?? []);
-
-      const geminiAns = result
-        ?.split("<answers>")[1]
-        .split("***")
-        .map((answer) => answer.trim());
-      setGeminiAnswers(geminiAns ?? []);
-
-      const geminiExp = result
-        ?.split("<explaination>")[1]
-        .split("***")
-        .map((answer) => answer.trim());
-      setGeminiExplaination(geminiExp ?? []);
+      setGeminiQuestions(geminiQues);
+      setGeminiOptions(geminiOps);
+      setGeminiAnswers(geminiAns);
+      setGeminiExplaination(geminiExp);
     } catch (error) {
       console.error("Error generating questions:", error);
     } finally {
