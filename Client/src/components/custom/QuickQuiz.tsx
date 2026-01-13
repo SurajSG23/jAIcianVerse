@@ -12,6 +12,7 @@ import BottomGradient from "../ui/buttonGradient";
 import { RxCross1 } from "react-icons/rx";
 import { FaCheck } from "react-icons/fa";
 import useDetectTabSwitch from "../ui/useDetectTabSwitch";
+import axios from "axios";
 
 interface Unit {
   _id: string;
@@ -31,10 +32,15 @@ interface Material {
 
 interface Props {
   setIsQuickQuizVisible: (visible: boolean) => void;
-  selectedUnit: Unit | null;
+  selectedUnit: string | null;
+  selectedSubject: string | null;
 }
 
-const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
+const StudyHub: React.FC<Props> = ({
+  setIsQuickQuizVisible,
+  selectedUnit,
+  selectedSubject,
+}) => {
   useDetectTabSwitch();
   const [currentTime, setCurrentTime] = useState(10 * 60);
   const [userAnswers, setUserAnswers] = useState<(string | null)[]>(
@@ -261,6 +267,30 @@ const StudyHub: React.FC<Props> = ({ setIsQuickQuizVisible, selectedUnit }) => {
   const GenerateQuestions = async () => {
     setLoading(true);
     try {
+      const idResponse = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/materials/fetchSubjectUnitID`,
+        {
+          params: {
+            subjectName: selectedSubject,
+            unitName: selectedUnit,
+          },
+          withCredentials: true,
+        }
+      );
+
+      const { subjectId, unitId } = idResponse.data;
+
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/materials/generateMCQ`,
+        {
+          params: {
+            subjectId,
+            unitId,
+          },
+          withCredentials: true,
+        }
+      );
+
       const parsed = JSON.parse(result);
 
       if (!parsed?.questions || !Array.isArray(parsed.questions)) {

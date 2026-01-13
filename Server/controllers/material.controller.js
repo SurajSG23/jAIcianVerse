@@ -8,6 +8,7 @@ import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import { geminiModel } from "../aiConfig/config/gemini.config.js";
 import { generateWithOpenRouter } from "../aiConfig/config/openrouter.config.ts";
 import summaryPrompt from "../aiConfig/prompts/summary.prompt.js";
+import mcqPrompt from "../aiConfig/prompts/mcq.prompt.js";
 import Summary from "../models/unitSummary.model.js";
 import axios from "axios";
 
@@ -186,10 +187,16 @@ const storeCloudinary = async (text, subjectId, unitId) => {
 
 const generateSummary = asyncHandler(async (req, res) => {
   const { subjectId, unitId, selectedSubject } = req.query;
-
   if (!subjectId || !unitId) {
     res.status(400);
     throw new Error("subjectId and unitId are required");
+  }
+  if (
+    !mongoose.Types.ObjectId.isValid(subjectId) ||
+    !mongoose.Types.ObjectId.isValid(unitId)
+  ) {
+    res.status(400);
+    throw new Error("Invalid subjectId or unitId");
   }
 
   const existingSummary = await Summary.findOne({
@@ -205,13 +212,6 @@ const generateSummary = asyncHandler(async (req, res) => {
       message: "Summary generated successfully",
       summary: text,
     });
-  }
-  if (
-    !mongoose.Types.ObjectId.isValid(subjectId) ||
-    !mongoose.Types.ObjectId.isValid(unitId)
-  ) {
-    res.status(400);
-    throw new Error("Invalid subjectId or unitId");
   }
 
   const materials = await Material.find({
@@ -291,6 +291,120 @@ const generateSummary = asyncHandler(async (req, res) => {
   }
 });
 
+const generateMCQ = asyncHandler(async (req, res) => {
+  const { subjectId, unitId } = req.query;
+
+  if (!subjectId || !unitId) {
+    res.status(400);
+    throw new Error("subjectId and unitId are required");
+  }
+  if (
+    !mongoose.Types.ObjectId.isValid(subjectId) ||
+    !mongoose.Types.ObjectId.isValid(unitId)
+  ) {
+    res.status(400);
+    throw new Error("Invalid subjectId or unitId");
+  }
+
+  const existingSummary = await Summary.findOne({
+    subjectId,
+    unitId,
+  });
+
+  if (existingSummary) {
+    const response = await fetch(existingSummary.fileUrl);
+    const responseText = await response.text();
+    const prompt = mcqPrompt(responseText);
+    const text = await generateWithOpenRouter([
+      {
+        role: "user",
+        content: prompt,
+      },
+    ]);
+
+    return res.status(200).json({
+      message: "MCQ generated successfully",
+      questions: text,
+    });
+  }
+
+  const materials = await Material.find({
+    subject: subjectId,
+    unit: unitId,
+  }).limit(4); // READ ONLY 4 FILES
+
+  let contextParas = [];
+
+  for (const material of materials) {
+    try {
+      const context = await extractRandomParasFromPdf(
+        material.fileUrl,
+        3 // 3 paras per file
+      );
+
+      if (context) {
+        contextParas.push({
+          source: material.fileUrl,
+          context,
+        });
+      }
+    } catch (err) {
+      console.error("PDF read failed:", material.fileUrl);
+    }
+  }
+
+  // LOG FINAL CONTEXT
+  console.log("SUMMARY: ");
+
+  let context = "SUBJECT: " + selectedSubject + "\n";
+
+  contextParas.forEach((item, i) => {
+    context += `Source ${i + 1}: \n${item.context}\n\n`;
+  });
+
+  const useGemini = false;
+
+  if (useGemini) {
+    try {
+      const prompt = mcqPrompt(context);
+
+      const result = await geminiModel.generateContent(prompt);
+      const text = result.response?.text();
+
+      res.status(200).json({
+        message: "Summary generated successfully",
+        questions: text,
+      });
+      console.log(text);
+    } catch (error) {
+      console.error("Gemini API error:", error.message);
+      res.status(500).json({ error: "Failed to generate summary" });
+    }
+  } else {
+    try {
+      const prompt = mcqPrompt(context);
+      const text = await generateWithOpenRouter([
+        {
+          role: "user",
+          content: prompt,
+        },
+      ]);
+
+      res.status(200).json({
+        message: "Summary generated successfully",
+        questions: text,
+      });
+
+      storeCloudinary(text, subjectId, unitId);
+
+      console.log(text);
+    } catch (error) {
+      console.error("Gemini API error:", error.message);
+      res.status(500).json({ error: "Failed to generate summary" });
+    }
+  }
+});
+
 export const getUserNotes = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
@@ -311,4 +425,5 @@ export default {
   getMaterials,
   getUserNotes,
   generateSummary,
+  generateMCQ,
 };

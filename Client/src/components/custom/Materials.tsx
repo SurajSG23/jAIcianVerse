@@ -649,7 +649,8 @@ const Materials = () => {
       {isQuickQuizVisible && (
         <QuickQuiz
           setIsQuickQuizVisible={setIsQuickQuizVisible}
-          selectedUnit={selectedUnit}
+          selectedUnit={selectedUnit?.name || ""}
+          selectedSubject={selectedSubject?.name || ""}
         />
       )}
     </div>
