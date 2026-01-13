@@ -335,122 +335,116 @@ const AIAvatar: React.FC<Props> = ({
         `}
           </style>
 
-          <div className="max-w-7xl w-full flex flex-col justify-center items-center gap-2">
-            <p className="text-4xl font-bold">{selectedUnit?.title}</p>
-            <p className="text-sm text-gray-400">{selectedUnit?.description}</p>
-            {/* Main Content Grid */}
-            <div className="grid lg:grid-cols-2 gap-3 lg:gap-8">
-              <div className="flex flex-col justify-center">
-                <div className="relative">
-                  {/* Decorative corners */}
-                  <div className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-orange-500/50 rounded-tl-lg"></div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 border-t-2 border-r-2 border-orange-500/50 rounded-tr-lg"></div>
-                  <div className="absolute -bottom-2 -left-2 w-8 h-8 border-b-2 border-l-2 border-orange-500/50 rounded-bl-lg"></div>
-                  <div className="absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 border-orange-500/50 rounded-br-lg"></div>
+          <div className="min-h-screen  flex items-center justify-center p-4">
+            <div className="max-w-7xl w-full">
+              {/* Header Section */}
+              <div className="text-center mb-12">
+                <h1 className="text-5xl font-bold text-white mb-3">
+                  {selectedSubject}
+                </h1>
+                <p className="text-base text-gray-400">{selectedUnit}</p>
+              </div>
 
-                  <div className="relative bg-neutral-900 backdrop-blur-xl rounded-2xl p-8 border border-orange-500/20 min-h-[400px] flex items-center justify-center">
-                    <div className="relative z-10 w-full">
-                      {textDisplaying ? (
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-2 mb-4">
-                            <div className="flex gap-1">
-                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
-                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-150"></div>
-                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-300"></div>
-                            </div>
-                            <span className="text-xs font-semibold text-orange-300 uppercase tracking-wider">
-                              Live Transcript
-                            </span>
+              {/* Main Content Grid */}
+              <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                {/* Transcript Display */}
+                <div className="w-full">
+                  <div className="relative">
+                    {/* Decorative corners */}
+                    <div className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-orange-500/50 rounded-tl-lg"></div>
+                    <div className="absolute -top-2 -right-2 w-8 h-8 border-t-2 border-r-2 border-orange-500/50 rounded-tr-lg"></div>
+                    <div className="absolute -bottom-2 -left-2 w-8 h-8 border-b-2 border-l-2 border-orange-500/50 rounded-bl-lg"></div>
+                    <div className="absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 border-orange-500/50 rounded-br-lg"></div>
+
+                    <div className="relative bg-neutral-900 backdrop-blur-xl rounded-2xl p-10 border border-orange-500/20 min-h-[450px] flex items-center justify-center">
+                      <div className="w-full">
+                        {/* Live Indicator */}
+                        <div className="flex items-center gap-2 mb-6">
+                          <div className="flex gap-1">
+                            <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
+                            <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-150"></div>
+                            <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-300"></div>
                           </div>
-
-                          <p className="text-lg md:text-xl leading-relaxed text-gray-100 font-light h-80 overflow-y-auto">
-                            {textDisplaying}
-                            <div ref={messagesEndRef} />
-                          </p>
+                          <span className="text-xs font-semibold text-orange-300 uppercase tracking-wider">
+                            Live Transcript
+                          </span>
                         </div>
-                      ) : (
-                        <div className="text-center space-y-6 flex flex-col justify-center items-center">
-                          <div className="flex items-center gap-2 mb-4">
-                            <div className="flex gap-1">
-                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
-                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-150"></div>
-                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-300"></div>
-                            </div>
-                            <span className="text-xs font-semibold text-orange-300 uppercase tracking-wider">
-                              Live Transcript
-                            </span>
+
+                        {textDisplaying ? (
+                          <div className="h-80 overflow-y-auto pr-2">
+                            <p className="text-lg md:text-xl leading-relaxed text-gray-100 font-light">
+                              {textDisplaying}
+                              <div ref={messagesEndRef} />
+                            </p>
                           </div>
-
-                          <p className="text-xl text-gray-300 font-medium mb-2">
-                            Ready to Learn
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Press the speak button to begin your lesson
-                          </p>
-                        </div>
-                      )}
+                        ) : (
+                          <div className="h-80 flex flex-col items-center justify-center text-center space-y-4">
+                            <p className="text-2xl text-gray-300 font-medium">
+                              Ready to Learn
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              Press the speak button to begin your lesson
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex flex-col justify-center">
-                {/* Controls */}
-                <div className="mt-6 flex justify-center gap-3">
-                  {!isSpeaking ? (
-                    <button
-                      disabled={isGenerating || isSpeaking}
-                      className="group/btn relative block h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
-                      onClick={speakText}
-                    >
-                      {isGenerating ? (
-                        <>
-                          <Loader className="w-5 h-5 animate-spin" />
-                          Generating summary...
-                        </>
-                      ) : (
-                        <>
-                          <Play className="w-5 h-5" />
-                          Start Speaking
-                        </>
-                      )}
 
-                      <BottomGradient />
-                    </button>
-                  ) : (
-                    <>
+                {/* Controls Section */}
+                <div className="w-full flex items-center justify-center lg:justify-start">
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    {!isSpeaking ? (
                       <button
-                        className="group/btn relative block h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
-                        onClick={togglePause}
+                        disabled={isGenerating || isSpeaking}
+                        className="group/btn relative h-12 px-8 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        onClick={speakText}
                       >
-                        <span className="flex items-center gap-2">
+                        {isGenerating ? (
+                          <>
+                            <Loader className="w-5 h-5 animate-spin" />
+                            <span>Generating summary...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Play className="w-5 h-5" />
+                            <span>Start Speaking</span>
+                          </>
+                        )}
+                        <BottomGradient />
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          className="group/btn relative h-12 px-8 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer transition-all"
+                          onClick={togglePause}
+                        >
                           {isPaused ? (
                             <>
                               <Play className="w-5 h-5" />
-                              Resume
-                              <BottomGradient />
+                              <span>Resume</span>
                             </>
                           ) : (
                             <>
                               <Pause className="w-5 h-5" />
-                              Pause
-                              <BottomGradient />
+                              <span>Pause</span>
                             </>
                           )}
-                        </span>
-                      </button>
-
-                      <button
-                        className="group/btn relative block h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
-                        onClick={stopSpeech}
-                      >
-                        <span className="flex items-center gap-2">
-                          <Square className="w-5 h-5" />
-                          Stop
                           <BottomGradient />
-                        </span>
-                      </button>
-                    </>
-                  )}
+                        </button>
+
+                        <button
+                          className="group/btn relative h-12 px-8 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer transition-all"
+                          onClick={stopSpeech}
+                        >
+                          <Square className="w-5 h-5" />
+                          <span>Stop</span>
+                          <BottomGradient />
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
