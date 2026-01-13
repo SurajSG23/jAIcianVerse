@@ -266,8 +266,6 @@ const StudyHub: React.FC<Props> = ({
   }, []);
 
   const GenerateQuestions = async () => {
-    console.log("Called");
-
     setLoading(true);
     try {
       const idResponse = await axios.get(

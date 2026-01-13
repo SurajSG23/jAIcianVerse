@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/generate", async (req, res) => {
+  console.log("Called");
   try {
     const { prompt } = req.body;
 
@@ -19,7 +20,6 @@ app.post("/generate", async (req, res) => {
 
     const response = await generateText(prompt);
     res.json({ response });
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

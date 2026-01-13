@@ -11,6 +11,7 @@ import summaryPrompt from "../aiConfig/prompts/summary.prompt.js";
 import mcqPrompt from "../aiConfig/prompts/mcq.prompt.js";
 import Summary from "../models/unitSummary.model.js";
 import axios from "axios";
+import { generateWithLocalAI } from "../aiConfig/config/localAI.js";
 
 const sanitizeFileName = (filename) => {
   return filename.replace(/[.#$[\]]/g, "_").replace(/\s+/g, "_");
@@ -184,10 +185,11 @@ const storeCloudinary = async (text, subjectId, unitId) => {
     unitId,
   });
 };
-
 const generateSummary = asyncHandler(async (req, res) => {
   const { subjectId, unitId, selectedSubject } = req.query;
-  const useGemini = false; // toggle here
+
+  const useGemini = false;
+  const useLocalModel = true;
 
   if (!subjectId || !unitId) {
     res.status(400);
@@ -202,7 +204,7 @@ const generateSummary = asyncHandler(async (req, res) => {
     throw new Error("Invalid subjectId or unitId");
   }
 
-  // Return existing summary if found
+  // Return cached summary if exists
   const existingSummary = await Summary.findOne({ subjectId, unitId });
 
   if (existingSummary) {
@@ -215,7 +217,7 @@ const generateSummary = asyncHandler(async (req, res) => {
     });
   }
 
-  // Build context from materials
+  // Build context
   const materials = await Material.find({
     subject: subjectId,
     unit: unitId,
@@ -238,26 +240,34 @@ const generateSummary = asyncHandler(async (req, res) => {
     throw new Error("No material content available");
   }
 
-  // Generate summary
+  // Prompt
   const prompt = summaryPrompt(context);
 
-  const summaryText = useGemini
-    ? (await geminiModel.generateContent(prompt)).response?.text()
-    : await generateWithOpenRouter([{ role: "user", content: prompt }]);
+  let summaryText;
 
-  // Store summary ONCE
-  await storeCloudinary(summaryText, subjectId, unitId);
-
-  // Send response
+  if (useLocalModel) {
+    summaryText = await generateWithLocalAI(prompt);
+  } else {
+    summaryText = useGemini
+      ? (await geminiModel.generateContent(prompt)).response?.text()
+      : await generateWithOpenRouter([{ role: "user", content: prompt }]);
+  }
+  console.log(summaryText);
+  
   res.status(200).json({
     message: "Summary generated successfully",
     summary: summaryText,
   });
+  
+  // Store once
+  await storeCloudinary(summaryText, subjectId, unitId);
 });
 
 const generateMCQ = asyncHandler(async (req, res) => {
   const { subjectId, unitId } = req.query;
-  const useGemini = true;
+
+  const useLocalModel = false;
+  const useGemini = false;
 
   if (!subjectId || !unitId) {
     res.status(400);
@@ -272,7 +282,6 @@ const generateMCQ = asyncHandler(async (req, res) => {
     throw new Error("Invalid subjectId or unitId");
   }
 
-  // Get or create summary
   let summaryText = "";
 
   const existingSummary = await Summary.findOne({ subjectId, unitId });
@@ -299,30 +308,43 @@ const generateMCQ = asyncHandler(async (req, res) => {
       }
     }
 
-    if (!context) {
+    if (!context.trim()) {
       throw new Error("No material content found");
     }
 
-    const prompt = summaryPrompt(context);
+    const summaryGenPrompt = summaryPrompt(context);
 
-    summaryText = useGemini
-      ? (await geminiModel.generateContent(prompt)).response?.text()
-      : await generateWithOpenRouter([{ role: "user", content: prompt }]);
+    if (useLocalModel) {
+      summaryText = await generateWithLocalAI(summaryGenPrompt);
+    } else {
+      summaryText = useGemini
+        ? (await geminiModel.generateContent(summaryGenPrompt)).response?.text()
+        : await generateWithOpenRouter([
+            { role: "user", content: summaryGenPrompt },
+          ]);
+    }
+
+    await storeCloudinary(summaryText, subjectId, unitId);
   }
 
-  // Generate MCQs from summary
   const mcqPromptText = mcqPrompt(summaryText);
 
-  const mcqText = useGemini
-    ? (await geminiModel.generateContent(mcqPromptText)).response?.text()
-    : await generateWithOpenRouter([{ role: "user", content: mcqPromptText }]);
+  let mcqText;
 
-  // Return response
+  if (useLocalModel) {
+    mcqText = await generateWithLocalAI(mcqPromptText);
+  } else {
+    mcqText = useGemini
+      ? (await geminiModel.generateContent(mcqPromptText)).response?.text()
+      : await generateWithOpenRouter([
+          { role: "user", content: mcqPromptText },
+        ]);
+  }
+
   res.status(200).json({
     message: "Questions generated successfully",
     questions: mcqText,
   });
-  await storeCloudinary(summaryText, subjectId, unitId);
 });
 
 export const getUserNotes = asyncHandler(async (req, res) => {
