@@ -85,7 +85,7 @@ const AIAvatar: React.FC<Props> = ({
       now - speechStartTimeRef.current - totalPausedDurationRef.current;
 
     const words = wordsRef.current;
-    const wordsPerSecond = 2.5;
+    const wordsPerSecond = 2.4;
     const expectedWordIndex = Math.floor((elapsedTime / 1000) * wordsPerSecond);
 
     if (
@@ -138,12 +138,13 @@ const AIAvatar: React.FC<Props> = ({
         ${" "}
         ${selectedSubject || ""}
         ${" "}
-        ${selectedUnit || ""}
+        ${selectedUnit || ""}.
         ${" "}
         ${summary.data.summary}
         `;
-
+      finalText = finalText.replace(/\s+/g, " ").trim();
       setText(finalText);
+      console.log(finalText);
     } catch (error) {
       setIsGenerating(false);
       toast.error("Failed to generate summary.");
@@ -190,7 +191,7 @@ const AIAvatar: React.FC<Props> = ({
         hasStarted = true;
         speechStartTimeRef.current = Date.now();
         startVideoPlayback();
-        subtitleIntervalRef.current = setInterval(updateSubtitles, 100);
+        subtitleIntervalRef.current = setInterval(updateSubtitles, 50);
       }
     };
 
@@ -243,7 +244,7 @@ const AIAvatar: React.FC<Props> = ({
         });
       }
 
-      subtitleIntervalRef.current = setInterval(updateSubtitles, 100);
+      subtitleIntervalRef.current = setInterval(updateSubtitles, 50);
 
       setIsPaused(false);
     } else {
