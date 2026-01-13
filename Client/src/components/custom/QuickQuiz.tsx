@@ -13,6 +13,7 @@ import { RxCross1 } from "react-icons/rx";
 import { FaCheck } from "react-icons/fa";
 import useDetectTabSwitch from "../ui/useDetectTabSwitch";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 interface Unit {
   _id: string;
@@ -41,7 +42,7 @@ const StudyHub: React.FC<Props> = ({
   selectedUnit,
   selectedSubject,
 }) => {
-  useDetectTabSwitch();
+  // useDetectTabSwitch();
   const [currentTime, setCurrentTime] = useState(10 * 60);
   const [userAnswers, setUserAnswers] = useState<(string | null)[]>(
     Array(10).fill(null)
@@ -291,7 +292,15 @@ const StudyHub: React.FC<Props> = ({
         }
       );
 
-      const parsed = JSON.parse(result);
+      const raw = response.data.questions;
+      console.log(raw);
+      
+      const cleanJson = raw
+        .replace(/```json\s*/i, "")
+        .replace(/```/g, "")
+        .trim();
+
+      const parsed = JSON.parse(cleanJson);
 
       if (!parsed?.questions || !Array.isArray(parsed.questions)) {
         throw new Error("Invalid Gemini response format");
@@ -514,7 +523,7 @@ const StudyHub: React.FC<Props> = ({
                   options, <br /> please click{" "}
                   <span
                     className="text-red-400 cursor-pointer hover:text-red-500"
-                    // onClick={GenerateQuestions}
+                    onClick={GenerateQuestions}
                   >
                     {" "}
                     here{" "}
