@@ -6,7 +6,8 @@ import connectDB from "./config/db.js";
 import userRoutes from "./routes/user.route.js";
 import discussionRoutes from "./routes/discussion.route.js";
 import materialRoutes from "./routes/material.route.js";
-import unitRoutes from "./routes/unit.route.js"
+import answerRoutes from "./routes/answer.route.js";
+import unitRoutes from "./routes/unit.route.js";
 
 connectDB();
 dotenv.config();
@@ -16,22 +17,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
-    cors({
-        origin: ["http://localhost:5173", "http://localhost:5174"],
-        credentials: true,
-    })
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:5174"],
+    credentials: true,
+  })
 );
 
 app.get("/", (req, res) => {
-    res.send("API is running");
+  res.send("API is running");
 });
 
-app.use("/api/user",userRoutes)
-app.use("/api/discussions",discussionRoutes)
-app.use("/api/materials",materialRoutes)
+app.use("/api/user", userRoutes);
+app.use("/api/discussions", discussionRoutes);
+app.use("/api/materials", materialRoutes);
+app.use("/api/answers", answerRoutes);
 
 const server = app.listen(3000, () => {
-    console.log("Server is running on port 3000");
+  console.log("Server is running on port 3000");
 });
 
 // app.use("/api/user", userRoutes);
@@ -40,7 +42,6 @@ const server = app.listen(3000, () => {
 
 // app.use(Error.notFound);
 // app.use(Error.errorHandler);
-
 
 // const io = new Server(server, {
 //     pingTimeout: 60000,

@@ -42,6 +42,7 @@ const Profile = () => {
   const [userAnnouncements, setUserAnnouncements] = useState([]);
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [announcementText, setAnnouncementText] = useState("");
+  const [totalAnswers, setTotalAnswers] = useState(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -175,11 +176,33 @@ const Profile = () => {
     }
   };
 
+  const fetchUserAnswers = async () => {
+    const userDetail = JSON.parse(localStorage.getItem("userInfo") || "{}");
+
+    if (userDetail?.role !== "student") return;
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/answers/getUserAnnouncements`,
+        {
+          headers: {
+            Authorization: `Bearer ${userDetail?.token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      setTotalAnswers(response.data.totalAnswers)
+    } catch (error) {
+      console.error("Failed to fetch user announcements", error);
+    }
+  };
+
   useEffect(() => {
     checkUser("profile");
     fetchUserDetails();
     fetchUserNotes();
     fetchUserAnnouncements();
+    fetchUserAnswers();
   }, []);
 
   const postAnnouncement = async () => {
@@ -704,7 +727,7 @@ const Profile = () => {
                           Questions Answered:
                         </span>
                         <span className="font-medium">
-                          {userDetails?.contributions?.questionsAnswered.length}
+                          {totalAnswers}
                         </span>
                       </div>
                     </div>
