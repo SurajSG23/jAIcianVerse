@@ -140,7 +140,7 @@ const updateProfile = asyncHandler(async (req, res) => {
   user.profileImage = profileImage ?? user.profileImage;
 
   const updatedUser = await user.save();
-  
+
   res.status(200).json({
     message: "Profile updated successfully",
     user: {
@@ -158,6 +158,25 @@ const updateProfile = asyncHandler(async (req, res) => {
     },
   });
 });
+const increamentPoint = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
 
+  const { point } = req.body;
 
-export default { registerUser, loginUser, updateProfile };
+  const user = await User.findById(userId);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  user.points += point;
+
+  const updatedUser = await user.save();
+  res.status(200).json({
+    message: "Points updated successfully",
+    points: updatedUser.points,
+  });
+});
+
+export default { registerUser, loginUser, updateProfile, increamentPoint };
