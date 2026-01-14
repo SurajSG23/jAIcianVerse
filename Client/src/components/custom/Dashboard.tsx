@@ -243,6 +243,21 @@ const Dashboard = () => {
       setAnswerText("");
       setSelectedDiscussionId(null);
       toast.success("Answer posted successfully!");
+      try {
+        await axios.put(
+          `${import.meta.env.VITE_BACKEND_URL}/api/users/increment-points`,
+          { point: 1 },
+          {
+            headers: {
+              Authorization: `Bearer ${userDetails.token}`,
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+      } catch (error) {
+        console.log(error);
+      }
     } catch (error) {
       console.error(
         "Error posting answer:",
