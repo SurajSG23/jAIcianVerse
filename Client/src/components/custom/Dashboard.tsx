@@ -205,6 +205,25 @@ const Dashboard = () => {
     setAnswerText("");
   };
 
+  const incrementPoints = async (point: number) => {
+    try {
+      const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/increment-points`,
+        { point: point },
+        {
+          headers: {
+            Authorization: `Bearer ${userDetails.token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const postAnswer = async () => {
     if (!answerText.trim() || !selectedDiscussionId) {
       toast.error("Answer cannot be empty.");
@@ -243,21 +262,7 @@ const Dashboard = () => {
       setAnswerText("");
       setSelectedDiscussionId(null);
       toast.success("Answer posted successfully!");
-      try {
-        await axios.put(
-          `${import.meta.env.VITE_BACKEND_URL}/api/users/increment-points`,
-          { point: 1 },
-          {
-            headers: {
-              Authorization: `Bearer ${userDetails.token}`,
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
-        );
-      } catch (error) {
-        console.log(error);
-      }
+      incrementPoints(1);
     } catch (error) {
       console.error(
         "Error posting answer:",

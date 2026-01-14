@@ -158,25 +158,24 @@ const updateProfile = asyncHandler(async (req, res) => {
     },
   });
 });
-const increamentPoint = asyncHandler(async (req, res) => {
+const incrementPoint = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
   const { point } = req.body;
 
-  const user = await User.findById(userId);
+  const user = await User.findByIdAndUpdate(userId, {
+    $inc: { points: point },
+  }, { new: true });
 
   if (!user) {
     res.status(404);
     throw new Error("User not found");
   }
 
-  user.points += point;
-
-  const updatedUser = await user.save();
   res.status(200).json({
     message: "Points updated successfully",
-    points: updatedUser.points,
+    points: user.points,
   });
 });
 
-export default { registerUser, loginUser, updateProfile, increamentPoint };
+export default { registerUser, loginUser, updateProfile, incrementPoint };
