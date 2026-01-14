@@ -1,7 +1,7 @@
 import Answer from "../models/answer.model.js";
 import asyncHandler from "express-async-handler";
 
-const getUserAnnouncements = asyncHandler(async (req, res) => {
+const getUserAnswers = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
   const totalAnswers = (await Answer.find({ answeredBy: userId })).length;
@@ -12,4 +12,4 @@ const getUserAnnouncements = asyncHandler(async (req, res) => {
   });
 });
 
-export default { getUserAnnouncements };
+export default { getUserAnswers };

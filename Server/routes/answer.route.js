@@ -5,7 +5,7 @@ import protect from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 router
-  .route("/getUserAnnouncements")
-  .get(protect, answerController.getUserAnnouncements);
+  .route("/getUserAnswers")
+  .get(protect, answerController.getUserAnswers);
 
 export default router;

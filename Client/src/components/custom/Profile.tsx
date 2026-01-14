@@ -183,7 +183,7 @@ const Profile = () => {
 
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/answers/getUserAnnouncements`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/answers/getUserAnswers`,
         {
           headers: {
             Authorization: `Bearer ${userDetail?.token}`,
@@ -825,28 +825,6 @@ const Profile = () => {
                       </div>
                     ))
                   )}
-                </div>
-              </div>
-
-              <div className="bg-neutral-900 backdrop-blur-xl rounded-2xl p-6 border border-gray-800/50">
-                <h3 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-                  Questions Answered
-                </h3>
-                <div className="space-y-4">
-                  {currentUser.questionsAnswered.map((qa) => (
-                    <div
-                      key={qa.id}
-                      className="bg-black rounded-xl p-4 border border-gray-700/50 transition-all hover:border-zinc-700"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <p className="flex-1 font-medium">{qa.question}</p>
-                        <div className="flex items-center gap-2 text-orange-400">
-                          <span className="font-semibold">{qa.upvotes}</span>
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-500 mt-2">{qa.date}</p>
-                    </div>
-                  ))}
                 </div>
               </div>
             </div>
