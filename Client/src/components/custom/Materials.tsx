@@ -133,6 +133,26 @@ const Materials = () => {
       setIsVisualVaultVisible(true);
     }
   };
+
+  const incrementPoints = async (point: number) => {
+    try {
+      const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/increment-points`,
+        { point: point },
+        {
+          headers: {
+            Authorization: `Bearer ${userDetails.token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
   const handleUpload = async () => {
     if (!pdfTitle.trim()) {
       toast.error("Title is required.");
@@ -188,6 +208,7 @@ const Materials = () => {
       if (!subjectId || !unitId) {
         throw new Error("Invalid subject or unit ID");
       }
+      incrementPoints(5);
     } catch (error) {
       console.error("Failed to fetch subject/unit IDs:", error);
     }
