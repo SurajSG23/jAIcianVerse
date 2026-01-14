@@ -114,6 +114,41 @@ const loginUser = asyncHandler(async (req, res) => {
   });
 });
 
+const fetchUserDetails = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  res.status(200).json({
+    message: "Login successful",
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      profileImage: user.profileImage,
+
+      // academic info
+      branch: user.branch,
+      semester: user.semester,
+      department: user.department,
+
+      // gamification / system info
+      points: user.points,
+      contributions: user.contributions,
+      subjectsHandled: user.subjectsHandled,
+
+      // metadata
+      createdAt: user.createdAt,
+    },
+  });
+});
+
 const updateProfile = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
@@ -158,14 +193,19 @@ const updateProfile = asyncHandler(async (req, res) => {
     },
   });
 });
+
 const incrementPoint = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
   const { point } = req.body;
 
-  const user = await User.findByIdAndUpdate(userId, {
-    $inc: { points: point },
-  }, { new: true });
+  const user = await User.findByIdAndUpdate(
+    userId,
+    {
+      $inc: { points: point },
+    },
+    { new: true }
+  );
 
   if (!user) {
     res.status(404);
@@ -178,4 +218,10 @@ const incrementPoint = asyncHandler(async (req, res) => {
   });
 });
 
-export default { registerUser, loginUser, updateProfile, incrementPoint };
+export default {
+  registerUser,
+  loginUser,
+  updateProfile,
+  incrementPoint,
+  fetchUserDetails,
+};

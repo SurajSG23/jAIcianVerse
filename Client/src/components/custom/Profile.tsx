@@ -71,6 +71,7 @@ const Profile = () => {
     name: "",
     email: "",
     branch: "",
+    points: userDetails?.points,
     semester: userDetails?.semester,
   });
   useEffect(() => {
@@ -81,6 +82,7 @@ const Profile = () => {
         name: userDetails?.name || "",
         email: userDetails?.email || "",
         branch: userDetails?.branch || "",
+        points: userDetails?.points,
         semester: userDetails?.semester,
       });
     }
@@ -99,18 +101,27 @@ const Profile = () => {
 
   const fetchUserDetails = async () => {
     setIsloading(true);
+    const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
     try {
-      const storedUser = localStorage.getItem("userInfo");
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/getuser-details`,
+        {
+          headers: {
+            Authorization: `Bearer ${userDetails.token}`,
+          },
+          withCredentials: true,
+        }
+      );
 
-      if (!storedUser) {
+      if (!res) {
         console.warn("No user info found in localStorage");
         return;
       }
 
-      const parsedUser = JSON.parse(storedUser);
+      console.log(res.data.user);
+      setUserDetails(res.data.user);
 
-      setUserDetails(parsedUser);
-      setUserRole(parsedUser.role);
+      setUserRole(res.data.user.role);
     } catch (error) {
       console.error("Error fetching user details:", error);
     } finally {
@@ -119,7 +130,9 @@ const Profile = () => {
   };
 
   const fetchUserNotes = async () => {
-    if (userDetails?.role === "professor") {
+    const userDetail = JSON.parse(localStorage.getItem("userInfo") || "{}");
+
+    if (userDetail?.role === "professor") {
       return;
     }
     try {
@@ -127,7 +140,7 @@ const Profile = () => {
         `${import.meta.env.VITE_BACKEND_URL}/api/materials/getUserNotes`,
         {
           headers: {
-            authorization: `Bearer ${userDetails?.token}`,
+            authorization: `Bearer ${userDetail?.token}`,
           },
           withCredentials: true,
         }
@@ -139,7 +152,9 @@ const Profile = () => {
   };
 
   const fetchUserAnnouncements = async () => {
-    if (userDetails?.role === "student") return;
+    const userDetail = JSON.parse(localStorage.getItem("userInfo") || "{}");
+
+    if (userDetail?.role === "student") return;
 
     try {
       const response = await axios.get(
@@ -148,7 +163,7 @@ const Profile = () => {
         }/api/discussions/fetch-announcements-byId`,
         {
           headers: {
-            Authorization: `Bearer ${userDetails?.token}`,
+            Authorization: `Bearer ${userDetail?.token}`,
           },
           withCredentials: true,
         }
@@ -163,6 +178,8 @@ const Profile = () => {
   useEffect(() => {
     checkUser("profile");
     fetchUserDetails();
+    fetchUserNotes();
+    fetchUserAnnouncements();
   }, []);
 
   const postAnnouncement = async () => {
@@ -174,7 +191,7 @@ const Profile = () => {
     try {
       const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
 
-      const response = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/discussions/announcements`,
         {
           quote: announcementText,
@@ -626,8 +643,6 @@ const Profile = () => {
               setActiveTab(
                 userRole === "student" ? "contributions" : "announcements"
               );
-              fetchUserNotes();
-              fetchUserAnnouncements();
             }}
             className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all cursor-pointer ${
               activeTab ===
@@ -681,9 +696,7 @@ const Profile = () => {
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400">Notes Uploaded:</span>
                         <span className="font-medium">
-                          {String(
-                            userDetails?.contributions?.notesUploaded?.length
-                          )}
+                          {String(userMaterials.length)}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
@@ -692,15 +705,6 @@ const Profile = () => {
                         </span>
                         <span className="font-medium">
                           {userDetails?.contributions?.questionsAnswered.length}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-400">Total Upvotes:</span>
-                        <span className="font-medium text-orange-400">
-                          {currentUser.questionsAnswered.reduce(
-                            (sum, q) => sum + q.upvotes,
-                            0
-                          )}
                         </span>
                       </div>
                     </div>

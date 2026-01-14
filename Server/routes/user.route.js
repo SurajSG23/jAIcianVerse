@@ -6,7 +6,8 @@ const router = express.Router();
 
 router.route("/signup").post(userController.registerUser);
 router.route("/login").post(userController.loginUser);
+router.route("/getuser-details").get(protect, userController.fetchUserDetails);
 router.route("/update-profile").put(protect, userController.updateProfile);
 router.route("/increment-points").put(protect, userController.incrementPoint);
 
-export default router
+export default router;
