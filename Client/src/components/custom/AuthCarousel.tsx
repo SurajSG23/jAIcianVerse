@@ -22,9 +22,12 @@ interface props {
 }
 
 const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
+  // Hooks & State
   const { checkUser } = useAuth();
+
   const [step, setStep] = useState(0);
   const [userType, setUserType] = useState("");
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -34,27 +37,19 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
     name: "",
     department: "",
   });
-  const [subjects, setSubjects] = useState<string[]>([]);
-  const [subjectInput, setSubjectInput] = useState("");
+
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
+
+  const [subjects, setSubjects] = useState<string[]>([]);
+  const [subjectInput, setSubjectInput] = useState("");
+
   const [registerLoading, setRegisterLoading] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
 
-  const addSubject = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && subjectInput.trim()) {
-      e.preventDefault();
-      setSubjects([...subjects, subjectInput.trim()]);
-      setSubjectInput("");
-    }
-  };
-
-  const removeSubject = (index: number) => {
-    setSubjects(subjects.filter((_, i) => i !== index));
-  };
-
+  // Step Handlers
   const handleNext = () => {
     if (step < 3) setStep(step + 1);
   };
@@ -68,13 +63,28 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
     setStep(2);
   };
 
+  // Form Handlers
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const addSubject = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && subjectInput.trim()) {
+      e.preventDefault();
+      setSubjects([...subjects, subjectInput.trim()]);
+      setSubjectInput("");
+    }
+  };
+
+  const removeSubject = (index: number) => {
+    setSubjects(subjects.filter((_, i) => i !== index));
+  };
+
+  // Auth Handlers
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginLoading(true);
+
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/user/login`,
@@ -86,7 +96,8 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
           withCredentials: true,
         }
       );
-      if (res.status == 200) {
+
+      if (res.status === 200) {
         localStorage.setItem("userInfo", JSON.stringify(res.data.user));
         checkUser("homepage");
       }
@@ -101,9 +112,11 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
       setLoginLoading(false);
     }
   };
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setRegisterLoading(true);
+
     if (
       (userType === "student" && Number(formData?.semester) < 1) ||
       Number(formData?.semester) > 8
@@ -112,18 +125,21 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
       setRegisterLoading(false);
       return;
     }
+
     if (formData?.branch && !Branches.includes(formData?.branch)) {
       toast.error("Please select from the suggested branches.");
       setRegisterLoading(false);
       return;
     }
+
     if (formData?.department && !Branches.includes(formData?.department)) {
       toast.error("Please select from the suggested branches.");
       setRegisterLoading(false);
       return;
     }
+
     const payload = {
-      userType, // "student" or "professor"
+      userType,
       ...formData,
     };
 
@@ -138,6 +154,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
           withCredentials: true,
         }
       );
+
       toast.success("Signup success: Please login");
       setStep(0);
       console.log("Signup success:", result.data);
