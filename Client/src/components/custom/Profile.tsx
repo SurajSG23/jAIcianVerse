@@ -30,22 +30,164 @@ interface UserInfo {
   createdAt: string;
   token: string;
 }
-
+const userData = {
+  student: {
+    name: "Suraj S G Dhanva",
+    email: "surajdhanva@university.edu",
+    role: "Student",
+    profileImage: "suraj.jpg",
+    branch: "Computer Science",
+    semester: "6th Semester",
+    points: 1250,
+    maxPoints: 2000,
+    notesUploaded: [
+      {
+        id: 1,
+        title: "Data Structures Notes",
+        subject: "DSA",
+        date: "2025-10-15",
+        downloads: 45,
+      },
+      {
+        id: 2,
+        title: "Algorithm Analysis",
+        subject: "DSA",
+        date: "2025-10-10",
+        downloads: 32,
+      },
+      {
+        id: 3,
+        title: "Database Normalization",
+        subject: "DBMS",
+        date: "2025-10-05",
+        downloads: 28,
+      },
+    ],
+    questionsAnswered: [
+      {
+        id: 1,
+        question: "How to implement binary search tree?",
+        upvotes: 23,
+        date: "2025-10-20",
+      },
+      {
+        id: 2,
+        question: "Explain ACID properties",
+        upvotes: 18,
+        date: "2025-10-18",
+      },
+      {
+        id: 3,
+        question: "What is time complexity?",
+        upvotes: 31,
+        date: "2025-10-12",
+      },
+    ],
+  },
+  professor: {
+    name: "Dr. Sarah Williams",
+    email: "sarah.williams@university.edu",
+    role: "Professor",
+    profileImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+    department: "Computer Science & Engineering",
+    subjectsHandled: ["Data Structures", "Algorithms", "Machine Learning"],
+    announcements: [
+      {
+        id: 1,
+        title: "Mid-term Exam Schedule",
+        message:
+          "Mid-term exams will be conducted from Nov 5-10. Please prepare accordingly.",
+        semester: "6th Semester",
+        subject: "Data Structures",
+        date: "2025-10-25",
+      },
+      {
+        id: 2,
+        title: "Project Submission Deadline",
+        message:
+          "Final project submissions due by November 15th. Late submissions will not be accepted.",
+        semester: "6th Semester",
+        subject: "Algorithms",
+        date: "2025-10-22",
+      },
+      {
+        id: 3,
+        title: "Guest Lecture on AI",
+        message:
+          "Special guest lecture on AI trends this Friday at 2 PM in Hall A.",
+        semester: "All",
+        subject: "Machine Learning",
+        date: "2025-10-20",
+      },
+    ],
+  },
+};
 const Profile = () => {
+  // State & Refs
   const [activeTab, setActiveTab] = useState("overview");
   const [userRole, setUserRole] = useState("student");
-  const { checkUser } = useAuth();
   const [userDetails, setUserDetails] = useState<UserInfo | null>(null);
   const [isLoading, setIsloading] = useState(false);
   const [editProfile, setEditProfile] = useState(false);
+
   const [userMaterials, setUserMaterials] = useState([]);
   const [userAnnouncements, setUserAnnouncements] = useState([]);
+  const [totalAnswers, setTotalAnswers] = useState(0);
+
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [announcementText, setAnnouncementText] = useState("");
-  const [totalAnswers, setTotalAnswers] = useState(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const { checkUser } = useAuth();
+
+  // Edit Profile State
+  const [editProfileDetails, setEditProfileDetails] = useState({
+    profileImage: null as File | null,
+    profilePreview: null as string | null,
+    name: "",
+    email: "",
+    branch: "",
+    points: userDetails?.points,
+    semester: userDetails?.semester,
+  });
+
+  // Effects
+  useEffect(() => {
+    if (userDetails) {
+      setEditProfileDetails({
+        profileImage: null,
+        profilePreview: null,
+        name: userDetails?.name || "",
+        email: userDetails?.email || "",
+        branch: userDetails?.branch || "",
+        points: userDetails?.points,
+        semester: userDetails?.semester,
+      });
+    }
+  }, [userDetails]);
+
+  useEffect(() => {
+    checkUser("profile");
+    fetchUserDetails();
+    fetchUserNotes();
+    fetchUserAnnouncements();
+    fetchUserAnswers();
+  }, []);
+
+  // Helpers
+  const formatJoinedDate = (dateString?: string) => {
+    if (!dateString) return "Joined on —";
+
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  // Handlers
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditProfileDetails((prev) => ({
@@ -63,182 +205,6 @@ const Profile = () => {
       profileImage: file,
       profilePreview: URL.createObjectURL(file),
     }));
-    console.log(editProfileDetails.profileImage);
-  };
-
-  const [editProfileDetails, setEditProfileDetails] = useState({
-    profileImage: null as File | null, // actual file
-    profilePreview: null as string | null, // preview URL
-    name: "",
-    email: "",
-    branch: "",
-    points: userDetails?.points,
-    semester: userDetails?.semester,
-  });
-  useEffect(() => {
-    if (userDetails) {
-      setEditProfileDetails({
-        profileImage: null,
-        profilePreview: null,
-        name: userDetails?.name || "",
-        email: userDetails?.email || "",
-        branch: userDetails?.branch || "",
-        points: userDetails?.points,
-        semester: userDetails?.semester,
-      });
-    }
-  }, [userDetails]);
-
-  const formatJoinedDate = (dateString?: string) => {
-    if (!dateString) return "Joined on —";
-
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-  };
-
-  const fetchUserDetails = async () => {
-    setIsloading(true);
-    const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/getuser-details`,
-        {
-          headers: {
-            Authorization: `Bearer ${userDetails.token}`,
-          },
-          withCredentials: true,
-        }
-      );
-
-      if (!res) {
-        console.warn("No user info found in localStorage");
-        return;
-      }
-
-      console.log(res.data.user);
-      setUserDetails(res.data.user);
-
-      setUserRole(res.data.user.role);
-    } catch (error) {
-      console.error("Error fetching user details:", error);
-    } finally {
-      setIsloading(false);
-    }
-  };
-
-  const fetchUserNotes = async () => {
-    const userDetail = JSON.parse(localStorage.getItem("userInfo") || "{}");
-
-    if (userDetail?.role === "professor") {
-      return;
-    }
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/materials/getUserNotes`,
-        {
-          headers: {
-            authorization: `Bearer ${userDetail?.token}`,
-          },
-          withCredentials: true,
-        }
-      );
-      setUserMaterials(response.data.notes);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchUserAnnouncements = async () => {
-    const userDetail = JSON.parse(localStorage.getItem("userInfo") || "{}");
-
-    if (userDetail?.role === "student") return;
-
-    try {
-      const response = await axios.get(
-        `${
-          import.meta.env.VITE_BACKEND_URL
-        }/api/discussions/fetch-announcements-byId`,
-        {
-          headers: {
-            Authorization: `Bearer ${userDetail?.token}`,
-          },
-          withCredentials: true,
-        }
-      );
-
-      setUserAnnouncements(response.data.announcements);
-    } catch (error) {
-      console.error("Failed to fetch user announcements", error);
-    }
-  };
-
-  const fetchUserAnswers = async () => {
-    const userDetail = JSON.parse(localStorage.getItem("userInfo") || "{}");
-
-    if (userDetail?.role !== "student") return;
-
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/answers/getUserAnswers`,
-        {
-          headers: {
-            Authorization: `Bearer ${userDetail?.token}`,
-          },
-          withCredentials: true,
-        }
-      );
-      setTotalAnswers(response.data.totalAnswers)
-    } catch (error) {
-      console.error("Failed to fetch user announcements", error);
-    }
-  };
-
-  useEffect(() => {
-    checkUser("profile");
-    fetchUserDetails();
-    fetchUserNotes();
-    fetchUserAnnouncements();
-    fetchUserAnswers();
-  }, []);
-
-  const postAnnouncement = async () => {
-    if (!announcementText.trim()) {
-      toast.error("Announcement cannot be empty.");
-      return;
-    }
-
-    try {
-      const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
-
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/discussions/announcements`,
-        {
-          quote: announcementText,
-          src: userDetails.profileImage || "",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${userDetails.token}`,
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-
-      fetchUserAnnouncements();
-      setShowAnnouncementModal(false);
-      setAnnouncementText("");
-      toast.success("Announcement posted successfully!");
-    } catch (error) {
-      console.error(
-        "Error posting answer:",
-        error.response?.data || error.message
-      );
-    }
   };
 
   const handleDeleteAnnouncement = async (announcementId) => {
@@ -264,97 +230,130 @@ const Profile = () => {
     }
   };
 
-  const userData = {
-    student: {
-      name: "Suraj S G Dhanva",
-      email: "surajdhanva@university.edu",
-      role: "Student",
-      profileImage: "suraj.jpg",
-      branch: "Computer Science",
-      semester: "6th Semester",
-      points: 1250,
-      maxPoints: 2000,
-      notesUploaded: [
+  // API Calls
+  const fetchUserDetails = async () => {
+    setIsloading(true);
+    const storedUser = JSON.parse(localStorage.getItem("userInfo") || "{}");
+
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/user/getuser-details`,
         {
-          id: 1,
-          title: "Data Structures Notes",
-          subject: "DSA",
-          date: "2025-10-15",
-          downloads: 45,
+          headers: {
+            Authorization: `Bearer ${storedUser.token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (!res) return;
+
+      setUserDetails(res.data.user);
+      setUserRole(res.data.user.role);
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    } finally {
+      setIsloading(false);
+    }
+  };
+
+  const fetchUserNotes = async () => {
+    const userDetail = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    if (userDetail?.role === "professor") return;
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/materials/getUserNotes`,
+        {
+          headers: {
+            authorization: `Bearer ${userDetail?.token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      setUserMaterials(response.data.notes);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchUserAnnouncements = async () => {
+    const userDetail = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    if (userDetail?.role === "student") return;
+
+    try {
+      const response = await axios.get(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/discussions/fetch-announcements-byId`,
+        {
+          headers: {
+            Authorization: `Bearer ${userDetail?.token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      setUserAnnouncements(response.data.announcements);
+    } catch (error) {
+      console.error("Failed to fetch user announcements", error);
+    }
+  };
+
+  const fetchUserAnswers = async () => {
+    const userDetail = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    if (userDetail?.role !== "student") return;
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/answers/getUserAnswers`,
+        {
+          headers: {
+            Authorization: `Bearer ${userDetail?.token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      setTotalAnswers(response.data.totalAnswers);
+    } catch (error) {
+      console.error("Failed to fetch user answers", error);
+    }
+  };
+
+  const postAnnouncement = async () => {
+    if (!announcementText.trim()) {
+      toast.error("Announcement cannot be empty.");
+      return;
+    }
+
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("userInfo") || "{}");
+
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/discussions/announcements`,
+        {
+          quote: announcementText,
+          src: storedUser.profileImage || "",
         },
         {
-          id: 2,
-          title: "Algorithm Analysis",
-          subject: "DSA",
-          date: "2025-10-10",
-          downloads: 32,
-        },
-        {
-          id: 3,
-          title: "Database Normalization",
-          subject: "DBMS",
-          date: "2025-10-05",
-          downloads: 28,
-        },
-      ],
-      questionsAnswered: [
-        {
-          id: 1,
-          question: "How to implement binary search tree?",
-          upvotes: 23,
-          date: "2025-10-20",
-        },
-        {
-          id: 2,
-          question: "Explain ACID properties",
-          upvotes: 18,
-          date: "2025-10-18",
-        },
-        {
-          id: 3,
-          question: "What is time complexity?",
-          upvotes: 31,
-          date: "2025-10-12",
-        },
-      ],
-    },
-    professor: {
-      name: "Dr. Sarah Williams",
-      email: "sarah.williams@university.edu",
-      role: "Professor",
-      profileImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-      department: "Computer Science & Engineering",
-      subjectsHandled: ["Data Structures", "Algorithms", "Machine Learning"],
-      announcements: [
-        {
-          id: 1,
-          title: "Mid-term Exam Schedule",
-          message:
-            "Mid-term exams will be conducted from Nov 5-10. Please prepare accordingly.",
-          semester: "6th Semester",
-          subject: "Data Structures",
-          date: "2025-10-25",
-        },
-        {
-          id: 2,
-          title: "Project Submission Deadline",
-          message:
-            "Final project submissions due by November 15th. Late submissions will not be accepted.",
-          semester: "6th Semester",
-          subject: "Algorithms",
-          date: "2025-10-22",
-        },
-        {
-          id: 3,
-          title: "Guest Lecture on AI",
-          message:
-            "Special guest lecture on AI trends this Friday at 2 PM in Hall A.",
-          semester: "All",
-          subject: "Machine Learning",
-          date: "2025-10-20",
-        },
-      ],
-    },
+          headers: {
+            Authorization: `Bearer ${storedUser.token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      fetchUserAnnouncements();
+      setShowAnnouncementModal(false);
+      setAnnouncementText("");
+      toast.success("Announcement posted successfully!");
+    } catch (error) {
+      console.error(
+        "Error posting announcement:",
+        error.response?.data || error.message
+      );
+    }
   };
 
   const handleEditProfile = async () => {
@@ -365,6 +364,7 @@ const Profile = () => {
       toast.error("Semester must be between 1 and 8.");
       return;
     }
+
     if (
       editProfileDetails?.branch &&
       !Branches.includes(editProfileDetails?.branch)
@@ -394,14 +394,11 @@ const Profile = () => {
           }/image/upload`,
           formData
         );
-        uploadedImageUrl = response.data.secure_url as string;
-        setUserDetails((prev) => {
-          if (!prev) return prev;
-          return {
-            ...prev,
-            profileImage: uploadedImageUrl,
-          };
-        });
+
+        uploadedImageUrl = response.data.secure_url;
+        setUserDetails((prev) =>
+          prev ? { ...prev, profileImage: uploadedImageUrl } : prev
+        );
       }
 
       const payload = {
@@ -422,23 +419,22 @@ const Profile = () => {
           withCredentials: true,
         }
       );
-      const existingUser = JSON.parse(localStorage.getItem("userInfo") || "{}");
 
+      const existingUser = JSON.parse(localStorage.getItem("userInfo") || "{}");
       const updatedUser = {
         ...response.data.user,
         token: existingUser.token,
       };
 
-      // Update local storage & state
       localStorage.setItem("userInfo", JSON.stringify(updatedUser));
       setUserDetails(updatedUser);
-
       setEditProfile(false);
     } catch (error) {
       console.error("Error updating profile:", error);
     }
   };
 
+  // Derived Data & JSX
   const currentUser = userData[userRole];
 
   return (
@@ -726,9 +722,7 @@ const Profile = () => {
                         <span className="text-gray-400">
                           Questions Answered:
                         </span>
-                        <span className="font-medium">
-                          {totalAnswers}
-                        </span>
+                        <span className="font-medium">{totalAnswers}</span>
                       </div>
                     </div>
                   </div>
