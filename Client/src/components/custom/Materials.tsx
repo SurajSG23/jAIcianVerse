@@ -423,10 +423,13 @@ const Materials = () => {
                 .filter(
                   (subject) =>
                     Number(subject.semester) ===
-                    Number(
+                      Number(
+                        JSON.parse(localStorage.getItem("userInfo") || "{}")
+                          ?.semester
+                      ) &&
+                    subject.branch ===
                       JSON.parse(localStorage.getItem("userInfo") || "{}")
-                        ?.semester
-                    )
+                        ?.branch
                 )
                 .map((subject, index) => (
                   <motion.div
