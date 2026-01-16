@@ -14,6 +14,7 @@ import { FaCheck } from "react-icons/fa";
 import useDetectTabSwitch from "../ui/useDetectTabSwitch";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { IconCancel } from "@tabler/icons-react";
 
 interface Unit {
   _id: string;
@@ -58,6 +59,8 @@ const StudyHub: React.FC<Props> = ({
   const [quitConfirmation, setQuitConfirmation] = useState(false);
   const [submitConfirmation, setSubmitConfirmation] = useState(false);
   const [scoreBoard, setScoreBoard] = useState(false);
+  const [confirmGenerate, setConfirmGenerate] = useState(true);
+
   const [score, setScore] = useState<number>(0);
   const result = `
     {
@@ -266,6 +269,7 @@ const StudyHub: React.FC<Props> = ({
   }, []);
 
   const GenerateQuestions = async () => {
+    setConfirmGenerate(false);
     setLoading(true);
     try {
       const idResponse = await axios.get(
@@ -332,7 +336,7 @@ const StudyHub: React.FC<Props> = ({
     }
   };
   useEffect(() => {
-    GenerateQuestions();
+    // GenerateQuestions();
   }, []);
 
   return (
@@ -883,6 +887,68 @@ const StudyHub: React.FC<Props> = ({
                   <p className="text-white mt-4 text-lg font-semibold">
                     Generating Questions...
                   </p>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        </AnimatePresence>
+      )}
+      {confirmGenerate && (
+        <AnimatePresence>
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 backdrop-blur-sm z-150"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[45vw] h-[35vh] overflow-y-auto bg-black border border-neutral-800 rounded-lg shadow-xl flex flex-col z-150"
+            >
+              {/* CONTENT (ONLY THIS IS NEW) */}
+              <div className="p-8 flex flex-col gap-6">
+                {/* Title */}
+                <h2 className="text-2xl font-bold text-white">
+                  Generate MCQ Questions
+                </h2>
+
+                {/* Description */}
+                <p className="text-sm text-gray-400">
+                  Subject:{" "}
+                  <span className="font-medium text-orange-400">
+                    {selectedSubject}
+                  </span>{" "}
+                  |{" "}
+                  <span className="font-medium text-orange-400">
+                    {selectedUnit}
+                  </span>
+                </p>
+
+                {/* Action */}
+                <div className="flex justify-end pt-4 gap-2 items-center">
+                  <button
+                    className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-1 rounded-md bg-gray-600 font-medium border border-zinc-700 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                    onClick={() => {
+                      setConfirmGenerate(false);
+                      setIsQuickQuizVisible(false);
+                    }}
+                  >
+                    <IconCancel />
+                    Cancel
+                    <BottomGradient />
+                  </button>
+                  <button
+                    onClick={GenerateQuestions}
+                    className="group/btn px-4 text-lg relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                  >
+                    Generate Now
+                    <BottomGradient />
+                  </button>
                 </div>
               </div>
             </motion.div>
