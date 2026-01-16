@@ -64,6 +64,8 @@ const Dashboard = () => {
   const [selectedDiscussionId, setSelectedDiscussionId] = useState(null);
   const [availableSubjects, setAvailableSubjects] = useState<string[]>([]);
   const [skeletonLoading, setSkeletonLoading] = useState(true);
+  const [testimonialSkeleton, setTestimonialSkeleton] = useState(true);
+
   const [questionForm, setQuestionForm] = useState({
     question: "",
     subject: "",
@@ -152,6 +154,7 @@ const Dashboard = () => {
   };
 
   const fetchAnnouncements = async () => {
+    setTestimonialSkeleton(true);
     try {
       const response = await axios.get(
         `${
@@ -165,6 +168,8 @@ const Dashboard = () => {
         "Error fetching discussions:",
         error.response?.data || error.message
       );
+    } finally {
+      setTestimonialSkeleton(false);
     }
   };
   const fetchSubjects = async () => {
@@ -613,7 +618,42 @@ const Dashboard = () => {
 
           <div className="w-[30%] flex flex-col items-center sticky top-6 self-start">
             <h1 className="text-2xl text-white mb-4">Announcements</h1>
-            <AnimatedTestimonials testimonials={announcements} />
+            {testimonialSkeleton ? (
+              <div className="mx-auto w-auto px-4 py-2 font-sans antialiased md:px-8 lg:px-12 animate-pulse">
+                <div className="relative gap-20 md:grid-cols-2">
+                  <div className="flex flex-col justify-between py-4 h-75">
+                    {/* Avatar + Name */}
+                    <div className="flex gap-3">
+                      <div className="h-14 w-14 rounded-3xl bg-gray-200 dark:bg-neutral-800" />
+
+                      <div className="space-y-2">
+                        <div className="h-6 w-40 rounded bg-gray-200 dark:bg-neutral-800" />
+                        <div className="h-4 w-28 rounded bg-gray-200 dark:bg-neutral-800" />
+                      </div>
+                    </div>
+
+                    {/* Quote Skeleton */}
+                    <div className="mt-4 h-40 space-y-2 overflow-hidden">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className="h-4 w-full rounded bg-gray-200 dark:bg-neutral-800"
+                        />
+                      ))}
+                      <div className="h-4 w-3/4 rounded bg-gray-200 dark:bg-neutral-800" />
+                    </div>
+
+                    {/* Controls */}
+                    <div className="flex gap-4 pt-10 mx-auto">
+                      <div className="h-7 w-7 rounded-full bg-gray-200 dark:bg-neutral-800" />
+                      <div className="h-7 w-7 rounded-full bg-gray-200 dark:bg-neutral-800" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <AnimatedTestimonials testimonials={announcements} />
+            )}
           </div>
         </div>
       )}
