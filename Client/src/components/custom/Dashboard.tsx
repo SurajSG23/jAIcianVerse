@@ -63,7 +63,7 @@ const Dashboard = () => {
   const [expandedId, setExpandedId] = useState(null);
   const [selectedDiscussionId, setSelectedDiscussionId] = useState(null);
   const [availableSubjects, setAvailableSubjects] = useState<string[]>([]);
-
+  const [skeletonLoading, setSkeletonLoading] = useState(true);
   const [questionForm, setQuestionForm] = useState({
     question: "",
     subject: "",
@@ -134,6 +134,7 @@ const Dashboard = () => {
   };
 
   const fetchDiscussions = async () => {
+    setSkeletonLoading(true);
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/api/discussions/fetch-discussion`
@@ -145,6 +146,8 @@ const Dashboard = () => {
         "Error fetching discussions:",
         error.response?.data || error.message
       );
+    } finally {
+      setSkeletonLoading(false);
     }
   };
 
@@ -447,157 +450,173 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-
-      <div className="w-full flex">
-        {filteredAndSortedDiscussions.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-neutral-500">
-              No discussions found matching your criteria.
-            </p>
-          </div>
-        )}
-        <div className="flex flex-col space-y-4 w-[70%]">
-          {filteredAndSortedDiscussions.map((disc) => (
+      {skeletonLoading ? (
+        <div className="space-y-6">
+          {Array.from({ length: 3 }).map((_, i) => (
             <div
-              key={disc._id}
-              className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 hover:border-neutral-700 transition-colors"
+              key={i}
+              className="bg-neutral-900 h-40 border border-neutral-800 rounded-xl p-6 animate-pulse"
             >
-              <div className="flex items-start gap-4 mb-4">
-                <img
-                  src={disc.postedBy?.profileImage || "/default-avatar.png"}
-                  alt={disc.postedBy?.name || "User"}
-                  className="w-12 h-12 rounded-full bg-neutral-800 object-cover"
-                />
-
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-white font-medium">
-                        {disc.postedBy?.name || "Unknown User"}
-                      </h3>
-                      <p className="text-sm text-neutral-500">
-                        {new Date(disc.createdAt).toLocaleDateString("en-IN", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}{" "}
-                        • {disc.subject}
-                        {disc.unit ? ` / Unit ${disc.unit}` : ""}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* ===== BODY ===== */}
-              <div className="ml-16">
-                <h2 className="text-xl text-white font-medium mb-3">
-                  {disc.question}
-                </h2>
-
-                {/* ===== TAGS ===== */}
-                {disc.tags?.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {disc.tags.map((tag, idx) => (
-                      <span
-                        key={idx}
-                        className="px-3 py-1 text-xs font-medium text-neutral-400 bg-neutral-950 border border-neutral-800 rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {/* ===== IMAGE ===== */}
-                {disc.imageURL && (
-                  <img
-                    src={disc.imageURL}
-                    alt="discussion"
-                    className="w-full rounded-lg mb-4 border border-neutral-800 max-h-96 object-cover"
-                  />
-                )}
-
-                {/* ===== ACTIONS ===== */}
-                <div className="flex gap-3 items-center">
-                  <button
-                    onClick={() => toggleAnswers(disc._id)}
-                    className="px-4 py-2 text-sm font-medium text-neutral-400 hover:text-white bg-neutral-950 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors"
-                  >
-                    {expandedId === disc._id
-                      ? "Hide Answers"
-                      : `View Answers (${disc.answers.length})`}
-                  </button>
-
-                  <button
-                    onClick={() => openAnswerModal(disc._id)}
-                    className="px-4 py-2 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
-                  >
-                    Add Answer
-                  </button>
-                </div>
-
-                {/* ===== ANSWERS ===== */}
-                {expandedId === disc._id && (
-                  <div className="mt-6 space-y-3">
-                    {disc.answers.length === 0 && (
-                      <p className="text-neutral-600 text-sm py-4">
-                        No answers yet. Be the first to answer.
-                      </p>
-                    )}
-
-                    {disc.answers.map((ans) => (
-                      <div
-                        key={ans._id}
-                        className="p-4 rounded-lg bg-black border border-neutral-800"
-                      >
-                        {/* Answer text */}
-                        <p className="text-neutral-200 leading-relaxed mb-3">
-                          {ans.text}
-                        </p>
-
-                        {/* Answer footer */}
-                        <div className="flex items-center gap-3 text-xs text-neutral-500">
-                          <img
-                            src={
-                              ans.answeredBy?.profileImage ||
-                              "/default-avatar.png"
-                            }
-                            alt={ans.answeredBy?.name || "User"}
-                            className="w-6 h-6 rounded-full object-cover bg-neutral-800"
-                          />
-
-                          <span className="text-neutral-400">
-                            {ans.answeredBy?.name || "Anonymous"}
-                          </span>
-
-                          <span className="text-neutral-600">•</span>
-
-                          <span>
-                            {new Date(ans.createdAt).toLocaleDateString(
-                              "en-IN",
-                              {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                              }
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <div className="h-5 bg-neutral-800 w-3/4 rounded mb-3" />
+              <div className="h-4 bg-neutral-800 w-1/2 rounded" />
             </div>
           ))}
         </div>
+      ) : (
+        <div className="w-full flex">
+          {filteredAndSortedDiscussions.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-neutral-500">
+                No discussions found matching your criteria.
+              </p>
+            </div>
+          )}
+          <div className="flex flex-col space-y-4 w-[70%]">
+            {filteredAndSortedDiscussions.map((disc) => (
+              <div
+                key={disc._id}
+                className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 hover:border-neutral-700 transition-colors"
+              >
+                <div className="flex items-start gap-4 mb-4">
+                  <img
+                    src={disc.postedBy?.profileImage || "/default-avatar.png"}
+                    alt={disc.postedBy?.name || "User"}
+                    className="w-12 h-12 rounded-full bg-neutral-800 object-cover"
+                  />
 
-        <div className="w-[30%] flex flex-col items-center sticky top-6 self-start">
-          <h1 className="text-2xl text-white mb-4">Announcements</h1>
-          <AnimatedTestimonials testimonials={announcements} />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-white font-medium">
+                          {disc.postedBy?.name || "Unknown User"}
+                        </h3>
+                        <p className="text-sm text-neutral-500">
+                          {new Date(disc.createdAt).toLocaleDateString(
+                            "en-IN",
+                            {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            }
+                          )}{" "}
+                          • {disc.subject}
+                          {disc.unit ? ` / Unit ${disc.unit}` : ""}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ===== BODY ===== */}
+                <div className="ml-16">
+                  <h2 className="text-xl text-white font-medium mb-3">
+                    {disc.question}
+                  </h2>
+
+                  {/* ===== TAGS ===== */}
+                  {disc.tags?.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {disc.tags.map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="px-3 py-1 text-xs font-medium text-neutral-400 bg-neutral-950 border border-neutral-800 rounded-full"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* ===== IMAGE ===== */}
+                  {disc.imageURL && (
+                    <img
+                      src={disc.imageURL}
+                      alt="discussion"
+                      className="w-full rounded-lg mb-4 border border-neutral-800 max-h-96 object-cover"
+                    />
+                  )}
+
+                  {/* ===== ACTIONS ===== */}
+                  <div className="flex gap-3 items-center">
+                    <button
+                      onClick={() => toggleAnswers(disc._id)}
+                      className="px-4 py-2 text-sm font-medium text-neutral-400 hover:text-white bg-neutral-950 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors"
+                    >
+                      {expandedId === disc._id
+                        ? "Hide Answers"
+                        : `View Answers (${disc.answers.length})`}
+                    </button>
+
+                    <button
+                      onClick={() => openAnswerModal(disc._id)}
+                      className="px-4 py-2 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
+                    >
+                      Add Answer
+                    </button>
+                  </div>
+
+                  {/* ===== ANSWERS ===== */}
+                  {expandedId === disc._id && (
+                    <div className="mt-6 space-y-3">
+                      {disc.answers.length === 0 && (
+                        <p className="text-neutral-600 text-sm py-4">
+                          No answers yet. Be the first to answer.
+                        </p>
+                      )}
+
+                      {disc.answers.map((ans) => (
+                        <div
+                          key={ans._id}
+                          className="p-4 rounded-lg bg-black border border-neutral-800"
+                        >
+                          {/* Answer text */}
+                          <p className="text-neutral-200 leading-relaxed mb-3">
+                            {ans.text}
+                          </p>
+
+                          {/* Answer footer */}
+                          <div className="flex items-center gap-3 text-xs text-neutral-500">
+                            <img
+                              src={
+                                ans.answeredBy?.profileImage ||
+                                "/default-avatar.png"
+                              }
+                              alt={ans.answeredBy?.name || "User"}
+                              className="w-6 h-6 rounded-full object-cover bg-neutral-800"
+                            />
+
+                            <span className="text-neutral-400">
+                              {ans.answeredBy?.name || "Anonymous"}
+                            </span>
+
+                            <span className="text-neutral-600">•</span>
+
+                            <span>
+                              {new Date(ans.createdAt).toLocaleDateString(
+                                "en-IN",
+                                {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                }
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="w-[30%] flex flex-col items-center sticky top-6 self-start">
+            <h1 className="text-2xl text-white mb-4">Announcements</h1>
+            <AnimatedTestimonials testimonials={announcements} />
+          </div>
         </div>
-      </div>
+      )}
 
       {showQuestionModal && (
         <AnimatePresence>

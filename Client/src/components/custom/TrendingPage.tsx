@@ -221,7 +221,7 @@ const TrendingPage: React.FC<Props> = ({
           ) : (
             <div className="w-full flex">
               {discussions.length === 0 && (
-                <div className="text-center py-12">
+                <div className="text-center py-12 w-full mx-auto">
                   <p className="text-neutral-500">
                     No discussions found matching your criteria.
                   </p>
