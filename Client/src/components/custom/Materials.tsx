@@ -152,7 +152,7 @@ const Materials = () => {
       console.log(error);
     }
   };
-  
+
   const handleUpload = async () => {
     if (!pdfTitle.trim()) {
       toast.error("Title is required.");
@@ -665,7 +665,11 @@ const Materials = () => {
         <ChatBot setIsSChatBotVisible={setIsSChatBotVisible} />
       )}
       {isTrendingPageVisible && (
-        <TrendingPage setIsTrendingPageVisible={setIsTrendingPageVisible} />
+        <TrendingPage
+          setIsTrendingPageVisible={setIsTrendingPageVisible}
+          selectedUnit={selectedUnit?.name || ""}
+          selectedSubject={selectedSubject?.name || ""}
+        />
       )}
       {isQuickQuizVisible && (
         <QuickQuiz
