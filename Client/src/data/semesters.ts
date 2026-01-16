@@ -1115,6 +1115,211 @@ const semestersData = {
       "Project Phase-II": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
     },
   },
+  "Mechanical Engineering": {
+    "Semester 1": {
+      "Engineering Mathematics-1": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Engineering Physics": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Engineering Chemistry": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Engineering Mechanics": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Basic Mechanical Engineering": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Engineering Graphics & Design": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+    },
+
+    "Semester 2": {
+      "Engineering Mathematics-2": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Strength of Materials": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Manufacturing Processes": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      Thermodynamics: ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Materials Science": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Functional English": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+    },
+
+    "Semester 3": {
+      "Engineering Mathematics-3": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Fluid Mechanics": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Theory of Machines": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Machine Drawing": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      Metallurgy: ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+    },
+
+    "Semester 4": {
+      "Heat Transfer": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Design of Machine Elements-I": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Dynamics of Machines": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Applied Thermodynamics": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Environmental Studies": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+    },
+
+    "Semester 5": {
+      "Design of Machine Elements-II": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Finite Element Analysis": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Internal Combustion Engines": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Production Planning and Control": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Professional Ethics": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+    },
+
+    "Semester 6": {
+      "CAD/CAM": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Refrigeration and Air Conditioning": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      Mechatronics: ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Operations Research": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Open Elective-I": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+    },
+
+    "Semester 7": {
+      "Automation and Robotics": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Additive Manufacturing": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Industrial Engineering and Management": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Open Elective-II": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Project Phase-I": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+    },
+
+    "Semester 8": {
+      "Total Quality Management": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Renewable Energy Systems": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Open Elective-III": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Open Elective-IV": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Project Phase-II": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+    },
+  },
 };
 
 export default semestersData;
