@@ -50,6 +50,31 @@ const fetchDiscussion = asyncHandler(async (req, res) => {
     discussions,
   });
 });
+const fetchDiscussionByName = asyncHandler(async (req, res) => {
+  const { subjectName, unitName } = req.query;
+  console.log(subjectName, unitName.split(" ")[1]);
+  
+  const discussions = await Discussion.find({
+    subject: subjectName,
+    unit: unitName.split(" ")[1],
+  })
+    .sort({ createdAt: -1 })
+    .limit(20)
+    .populate("postedBy", "name email profileImage role")
+    .populate({
+      path: "answers",
+      populate: {
+        path: "answeredBy",
+        select: "name email profileImage role",
+      },
+    });
+    
+  res.status(200).json({
+    success: true,
+    count: discussions.length,
+    discussions,
+  });
+});
 
 const fetchAnnouncements = asyncHandler(async (req, res) => {
   const announcements = await Announcement.find()
@@ -154,4 +179,5 @@ export default {
   postAnnouncement,
   fetchAnnouncementsById,
   deleteAnnouncements,
+  fetchDiscussionByName,
 };

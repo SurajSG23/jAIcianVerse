@@ -152,8 +152,8 @@ const TrendingPage: React.FC<Props> = ({
         }/api/discussions/fetch-discussions-by-name`,
         {
           params: {
-            subject: selectedSubject,
-            unit: selectedUnit,
+            subjectName: selectedSubject,
+            unitName: selectedUnit,
           },
           withCredentials: true,
         }
@@ -170,7 +170,7 @@ const TrendingPage: React.FC<Props> = ({
     }
   };
   useEffect(() => {
-    // fetchDiscussions();
+    fetchDiscussions();
   }, []);
 
   return (
