@@ -367,19 +367,16 @@ const Profile = () => {
 
     if (
       editProfileDetails?.branch &&
-      !Branches.includes(editProfileDetails?.branch)
+      !Branches.includes(editProfileDetails.branch)
     ) {
       toast.error("Please select from the suggested branches.");
       return;
     }
 
     try {
-      let uploadedImageUrl = "";
+      let uploadedImageUrl = userDetails?.profileImage || "";
 
-      if (
-        editProfileDetails?.profileImage &&
-        editProfileDetails?.profileImage !== userDetails?.profileImage
-      ) {
+      if (editProfileDetails?.profileImage instanceof File) {
         const formData = new FormData();
         formData.append("file", editProfileDetails.profileImage);
         formData.append(
@@ -388,17 +385,14 @@ const Profile = () => {
         );
         formData.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
 
-        const response = await axios.post(
+        const uploadRes = await axios.post(
           `https://api.cloudinary.com/v1_1/${
             import.meta.env.VITE_CLOUD_NAME
           }/image/upload`,
           formData
         );
 
-        uploadedImageUrl = response.data.secure_url;
-        setUserDetails((prev) =>
-          prev ? { ...prev, profileImage: uploadedImageUrl } : prev
-        );
+        uploadedImageUrl = uploadRes.data.secure_url;
       }
 
       const payload = {
@@ -406,24 +400,25 @@ const Profile = () => {
         email: editProfileDetails.email || userDetails?.email,
         branch: editProfileDetails.branch || userDetails?.branch,
         semester: editProfileDetails.semester ?? userDetails?.semester,
-        profileImage: uploadedImageUrl || userDetails?.profileImage,
+        profileImage: uploadedImageUrl,
       };
+
+      const storedUser = JSON.parse(localStorage.getItem("userInfo") || "{}");
 
       const response = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/user/update-profile`,
         payload,
         {
           headers: {
-            authorization: `Bearer ${userDetails?.token}`,
+            Authorization: `Bearer ${storedUser.token}`,
           },
           withCredentials: true,
         }
       );
 
-      const existingUser = JSON.parse(localStorage.getItem("userInfo") || "{}");
       const updatedUser = {
         ...response.data.user,
-        token: existingUser.token,
+        token: storedUser.token,
       };
 
       localStorage.setItem("userInfo", JSON.stringify(updatedUser));
@@ -431,6 +426,7 @@ const Profile = () => {
       setEditProfile(false);
     } catch (error) {
       console.error("Error updating profile:", error);
+      toast.error("Failed to update profile");
     }
   };
 
