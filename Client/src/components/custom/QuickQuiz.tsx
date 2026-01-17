@@ -329,6 +329,13 @@ const StudyHub: React.FC<Props> = ({
       setGeminiAnswers(geminiAns);
       setGeminiExplaination(geminiExp);
     } catch (error) {
+      if (error.response.status === 404) {
+        toast.error("No materials found for the selected subject and unit.");
+        setIsQuickQuizVisible(false);
+      } else {
+        toast.error("Failed to generate summary.");
+      }
+
       console.error("Error generating questions:", error);
     } finally {
       setCurrentTime(10 * 60);
@@ -708,19 +715,19 @@ const StudyHub: React.FC<Props> = ({
                         score === 10
                           ? "text-green-400"
                           : score >= 7
-                          ? "text-blue-400"
-                          : score >= 4
-                          ? "text-yellow-400"
-                          : "text-red-400"
+                            ? "text-blue-400"
+                            : score >= 4
+                              ? "text-yellow-400"
+                              : "text-red-400"
                       }`}
                     >
                       {score === 10
                         ? "Perfect Score!"
                         : score >= 7
-                        ? "Great Job!"
-                        : score >= 4
-                        ? "Good Effort!"
-                        : "Keep Practicing!"}
+                          ? "Great Job!"
+                          : score >= 4
+                            ? "Good Effort!"
+                            : "Keep Practicing!"}
                     </p>
                   </div>
 

@@ -300,6 +300,12 @@ const generateMCQ = asyncHandler(async (req, res) => {
       unit: unitId,
     }).limit(4);
 
+    if (materials.length === 0) {
+      return res.status(404).json({
+        message: "No materials found for the given subject and unit",
+      });
+    }
+
     let context = "";
 
     for (const material of materials) {
