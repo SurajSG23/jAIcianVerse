@@ -144,10 +144,15 @@ const AIAvatar: React.FC<Props> = ({
         `;
       finalText = finalText.replace(/\s+/g, " ").trim();
       setText(finalText);
-      console.log(finalText);
     } catch (error) {
       setIsGenerating(false);
-      toast.error("Failed to generate summary.");
+
+      if (error.response.status === 404) {
+        toast.error("No materials found for the selected subject and unit.");
+      } else {
+        toast.error("Failed to generate summary.");
+      }
+
       console.error("Failed to fetch materials:", error);
       return;
     }

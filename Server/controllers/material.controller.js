@@ -223,6 +223,12 @@ const generateSummary = asyncHandler(async (req, res) => {
     unit: unitId,
   }).limit(4);
 
+  if (materials.length === 0) {
+    return res.status(404).json({
+      message: "No materials found for the given subject and unit",
+    });
+  }
+
   let context = `SUBJECT: ${selectedSubject}\n\n`;
 
   for (const material of materials) {
@@ -252,12 +258,12 @@ const generateSummary = asyncHandler(async (req, res) => {
       ? (await geminiModel.generateContent(prompt)).response?.text()
       : await generateWithOpenRouter([{ role: "user", content: prompt }]);
   }
-  
+
   res.status(200).json({
     message: "Summary generated successfully",
     summary: summaryText,
   });
-  
+
   // Store once
   await storeCloudinary(summaryText, subjectId, unitId);
 });

@@ -226,7 +226,7 @@ const callAIModel = asyncHandler(async (req, res) => {
   const { query } = req.query;
   const prompt = chatbotPrompt(query);
   const useLocalModel = false;
-  const useGemini = false;
+  const useGemini = true;
 
   let response = "";
   if (useLocalModel) {
