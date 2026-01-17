@@ -6,10 +6,10 @@ import Materials from "./components/custom/Materials";
 import MessagePage from "./components/custom/MessagePage";
 import ChatBotWidget from "./components/custom/ChatBotWidget";
 import { ToastContainer } from "react-toastify";
-
+import { useLocation } from "react-router-dom";
 
 const App = () => {
-
+  const location = useLocation();
   return (
     <div>
       <Routes>
@@ -19,7 +19,8 @@ const App = () => {
         <Route path="/materials" element={<Materials />} />
         <Route path="/messages" element={<MessagePage />} />
       </Routes>
-      <ChatBotWidget />
+      {location.pathname !== "/" && <ChatBotWidget />}
+
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
