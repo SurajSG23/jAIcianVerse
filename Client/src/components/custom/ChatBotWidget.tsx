@@ -53,25 +53,12 @@ export default function ChatBotWidget({
     }
   }, [isOpen]);
 
-  /**
-   * WIRE YOUR RAG BACKEND HERE
-   * Replace this mock function with your actual API call
-   */
-  const sendMessageToRAG = async (userMessage: string): Promise<string> => {
-    // Simulate API delay
-    await new Promise((resolve) =>
-      setTimeout(resolve, 1000 + Math.random() * 1000)
-    );
-    // Mock responses
-    const responses = [
-      "That's a great question! Let me help you with that.",
-      "I understand what you're looking for. Here's what I found...",
-      "Based on the information I have, I can suggest...",
-      "Let me break that down for you in a clear way.",
-      "I'm here to help! Could you provide a bit more context?",
-    ];
 
-    return responses[Math.floor(Math.random() * responses.length)];
+  const sendMessageToRAG = async (userMessage: string): Promise<string> => {
+   
+    
+
+    return 
   };
 
   const handleSendMessage = async () => {

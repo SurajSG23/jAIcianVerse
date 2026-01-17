@@ -218,10 +218,15 @@ const incrementPoint = asyncHandler(async (req, res) => {
   });
 });
 
+const callAIModel = asyncHandler(async (req, res) => {
+  
+});
+
 export default {
   registerUser,
   loginUser,
   updateProfile,
   incrementPoint,
   fetchUserDetails,
+  callAIModel
 };
