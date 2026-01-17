@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useRef, useEffect } from "react";
 import { FaMicrophone, FaPause } from "react-icons/fa";
 import SpeechRecognition, {
@@ -53,12 +54,18 @@ export default function ChatBotWidget({
     }
   }, [isOpen]);
 
-
   const sendMessageToRAG = async (userMessage: string): Promise<string> => {
-   
-    
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/api/user/call-ai-model`,
+      {
+        params: {
+          query: userMessage,
+        },
+        withCredentials: true,
+      }
+    );
 
-    return 
+    return response.data.data;
   };
 
   const handleSendMessage = async () => {
