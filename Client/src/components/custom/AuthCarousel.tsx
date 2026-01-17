@@ -396,6 +396,8 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
                   <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                   <input
                     type="number"
+                    min={1}
+                    max={8}
                     placeholder="Semester"
                     value={formData.semester}
                     onChange={(e) =>

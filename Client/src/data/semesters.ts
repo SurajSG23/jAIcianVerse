@@ -1320,6 +1320,229 @@ const semestersData = {
       "Project Phase-II": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
     },
   },
+  "Civil Engineering": {
+    "Semester 1": {
+      "Engineering Mathematics-1": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Engineering Physics": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Engineering Chemistry": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Engineering Mechanics": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Basic Civil Engineering": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Engineering Graphics & Design": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+    },
+
+    "Semester 2": {
+      "Engineering Mathematics-2": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Building Materials": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Surveying-I": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Strength of Materials": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Engineering Geology": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Functional English": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+    },
+
+    "Semester 3": {
+      "Engineering Mathematics-3": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Structural Analysis-I": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Geotechnical Engineering-I": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Concrete Technology": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Surveying-II": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+    },
+
+    "Semester 4": {
+      "Structural Analysis-II": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Geotechnical Engineering-II": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Fluid Mechanics": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Environmental Engineering-I": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Environmental Studies": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+    },
+
+    "Semester 5": {
+      "Design of Reinforced Concrete Structures-I": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Transportation Engineering-I": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Water Resources Engineering-I": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Construction Planning and Management": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Professional Ethics": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+    },
+
+    "Semester 6": {
+      "Design of Reinforced Concrete Structures-II": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Transportation Engineering-II": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Water Resources Engineering-II": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Environmental Engineering-II": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Open Elective-I": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+    },
+
+    "Semester 7": {
+      "Design of Steel Structures": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Foundation Engineering": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Disaster Management": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Open Elective-II": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Project Phase-I": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+    },
+
+    "Semester 8": {
+      "Advanced Structural Engineering": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Remote Sensing and GIS": [
+        "Unit 1",
+        "Unit 2",
+        "Unit 3",
+        "Unit 4",
+        "Unit 5",
+      ],
+      "Open Elective-III": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Open Elective-IV": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+      "Project Phase-II": ["Unit 1", "Unit 2", "Unit 3", "Unit 4", "Unit 5"],
+    },
+  },
 };
 
 export default semestersData;
