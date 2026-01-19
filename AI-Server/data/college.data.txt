@@ -319,7 +319,7 @@ The vision of the Department of Computer Science and Engineering is to become a 
 
 
 
-Mission of the Department
+Mission of the Department CSE
 
 The department aims to impart quality education with emphasis on fundamental principles of Computer Science and Engineering.
 
@@ -328,3 +328,83 @@ It focuses on continuous curriculum and pedagogical advancement to enhance the t
 The department fosters research activities and collaboration with leading academic institutions and industries.
 
 It promotes innovation and entrepreneurship with the objective of contributing positively to society.
+
+
+
+Department of Electronics and Communication Engineering (ECE)
+
+The Department of Electronics and Communication Engineering at JSS Science and Technology University was established in the year 1968. It is one of the long-standing departments of the institution and offers education and research opportunities in core and emerging areas of electronics and communication engineering.
+
+The department offers an undergraduate programme leading to a Bachelor of Engineering degree in Electronics and Communication Engineering. It also offers three postgraduate programmes, namely M.Tech in Industrial Electronics, M.Tech in Network and Internet Engineering, and M.Tech in Automotive Electronics.
+
+In addition to undergraduate and postgraduate programmes, the department offers a Ph.D. programme that provides a platform for graduates and postgraduates to conduct research in advanced and state-of-the-art technologies.
+
+
+
+Academic Structure and Curriculum
+
+The curriculum of the department is designed to provide a strong foundation in both analytical and technological aspects of Electronics and Communication Engineering. It includes core courses, electives, laboratory work, and project-based learning.
+
+Students are encouraged to work on mini-projects, develop communication skills, explore internship opportunities in industry, and participate in national and international technical, cultural, and sports activities.
+
+The undergraduate programme allows students to choose subjects from specialized streams in higher semesters. These streams include Sensors and Robotics, Signal Processing and Control Engineering, Smart Materials and Microelectronics, and Communication and Networking.
+
+
+
+Postgraduate and Research Focus
+
+The postgraduate programmes focus on research, system design, and applications relevant to core electronics, communication, and information technology industries. These programmes emphasize product development, advanced engineering concepts, and preparation for doctoral research.
+
+The department supports research activities across areas such as electronic circuits and communication systems, signal processing and computer networks, VLSI, and embedded systems. These research activities provide pathways for students to pursue doctoral studies.
+
+
+
+Infrastructure and Laboratories
+
+The Department of Electronics and Communication Engineering has state-of-the-art classrooms and well-equipped laboratories to support teaching, learning, and research activities.
+
+Specialized laboratory facilities available in the department include the Nano Dielectric and Devices Laboratory, Visual TCAD and Research Laboratory, and the e-Yantra Laboratory. These facilities support experimental investigations, research work, and implementation of undergraduate and postgraduate project ideas.
+
+
+
+Faculty, Leadership, and Student Support
+
+The department is led by **U B Mahadevaswamy**, who serves as the Head of the Department. The department is supported by experienced professors and well-qualified faculty members.
+
+The department has more than 31 faculty members engaged in teaching, research, mentoring, and academic administration. Faculty retention and academic continuity contribute to the stability and quality of the department.
+
+
+
+Industry Interaction, Internships, and Professional Activities
+
+The department guides undergraduate and postgraduate students in securing internships at reputed industries and premier institutions such as IISc, IITs, and NITs. It also organizes industrial visits, expert lectures, and technical workshops to enhance industry exposure.
+
+The department is a recognized centre under the Quality Improvement Programme of the Government of India, supporting faculty development and academic excellence.
+
+An active IEEE student chapter operates within the department. The chapter organizes national-level paper presentation competitions, technical events, workshops, and project-based activities such as Vacation Project Mania, LaTeX workshops, and mini-project competitions.
+
+
+
+Placements and Career Development
+
+The Bachelor of Engineering programme in Electronics and Communication Engineering at SJCE, JSS Science and Technology University is among the sought-after programmes in the state. The department has a strong placement record, and a high percentage of eligible students secure placements in leading companies.
+
+The department also encourages students to pursue higher studies and entrepreneurial ventures, supporting long-term career development beyond campus placements.
+
+
+
+Vision of the Department
+
+The vision of the Department of Electronics and Communication Engineering is to be a leader in providing globally acceptable education with emphasis on fundamentals, applications, creative thinking, research, and career development.
+
+
+
+Mission of the Department ECE
+
+The department aims to provide strong infrastructure and an up-to-date curriculum within a conducive learning environment.
+
+It enables students to keep pace with emerging trends in Electronics and Communication Engineering.
+
+The department seeks to establish strong industry participation and encourage student entrepreneurship.
+
+It promotes socially relevant and eco-friendly technologies and fosters inclusive innovation activities.
