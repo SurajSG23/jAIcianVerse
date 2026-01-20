@@ -48,6 +48,7 @@ const Materials = () => {
   const [selectedPdf, setSelectedPdf] = useState<File | null>(null);
   const pdfInputRef = useRef<HTMLInputElement>(null);
   const [pdfTitle, setPdfTitle] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
   const handlePdfSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -146,7 +147,7 @@ const Materials = () => {
             "Content-Type": "application/json",
           },
           withCredentials: true,
-        }
+        },
       );
     } catch (error) {
       console.log(error);
@@ -188,7 +189,7 @@ const Materials = () => {
 
     let subjectId = "";
     let unitId = "";
-
+    setIsUploading(true);
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/api/materials/fetchSubjectUnitID`,
@@ -198,7 +199,7 @@ const Materials = () => {
             unitName: selectedUnit.name,
           },
           withCredentials: true,
-        }
+        },
       );
 
       subjectId = response.data.subjectId;
@@ -234,7 +235,7 @@ const Materials = () => {
           headers: {
             Authorization: `Bearer ${userDetails.token}`,
           },
-        }
+        },
       );
 
       toast.success("Notes uploaded successfully!");
@@ -246,6 +247,7 @@ const Materials = () => {
       setSelectedPdf(null);
       setPdfTitle("");
       setEditProfile(false);
+      setIsUploading(false)
     }
   };
 
@@ -270,7 +272,7 @@ const Materials = () => {
   return (
     <div
       className={cn(
-        "mx-auto fixed flex w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-black h-screen text-white"
+        "mx-auto fixed flex w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-black h-screen text-white",
       )}
     >
       <style>
@@ -362,10 +364,19 @@ const Materials = () => {
               <button
                 className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-3 rounded-md bg-black font-medium border border-zinc-700 text-white cursor-pointer disabled:opacity-50"
                 onClick={handleUpload}
-                disabled={!selectedPdf || !pdfTitle.trim()}
+                disabled={!selectedPdf || !pdfTitle.trim() || isUploading}
               >
-                <Save />
-                Upload
+                {isUploading ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Save />
+                    Contribute Note
+                  </>
+                )}
                 <BottomGradient />
               </button>
             </div>
@@ -425,11 +436,11 @@ const Materials = () => {
                     Number(subject.semester) ===
                       Number(
                         JSON.parse(localStorage.getItem("userInfo") || "{}")
-                          ?.semester
+                          ?.semester,
                       ) &&
                     subject.branch ===
                       JSON.parse(localStorage.getItem("userInfo") || "{}")
-                        ?.branch
+                        ?.branch,
                 )
                 .map((subject, index) => (
                   <motion.div
