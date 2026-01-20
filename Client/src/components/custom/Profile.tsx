@@ -134,6 +134,7 @@ const Profile = () => {
   const [userAnnouncements, setUserAnnouncements] = useState([]);
   const [totalAnswers, setTotalAnswers] = useState(0);
 
+  const [isSaving, setIsSaving] = useState(false);
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [announcementText, setAnnouncementText] = useState("");
 
@@ -218,11 +219,11 @@ const Profile = () => {
             Authorization: `Bearer ${userDetails?.token}`,
           },
           withCredentials: true,
-        }
+        },
       );
 
       setUserAnnouncements((prev) =>
-        prev.filter((a) => a._id !== announcementId)
+        prev.filter((a) => a._id !== announcementId),
       );
       toast.success("Announcement deleted successfully!");
     } catch (error) {
@@ -243,7 +244,7 @@ const Profile = () => {
             Authorization: `Bearer ${storedUser.token}`,
           },
           withCredentials: true,
-        }
+        },
       );
 
       if (!res) return;
@@ -269,7 +270,7 @@ const Profile = () => {
             authorization: `Bearer ${userDetail?.token}`,
           },
           withCredentials: true,
-        }
+        },
       );
       setUserMaterials(response.data.notes);
     } catch (error) {
@@ -291,7 +292,7 @@ const Profile = () => {
             Authorization: `Bearer ${userDetail?.token}`,
           },
           withCredentials: true,
-        }
+        },
       );
 
       setUserAnnouncements(response.data.announcements);
@@ -312,7 +313,7 @@ const Profile = () => {
             Authorization: `Bearer ${userDetail?.token}`,
           },
           withCredentials: true,
-        }
+        },
       );
       setTotalAnswers(response.data.totalAnswers);
     } catch (error) {
@@ -341,7 +342,7 @@ const Profile = () => {
             "Content-Type": "application/json",
           },
           withCredentials: true,
-        }
+        },
       );
 
       fetchUserAnnouncements();
@@ -351,7 +352,7 @@ const Profile = () => {
     } catch (error) {
       console.error(
         "Error posting announcement:",
-        error.response?.data || error.message
+        error.response?.data || error.message,
       );
     }
   };
@@ -373,6 +374,7 @@ const Profile = () => {
       return;
     }
 
+    setIsSaving(true);
     try {
       let uploadedImageUrl = userDetails?.profileImage || "";
 
@@ -381,7 +383,7 @@ const Profile = () => {
         formData.append("file", editProfileDetails.profileImage);
         formData.append(
           "upload_preset",
-          import.meta.env.VITE_CLOUD_PRESET_NAME
+          import.meta.env.VITE_CLOUD_PRESET_NAME,
         );
         formData.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
 
@@ -389,7 +391,7 @@ const Profile = () => {
           `https://api.cloudinary.com/v1_1/${
             import.meta.env.VITE_CLOUD_NAME
           }/image/upload`,
-          formData
+          formData,
         );
 
         uploadedImageUrl = uploadRes.data.secure_url;
@@ -413,7 +415,7 @@ const Profile = () => {
             Authorization: `Bearer ${storedUser.token}`,
           },
           withCredentials: true,
-        }
+        },
       );
 
       const updatedUser = {
@@ -424,9 +426,12 @@ const Profile = () => {
       localStorage.setItem("userInfo", JSON.stringify(updatedUser));
       setUserDetails(updatedUser);
       setEditProfile(false);
+      toast.success("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile:", error);
       toast.error("Failed to update profile");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -436,7 +441,7 @@ const Profile = () => {
   return (
     <div
       className={cn(
-        "mx-auto fixed flex w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-black h-screen text-white"
+        "mx-auto fixed flex w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-black h-screen text-white",
       )}
     >
       {editProfile && (
@@ -558,11 +563,27 @@ const Profile = () => {
                   <BottomGradient />
                 </button>
                 <button
-                  className="group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-1 rounded-md bg-black font-medium border border-zinc-700 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                  className={`group/btn relative h-10 flex justify-center items-center gap-2 w-auto px-3 rounded-md
+                              bg-black font-medium border border-zinc-700 text-white
+                              shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]
+                              dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]
+                              ${isSaving ? "opacity-60 cursor-not-allowed pointer-events-none" : "cursor-pointer"}
+                            `}
                   onClick={handleEditProfile}
+                  disabled={isSaving}
                 >
-                  <Save />
-                  Save Changes
+                  {isSaving ? (
+                    <>
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save />
+                      Save Changes
+                    </>
+                  )}
+
                   <BottomGradient />
                 </button>
               </div>
@@ -656,7 +677,7 @@ const Profile = () => {
           <button
             onClick={() => {
               setActiveTab(
-                userRole === "student" ? "contributions" : "announcements"
+                userRole === "student" ? "contributions" : "announcements",
               );
             }}
             className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all cursor-pointer ${
@@ -856,7 +877,7 @@ const Profile = () => {
 
                           <span className="text-sm text-gray-500">
                             {new Date(
-                              announcement.createdAt
+                              announcement.createdAt,
                             ).toLocaleDateString()}
                           </span>
                         </div>
