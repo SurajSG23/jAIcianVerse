@@ -605,3 +605,49 @@ Dr. S. Suriyanarayanan has held several academic and research leadership roles. 
 Research Contributions
 
 Dr. S. Suriyanarayanan has authored more than 40 research articles and has contributed 7 book chapters. He has also served in 2 editorial positions related to academic research and publication activities.
+
+Central Instrumentation Facility (CIF)
+
+The Central Instrumentation Facility at JSS Science and Technology University provides access to advanced analytical instruments to support scientific and technological research. The facility assists faculty members, research scholars, and students in conducting basic, applied, and engineering research at competitive standards.
+
+The facility is equipped with high-end analytical instruments and specialized software tools used across multiple scientific and technical disciplines. Its objective is to create modern testing and analysis infrastructure that supports research and experimentation across all departments of the university.
+
+The services of the Central Instrumentation Facility are available not only to departments within JSS Science and Technology University but also to external academic institutions, research laboratories, and industries across the country. The facility also supports postgraduate education and doctoral research by providing access to advanced instrumentation and technical assistance.
+
+The facility aims to continuously upgrade and maintain state-of-the-art equipment to support research excellence and interdisciplinary collaboration.
+
+Injection Molding Facility
+
+The Central Instrumentation Facility houses an automatic injection molding machine used for manufacturing plastic components through the injection molding process. This process involves injecting molten plastic into a mold cavity where it cools and solidifies into the desired shape.
+
+The automatic injection molding machine performs material feeding, melting, injection, cooling, and part ejection with minimal human intervention. This automation improves production efficiency and supports experimental and applied research in polymer processing and materials engineering.
+
+Scanning Electron Microscope (SEM)
+
+The Central Instrumentation Facility includes a Scanning Electron Microscope used for high-resolution surface imaging at the micro and nanoscale. The instrument operates by scanning a focused electron beam over the sample surface and generating signals that produce detailed images.
+
+The SEM supports research applications across materials science, nanotechnology, electronics, and interdisciplinary scientific studies.
+
+X-Ray Diffractometer (XRD)
+
+The facility is equipped with an X-Ray Diffractometer designed for powder diffraction analysis. The instrument provides flexibility for structural and phase analysis of materials and supports a wide range of experimental conditions.
+
+The system enables non-ambient diffraction experiments, including temperature-controlled studies, gas flow experiments, humidity-controlled environments, and measurements under vacuum or controlled pressure. These capabilities allow diverse material characterization studies.
+
+Fourier Transform Infrared Spectrometer (FTIR)
+
+The Central Instrumentation Facility includes a Fourier Transform Infrared Spectrometer with an Attenuated Total Reflectance accessory. This instrument is used for chemical and material analysis by measuring infrared light absorption.
+
+The ATR accessory allows analysis of solid and liquid samples with minimal sample preparation. The system supports material identification, functional group analysis, and quality assessment in scientific and industrial research.
+
+Rheology and Mixing Facility
+
+The facility includes a laboratory-scale internal mixer used for testing highly viscous materials. It operates as part of a torque rheometer system and supports batch processing experiments.
+
+The system enables measurement of torque, viscosity, and material behavior during mixing and processing. Data generated during experiments is analyzed through an integrated rheometer platform, supporting polymer, composite, and materials research.
+
+Thermal Analysis Facilities
+
+The Central Instrumentation Facility includes a Differential Scanning Calorimeter used to study heat flow associated with physical and chemical transitions in materials as a function of temperature. The instrument supports analysis of melting, crystallization, glass transition, and reaction behavior.
+
+The facility also includes a Dynamic Mechanical Analyzer used to evaluate the mechanical properties of materials under varying temperature and loading conditions. These thermal and mechanical analysis tools support research in polymers, composites, electronics, and advanced materials.
