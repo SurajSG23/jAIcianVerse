@@ -578,7 +578,7 @@ The Research Department at JSS Science and Technology University supports a coll
 
 Dean of Research
 
-The Research Department is led by **V. N. Manjunath Aradhya**, who serves as the Dean of Research at JSS Science and Technology University.
+The Research Department is led by V. N. Manjunath Aradhya, who serves as the Dean of Research at JSS Science and Technology University.
 
 Dr. V. N. Manjunath Aradhya is a Professor in the Department of Computer Applications at JSS Science and Technology University, Mysuru. He obtained his M.S. and Ph.D. degrees in Computer Science from the University of Mysore in the years 2004 and 2007 respectively and has also completed postdoctoral research in Italy.
 
@@ -594,7 +594,7 @@ He has published more than 200 research papers and has received over 1700 citati
 
 Associate Dean of Research
 
-The Research Department is supported by **S. Suriyanarayanan**, who serves as the Associate Dean of Research at JSS Science and Technology University.
+The Research Department is supported by S. Suriyanarayanan, who serves as the Associate Dean of Research at JSS Science and Technology University.
 
 Dr. S. Suriyanarayanan holds qualifications in M.Sc., M.Phil., Ph.D., and PGDESD. He earned his Ph.D. from Bharathiar University, Tamil Nadu, and has extensive academic and research experience in the field of Environmental Sciences.
 
@@ -651,3 +651,33 @@ Thermal Analysis Facilities
 The Central Instrumentation Facility includes a Differential Scanning Calorimeter used to study heat flow associated with physical and chemical transitions in materials as a function of temperature. The instrument supports analysis of melting, crystallization, glass transition, and reaction behavior.
 
 The facility also includes a Dynamic Mechanical Analyzer used to evaluate the mechanical properties of materials under varying temperature and loading conditions. These thermal and mechanical analysis tools support research in polymers, composites, electronics, and advanced materials.
+
+Research Projects
+
+JSS Science and Technology University undertakes externally funded research projects across multiple disciplines. These projects are supported by national and state-level funding agencies and address applied research, societal challenges, and technological development.
+
+Sanctioned Research Projects
+
+A research project titled *Comparative Study on Complete Cost Analysis of Intermittent versus 24x7 Water Supply System for Urban Areas* was sanctioned by CPHEEO with a project cost of Rs. 40.27 lakhs.
+
+The project *Establishment of Centre for Facile Synthesis of Metal Complexes and Study for Interaction with Biomolecules* was funded by VGST - CISEE with a sanctioned amount of Rs. 30 lakhs.
+
+A research project titled *Development and Characterization of Sustainable Food Packaging Materials Based on Functional Polymer Nanocomposites* received funding of Rs. 20 lakhs from SERB – TARE.
+
+The project *Development of Nano Cellulose Reinforced Green Composites for Biomedical Applications* was supported by SERB – EMEQ with a project cost of Rs. 14.65 lakhs.
+
+A project titled *Machine Learning Based Smart Mobile Application for Detecting Clinical Dental Fluorosis* was sanctioned by DBT with funding of Rs. 10 lakhs.
+
+The project *Development of Ayurveda Based Solution for Home Care and Health Care Needs* was supported under DST-NIDHI-PRAYAS through SJCE-STEP with a sanctioned amount of Rs. 9.5 lakhs.
+
+An ATAL Faculty Development Programme titled *Research Avenues in Biometrics Using Low-Cost Devices* was sanctioned by AICTE - ATAL with funding of Rs. 3 lakhs.
+
+Projects were sanctioned for undergraduate and postgraduate student batches across Electronics and Communication Engineering, Civil Engineering, Construction Technology and Management, Electrical and Electronics Engineering, Information Science and Engineering, Mechanical Engineering, and Structural Engineering. These projects were supported by KSCST with a total funding of Rs. 0.77 lakhs.
+
+A student research project titled *Development of Efficient Model for Person Identification Using Occluded Faces* was sanctioned by KSCST with funding of Rs. 5 lakhs.
+
+Research Funding Scope
+
+The sanctioned projects reflect the university’s engagement in multidisciplinary research areas including civil infrastructure, materials science, biotechnology, biomedical applications, artificial intelligence, healthcare innovation, and engineering education.
+
+These projects support faculty-led research, student research initiatives, and institutional research infrastructure development.
