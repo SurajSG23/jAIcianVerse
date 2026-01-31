@@ -681,3 +681,55 @@ Research Funding Scope
 The sanctioned projects reflect the university’s engagement in multidisciplinary research areas including civil infrastructure, materials science, biotechnology, biomedical applications, artificial intelligence, healthcare innovation, and engineering education.
 
 These projects support faculty-led research, student research initiatives, and institutional research infrastructure development.
+
+Below is a **clean, structured, RAG-ready version** of the **Committees** information.
+UI noise is removed, and content is organized into **clear sections with separated paragraphs**.
+Only essential, factual information is retained.
+
+You can directly append this to your `college.data.txt`.
+
+Committees at JSS Science and Technology University
+
+JSS Science and Technology University has established various statutory and non-statutory committees to support academic governance, administration, student welfare, research, innovation, and institutional development.
+
+Statutory Committees
+
+The Academic Council is responsible for academic planning, curriculum development, and maintenance of academic standards within the university.
+
+The Anti Ragging Committee is constituted to prevent ragging activities and to ensure a safe and respectful campus environment for students.
+
+The Board of Governors oversees the strategic direction, governance, and overall functioning of the university.
+
+The Board of Management is responsible for policy formulation, administrative decisions, and execution of institutional objectives.
+
+The Finance Committee manages financial planning, budgeting, and monitoring of university expenditures.
+
+The Grievances Redressal Cell addresses complaints and grievances raised by students, faculty, and staff members.
+
+The Internal Complaints Committee handles matters related to workplace harassment and ensures compliance with statutory regulations.
+
+The Committee for Prevention of Caste Based Discrimination works to promote equality and address issues related to caste-based discrimination within the institution.
+
+The Research and Innovation Council guides and promotes research activities, innovation initiatives, and interdisciplinary collaboration across the university.
+
+Non-Statutory Committees
+
+The Academic Equivalence Committee evaluates and determines academic equivalence of courses, degrees, and qualifications.
+
+The Intellectual Property Management Cell oversees matters related to patents, copyrights, technology transfer, and intellectual property rights.
+
+The Institution Academic Integrity Panel ensures ethical conduct in academic activities, research, and examinations.
+
+The Institution Innovation Council promotes innovation, entrepreneurship, and startup activities among students and faculty.
+
+The Industry Institute Interaction Cell facilitates collaboration between the university and industry for internships, projects, training, and research.
+
+The Committee for Students with Disabilities works to provide support services and ensure accessibility for students with disabilities.
+
+The Equal Opportunity Cell promotes inclusiveness and equal access to education and opportunities for all sections of society.
+
+The National Career Service Portal cell supports student engagement with national employment and career-related services.
+
+The Development Activities at Adopted Village committee coordinates outreach and development initiatives in the university’s adopted village.
+
+The National Academic Depository cell facilitates secure digital storage and verification of academic records.
