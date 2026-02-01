@@ -733,3 +733,43 @@ The National Career Service Portal cell supports student engagement with nationa
 The Development Activities at Adopted Village committee coordinates outreach and development initiatives in the university’s adopted village.
 
 The National Academic Depository cell facilitates secure digital storage and verification of academic records.
+
+Programmes Offered at JSS Science and Technology University and SJCE
+
+JSS Science and Technology University and its constituent college, Sri Jayachamarajendra College of Engineering, offer academic programmes at undergraduate, postgraduate, and doctoral levels across engineering, management, science, and technology disciplines.
+
+Undergraduate Engineering Programmes (B.E.)
+
+The university offers Bachelor of Engineering programmes in Biotechnology, Civil Engineering, Construction Technology and Management, Computer Science and Engineering, Electronics and Communication Engineering, Information Science and Engineering, Mechanical Engineering, Computer Science and Business Systems, and Electrical and Electronics Engineering.
+
+Sri Jayachamarajendra College of Engineering offers Bachelor of Engineering programmes in Electrical and Electronics Engineering, Electronics and Instrumentation Engineering, Environmental Engineering, Industrial and Production Engineering, and Polymer Science and Technology.
+
+Some undergraduate engineering programmes such as Civil Engineering, Computer Science and Engineering, Electronics and Communication Engineering, and Mechanical Engineering are offered jointly by JSS Science and Technology University and SJCE.
+
+Undergraduate Science and Applications Programmes
+
+The university offers the Bachelor of Computer Applications programme through the Department of Computer Applications.
+
+Postgraduate Engineering and Technology Programmes (M.Tech.)
+
+JSS Science and Technology University offers Master of Technology programmes in Biotechnology, Data Science, Health Science and Water Engineering, Industrial Electronics, Infrastructure Engineering and Management, Material Science and Engineering, Network and Internet Engineering, and Software Engineering.
+
+Sri Jayachamarajendra College of Engineering offers Master of Technology programmes in Automotive Electronics, Biomedical Signal Processing and Instrumentation, Computer Engineering, Energy Systems and Management, Environmental Engineering, Industrial Structures, Maintenance Engineering, and Polymer Science and Technology.
+
+Postgraduate Management Programmes (MBA)
+
+The university offers Master of Business Administration programmes in General Management, Financial Management, Retail Management, and Digital Marketing through the Faculty of Management Studies.
+
+Postgraduate Science Programmes (M.Sc.)
+
+JSS Science and Technology University offers Master of Science programmes in Chemistry, Analytical Chemistry, Mathematics, Physics, Biotechnology, Polymer Science, Computer Science, Computer Science with Cyber Security, Computer Science with Data Science, and Computer Science with Artificial Intelligence and Machine Learning.
+
+Postgraduate Computer Applications Programme
+
+The Master of Computer Applications programme is offered jointly by JSS Science and Technology University and Sri Jayachamarajendra College of Engineering through the Department of Computer Applications.
+
+Doctoral Programmes (Ph.D. / D.Phil.)
+
+The university offers doctoral programmes in Electronics and Instrumentation Engineering, Environmental Engineering, Information Science and Engineering, Computer Science and Engineering, Mechanical Engineering, Polymer Science and Technology, Chemistry, Physics, Mathematics, Computer Applications, Management Studies, Biotechnology, Civil Engineering, Electrical and Electronics Engineering, and Electronics and Communication Engineering.
+
+These doctoral programmes support advanced research and interdisciplinary studies across engineering, science, and management domains.
