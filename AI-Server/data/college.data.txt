@@ -868,3 +868,71 @@ Master of Technology in Environmental Engineering has an intake of 18 students.
 Master of Technology in Industrial Structures has an intake of 18 students.
 
 The Master of Computer Applications programme has an intake of 60 students.
+
+Online Admission Process
+
+JSS Science and Technology University provides an online admission system for students admitted through K-CET, COMEDK, and University (Management) quota. Candidates are required to complete the admission process online by applying, uploading documents, and making fee payments through the designated portal.
+
+The online admission process includes filling the application form, selecting the programme for admission, entering required details in the web application, uploading prescribed documents, and submitting the application.
+
+After provisional admission, candidates receive a payment link through registered email and SMS. Admission is confirmed only after successful fee payment through online modes.
+
+Steps for Online Admission
+
+Candidates must first apply online and complete the registration process on the admission portal.
+
+After registration, candidates must fill in the admission application form and select the desired academic programme.
+
+Applicants are required to upload all requisite documents in the prescribed format and size limits.
+
+Once the application is submitted, provisionally admitted candidates receive a payment link via email and SMS.
+
+The programme fee must be paid online using Credit Card, Debit Card, Net Banking, or UPI.
+
+Admission is confirmed after successful fee payment and verification.
+
+Registration and Application Requirements
+
+Registration with the online admission system is mandatory before submitting the admission form.
+
+A valid email address is compulsory for registration and for receiving admission-related communication.
+
+If there is a power failure or internet disruption during form submission, data saved up to the previous stage will be retained. Candidates may log in again and continue from the last completed stage.
+
+Required Documents for Admission
+
+Candidates must upload and submit attested copies of the following documents along with the originals.
+
+PUC or equivalent marks card.
+
+SSLC or 10th standard marks card.
+
+CET, COMEDK, or JEE rank card, as applicable.
+
+Study certificate for 12 years for candidates from Karnataka.
+
+Caste and income certificate for SC, ST, or OBC candidates, if applicable.
+
+Transfer certificate for Karnataka students and migration certificate for non-Karnataka students.
+
+Scanned copy of Aadhaar card as age proof, with file size less than 500 KB.
+
+Two passport-size photographs.
+
+All documents must be submitted in two sets along with the originals. Candidates are advised to retain spare photocopies for reference.
+
+Provisional Admission and Eligibility Clarifications
+
+Candidates who have not yet received their 10+2 or graduation results may apply provisionally. However, all original mark sheets and degree certificates must be produced at the time of admission.
+
+Admissions to engineering programmes through CET are conducted via the Karnataka Examination Authority portal, while admissions through COMEDK are conducted through the COMEDK official portal.
+
+Fee Payment and Confirmation
+
+Programme fees must be paid online through Credit Card, Debit Card, Net Banking, or UPI.
+
+After successful payment, candidates receive a payment confirmation message via SMS and email.
+
+Candidates can download the acknowledgement receipt after payment confirmation and are advised to keep a printed copy for records.
+
+Final student login credentials are issued by the university through the registered email address and phone number after completion of the admission process.
