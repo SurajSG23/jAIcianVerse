@@ -2,18 +2,22 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { createServer } from "http";
 import connectDB from "./config/db.js";
+import initSocket from "./config/socket.js";
 import userRoutes from "./routes/user.route.js";
 import discussionRoutes from "./routes/discussion.route.js";
 import materialRoutes from "./routes/material.route.js";
 import answerRoutes from "./routes/answer.route.js";
 import unitRoutes from "./routes/unit.route.js";
+import chatRoutes from "./routes/chat.route.js";
+import messageRoutes from "./routes/message.route.js";
 
-connectDB();
 dotenv.config();
+connectDB();
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
@@ -31,56 +35,13 @@ app.use("/api/user", userRoutes);
 app.use("/api/discussions", discussionRoutes);
 app.use("/api/materials", materialRoutes);
 app.use("/api/answers", answerRoutes);
+app.use("/api/units", unitRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/message", messageRoutes);
 
-const server = app.listen(3000, () => {
+const httpServer = createServer(app);
+const io = initSocket(httpServer);
+
+httpServer.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
-
-// app.use("/api/user", userRoutes);
-// app.use("/api/chat", chatsRoutes);
-// app.use("/api/message", messageRoutes);
-
-// app.use(Error.notFound);
-// app.use(Error.errorHandler);
-
-// const io = new Server(server, {
-//     pingTimeout: 60000,
-//     cors: {
-//         origin: ["http://localhost:5173", "http://localhost:5174"],
-//     },
-// });
-
-// io.on("connection", (socket) => {
-//     console.log("Connected to socket.io");
-//     socket.on("setup", (userData) => {
-//         socket.join(userData._id.toString());
-//         socket.emit("connected");
-//     });
-
-//     socket.on("join chat", (room) => {
-//         socket.join(room);
-//     });
-
-//     socket.on("new message", async(newMessageRecieved) => {
-//         // fetch the full message from DB and populate sender + chat
-//         const message = await Message.findById(newMessageRecieved._id)
-//             .populate("sender", "name pic")
-//             .populate("chat");
-
-//         if (!message) return console.log("Message not found in DB");
-
-//         // populate chat users too
-//         const chat = await Chat.findById(message.chat._id).populate(
-//             "users",
-//             "-password"
-//         );
-//         if (!chat.users) return console.log("chat.users not defined");
-
-//         // send populated message to all chat users except sender
-//         chat.users.forEach((user) => {
-//             if (user._id.toString() === message.sender._id.toString()) return;
-
-//             io.to(user._id.toString()).emit("message recieved", message);
-//         });
-//     });
-// });

@@ -15,7 +15,7 @@
     "@radix-ui/react-label": "^2.1.7",
     "@tabler/icons-react": "^3.35.0",
     "@tailwindcss/vite": "^4.1.15",
-    "axios": "^1.13.1",
+    "axios": "^1.13.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.6.0",
@@ -28,8 +28,10 @@
     "react-scroll": "^1.9.3",
     "react-speech-recognition": "^4.0.1",
     "react-toastify": "^11.0.5",
+    "socket.io-client": "^4.8.3",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.15"
+    "tailwindcss": "^4.1.15",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
