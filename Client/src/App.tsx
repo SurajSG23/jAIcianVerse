@@ -19,7 +19,7 @@ const App = () => {
         <Route path="/materials" element={<Materials />} />
         <Route path="/messages" element={<MessagePage />} />
       </Routes>
-      {location.pathname !== "/" && <ChatBotWidget />}
+      {location.pathname !== "/" && location.pathname !== "/messages" && <ChatBotWidget />}
 
       <ToastContainer position="top-right" autoClose={3000} />
     </div>
