@@ -24,7 +24,7 @@ export default function initSocket(server) {
     },
   });
 
-  // ── Auth middleware ──────────────────────────────────────────────
+  // Auth middleware 
   io.use(async (socket, next) => {
     try {
       const token =
@@ -42,10 +42,10 @@ export default function initSocket(server) {
     }
   });
 
-  // ── Connection handler ───────────────────────────────────────────
-  io.on("connection", (socket) => {
+  // Connection handler 
+  io.on("connection", (socket) => { 
     const userId = socket.user._id.toString();
-    console.log(`⚡ Socket connected: ${socket.user.name} (${userId})`);
+    console.log(`Socket connected: ${socket.user.name} (${userId})`);
 
     // Track online status
     if (!onlineUsers.has(userId)) onlineUsers.set(userId, new Set());
@@ -57,7 +57,7 @@ export default function initSocket(server) {
     // Broadcast updated online list
     io.emit("online_users", getOnlineUserIds());
 
-    // ── Setup: join all chat rooms the user belongs to ──────────
+    // Setup: join all chat rooms the user belongs to 
     socket.on("setup", async () => {
       try {
         const chats = await Chat.find({ users: userId }).select("_id");
@@ -68,12 +68,12 @@ export default function initSocket(server) {
       }
     });
 
-    // ── Join a specific chat room ───────────────────────────────
+    // Join a specific chat room 
     socket.on("join_chat", (chatId) => {
       socket.join(chatId);
     });
 
-    // ── Send message ────────────────────────────────────────────
+    // Send message
     socket.on("send_message", async (data) => {
       // data: { chatId, content, type?, imageUrl?, replyTo? }
       try {
@@ -119,7 +119,7 @@ export default function initSocket(server) {
       }
     });
 
-    // ── Typing indicators ───────────────────────────────────────
+    // Typing indicators 
     socket.on("typing", ({ chatId }) => {
       socket.to(chatId).emit("typing", { chatId, userId });
     });
@@ -128,7 +128,7 @@ export default function initSocket(server) {
       socket.to(chatId).emit("stop_typing", { chatId, userId });
     });
 
-    // ── Read receipts ───────────────────────────────────────────
+    // Read receipts
     socket.on("read_message", async ({ chatId, messageIds }) => {
       try {
         await Message.updateMany(
@@ -145,7 +145,7 @@ export default function initSocket(server) {
       }
     });
 
-    // ── Edit message ────────────────────────────────────────────
+    // Edit message
     socket.on("edit_message", async ({ messageId, chatId, content }) => {
       try {
         const msg = await Message.findById(messageId);
@@ -165,7 +165,7 @@ export default function initSocket(server) {
       }
     });
 
-    // ── Delete message ──────────────────────────────────────────
+    // Delete message
     socket.on("delete_message", async ({ messageId, chatId }) => {
       try {
         const msg = await Message.findById(messageId);
@@ -181,7 +181,7 @@ export default function initSocket(server) {
       }
     });
 
-    // ── Create group ────────────────────────────────────────────
+    // Create group
     socket.on("create_group", async ({ name, userIds }) => {
       try {
         if (!userIds || userIds.length < 2) {
@@ -213,7 +213,7 @@ export default function initSocket(server) {
       }
     });
 
-    // ── Join / add to group ─────────────────────────────────────
+    // Join / add to group 
     socket.on("join_group", async ({ chatId, userIdToAdd }) => {
       try {
         const chat = await Chat.findById(chatId);
@@ -237,7 +237,7 @@ export default function initSocket(server) {
       }
     });
 
-    // ── Leave group ─────────────────────────────────────────────
+    // Leave group 
     socket.on("leave_group", async ({ chatId }) => {
       try {
         const chat = await Chat.findById(chatId);
@@ -259,7 +259,7 @@ export default function initSocket(server) {
       }
     });
 
-    // ── Remove from group (admin only) ──────────────────────────
+    // Remove from group (admin only) 
     socket.on("remove_from_group", async ({ chatId, userIdToRemove }) => {
       try {
         const chat = await Chat.findById(chatId);
@@ -286,9 +286,9 @@ export default function initSocket(server) {
       }
     });
 
-    // ── Disconnect ──────────────────────────────────────────────
+    // Disconnect 
     socket.on("disconnect", () => {
-      console.log(`🔌 Socket disconnected: ${socket.user.name}`);
+      console.log(`Socket disconnected: ${socket.user.name}`);
       const sockets = onlineUsers.get(userId);
       if (sockets) {
         sockets.delete(socket.id);
