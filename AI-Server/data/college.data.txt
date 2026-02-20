@@ -983,3 +983,68 @@ Recruiters visiting the campus represent sectors such as technology, software, e
 Industry Institute Collaboration
 
 JSS Science and Technology University maintains collaborations with industry through memorandums of understanding. These collaborations support curriculum design, internships, training programmes, and the establishment of centres of excellence.
+
+Examinations at JSS Science and Technology University
+
+Examinations at **JSS Science and Technology University** are administered through the Office of the Controller of Examinations.
+
+Controller of Examinations
+
+**P. Nanjundaswamy** serves as the Controller of Examinations.
+
+The Controller of Examinations (CoE) is responsible for organizing and administering university examinations for all courses. Responsibilities include scheduling examinations, coordinating central evaluation of answer scripts, publishing results, issuing certificates, and maintaining academic integrity.
+
+The CoE also supports verification of academic documents for government bodies, educational institutions, corporate organizations, and private verification agencies. The office conducts pre-auditing and post-auditing of question papers and answer scripts using internal and external subject experts. Comprehensive examination records are maintained for transparency and long-term access.
+
+Official Email (Controller of Examinations): [coe@jssstuniv.in](mailto:coe@jssstuniv.in)
+Examination Helpdesk Email: [examination@jssstuniv.in](mailto:examination@jssstuniv.in)
+
+Examination Structure
+
+Examinations are conducted to assess student performance based on predefined academic parameters. These parameters evaluate knowledge, skills, aptitude, and attitude acquired through academic activities.
+
+The examination department manages examination notifications, conduct of examinations, evaluation processes, declaration of results, and awarding of degrees.
+
+The examination section was introduced in 2007 when Sri Jayachamarajendra College of Engineering was granted autonomy. After the establishment of JSS Science and Technology University in 2016, it was renamed as the Examinations Office.
+
+CIE and SEE Structure
+
+Academic assessment consists of Continuous Internal Evaluation (CIE) and Semester End Examination (SEE).
+
+For regular courses, CIE carries 40 marks. Internal assessment includes two tests of 30 marks each and one event of 20 marks, totaling 80 marks, which is reduced to 40 marks for final calculation. A minimum of 50 percent of CIE (20 out of 40 marks) is required for eligibility to appear for SEE.
+
+For integrated courses, CIE carries 40 marks. Internal assessment includes two tests and one event similar to regular courses. Laboratory assessment carries 40 marks separately. Students must secure 50 percent in both theory and laboratory components to qualify.
+
+Overall assessment weightage is 40 percent for CIE (40 marks) and 60 percent for SEE (60 marks). Students must secure at least 20 or 21 marks in CIE and 24 or 25 marks in SEE. The total minimum passing requirement is 45 marks out of 100.
+
+Undergraduate Academic Regulations (Recent Pattern)
+
+For recent regulations (2022 onwards), the CIE to SEE ratio is 40:60. Earlier regulations (2016–2021) followed a 50:50 ratio.
+
+Vertical progression rules restrict the number of backlogs. In recent regulations, students must not exceed 20 credits of backlog and cannot progress to the fourth year if first-year backlogs remain.
+
+Parallel registration is limited to a maximum of three subjects, including CIE improvement subjects.
+
+Supplementary semester and makeup examinations are not available in recent regulations. Repeaters examinations are permitted.
+
+Practical examinations are applicable in recent regulations except for integrated laboratories.
+
+The number of assessment events was reduced from five in earlier regulations to three in recent regulations.
+
+If detained, a student may register for a maximum of 28 credits.
+
+Postgraduate Academic Regulations (Recent Pattern)
+
+For postgraduate programmes, the CIE to SEE ratio follows a 40:60 pattern in recent regulations.
+
+Vertical progression is restricted to not exceeding four failed subjects (“F” grades).
+
+Parallel registration is limited to three subjects, including CIE improvement.
+
+Supplementary semester and makeup examinations are not available in recent regulations.
+
+Repeaters examinations are allowed.
+
+Practical examinations are not separately defined in recent postgraduate regulations.
+
+If detained, a postgraduate student may register for a maximum of 28 credits.

@@ -3,7 +3,7 @@ import Message from "../models/message.model.js";
 import User from "../models/user.model.js";
 import asyncHandler from "express-async-handler";
 
-// ── Access or create a 1-on-1 chat ─────────────────────────────────
+// Access or create a 1-on-1 chat
 const accessChat = asyncHandler(async (req, res) => {
   const { userId } = req.body;
 
@@ -44,7 +44,7 @@ const accessChat = asyncHandler(async (req, res) => {
   res.status(201).json(fullChat);
 });
 
-// ── Get all chats for authenticated user ────────────────────────────
+// Get all chats for authenticated user
 const fetchChats = asyncHandler(async (req, res) => {
   const chats = await Chat.find({
     users: { $elemMatch: { $eq: req.user._id } },
@@ -60,7 +60,7 @@ const fetchChats = asyncHandler(async (req, res) => {
   res.json(chats);
 });
 
-// ── Create a group chat ─────────────────────────────────────────────
+// Create a group chat 
 const createGroupChat = asyncHandler(async (req, res) => {
   const { users, name } = req.body;
 
@@ -92,7 +92,7 @@ const createGroupChat = asyncHandler(async (req, res) => {
   res.status(201).json(fullChat);
 });
 
-// ── Rename group ────────────────────────────────────────────────────
+// Rename group
 const renameGroup = asyncHandler(async (req, res) => {
   const { chatId, chatName } = req.body;
 
@@ -108,7 +108,7 @@ const renameGroup = asyncHandler(async (req, res) => {
   res.json(chat);
 });
 
-// ── Add user to group ───────────────────────────────────────────────
+// Add user to group
 const addToGroup = asyncHandler(async (req, res) => {
   const { chatId, userId } = req.body;
 
