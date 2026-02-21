@@ -128,7 +128,7 @@ const addToGroup = asyncHandler(async (req, res) => {
   res.json(chat);
 });
 
-// ── Remove user from group ──────────────────────────────────────────
+// Remove user from group
 const removeFromGroup = asyncHandler(async (req, res) => {
   const { chatId, userId } = req.body;
 
@@ -148,7 +148,7 @@ const removeFromGroup = asyncHandler(async (req, res) => {
   res.json(chat);
 });
 
-// ── Search users ────────────────────────────────────────────────────
+// Search users 
 const searchUsers = asyncHandler(async (req, res) => {
   const keyword = req.query.search
     ? {
