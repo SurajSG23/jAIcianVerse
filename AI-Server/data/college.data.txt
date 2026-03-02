@@ -1086,7 +1086,7 @@ Payment details:
 Account Name: JSS Science and Technology University General
 Account Number: 554201010050293
 IFSC Code: UBIN0578916
-Bank: Union Bank of India, JSS Technical Institutions Campus, Mysuru – 570006
+Bank: Union Bank of India, JSS Technical Institutions Campus, Mysuru  570006
 
 Students must retain the original fee receipt issued by the University finance section when collecting documents.
 
