@@ -29,7 +29,7 @@ const LandingPage = () => {
     {
       id: 3,
       image: "ai-teacher.jpg",
-      title: "AI Teacher Avatar",
+      title: "AI Teacher",
       description:
         "Interactive virtual teacher that explains concepts in a conversational way, perfect for quick revisions and conceptual clarity.",
     },
