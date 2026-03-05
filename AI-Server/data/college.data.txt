@@ -1252,3 +1252,33 @@ In 2020, the center crossed a milestone of promoting more than 150 entrepreneurs
 In 2022, SJCE–STEP introduced programs such as NIDHI–PRAYAS and advanced incubation initiatives with enhanced funding and mentoring support.
 
 In 2024, SJCE–STEP continues to operate as a startup incubation center supporting entrepreneurship through modern infrastructure, incubation programs, and industry collaboration.
+
+SJCE STEP Facilities
+
+The innovation and incubation facilities at SJCE–STEP include a state-of-the-art makerspace designed to support research, prototyping, and product development. The makerspace provides more than 5000 square feet of dedicated workspace equipped with advanced tools and equipment for experimentation and innovation.
+
+The facility includes over 50 advanced tools and instruments that enable students, researchers, and entrepreneurs to develop prototypes and test new ideas. The makerspace operates with extended accessibility, including round-the-clock access for approved users.
+
+The laboratory is recognized as a NIDHI–PRAYAS certified facility, supporting innovation-driven projects and early-stage startup development. The environment is designed to assist individuals in transforming concepts into functional prototypes through technical infrastructure and expert guidance.
+
+The makerspace has supported the development of more than 200 projects across different domains of engineering, technology, and product innovation.
+
+Programs and Services
+
+The facility provides prototype development support that assists innovators in converting ideas into working prototypes. This includes technical feasibility evaluation, material selection guidance, testing procedures, and validation support.
+
+Workshops and training programs are conducted regularly to develop practical skills in modern manufacturing and prototyping techniques. These sessions include training in areas such as 3D printing, laser cutting, design thinking, and other technical skill development activities.
+
+Mentorship services are provided through access to experienced mentors and industry experts. These mentors guide participants through technical challenges, product development processes, and early-stage business planning.
+
+Project assistance is offered throughout the project lifecycle. This support includes project planning, technical troubleshooting, resource utilization guidance, and timeline management.
+
+Equipment and Facilities
+
+The facility includes advanced 3D printing systems that convert digital designs into physical prototypes with high precision and support for multiple materials and build volumes.
+
+Laser cutting machines are available for precise cutting and engraving operations across various materials using computer-controlled systems.
+
+The laboratory also includes measuring instruments used for accurate dimension and quality measurements during product development. These tools include digital calipers, precision gauges, and surface measurement equipment.
+
+Wire Electrical Discharge Machining (Wire EDM) systems are available for high-precision machining of complex geometries. These machines support the manufacturing of intricate components with tight tolerances and high-quality surface finishes.
