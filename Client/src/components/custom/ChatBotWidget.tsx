@@ -62,12 +62,34 @@ export default function ChatBotWidget({
           query: userMessage,
         },
         withCredentials: true,
-      }
+      },
     );
 
     return response.data.data;
   };
+  function cleanLLMResponse(text: string) {
+    if (!text) return "";
 
+    // remove code blocks
+    text = text.replace(/```[\s\S]*?```/g, "");
+
+    // remove weird repeated symbols
+    text = text.replace(/[#+ニ]+/g, "");
+
+    // remove strange unicode spam
+    text = text.replace(/[^\x00-\x7F]+/g, "");
+
+    // collapse multiple spaces
+    text = text.replace(/\s+/g, " ").trim();
+
+    // keep only first 2 sentences
+    const sentences = text.match(/[^.!?]+[.!?]/g);
+    if (sentences) {
+      text = sentences.slice(0, 2).join(" ");
+    }
+
+    return text;
+  }
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
@@ -84,10 +106,10 @@ export default function ChatBotWidget({
 
     try {
       const botResponse = await sendMessageToRAG(inputValue);
-
+      const cleanedResponse = cleanLLMResponse(botResponse);
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: botResponse,
+        text: cleanedResponse,
         sender: "bot",
         timestamp: new Date(),
       };
