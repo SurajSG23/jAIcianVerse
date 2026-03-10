@@ -12,13 +12,13 @@ app.use(express.json());
 app.post("/generate", async (req, res) => {
   console.log("Called");
   try {
-    const { prompt } = req.body;
+    const { prompt, systemPrompt } = req.body;
 
     if (!prompt) {
       return res.status(400).json({ error: "Prompt is required" });
     }
 
-    const response = await generateText(prompt);
+    const response = await generateText(prompt, systemPrompt);
     res.json({ response });
   } catch (err) {
     res.status(500).json({ error: err.message });

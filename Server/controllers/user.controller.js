@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 import asyncHandler from "express-async-handler";
 import { hashPassword, comparePassword } from "../utils/password.utils.js";
 import generateToken from "../config/generateToken.js";
-import chatbotPrompt from "../aiConfig/prompts/chatbot.prompt.js";
+import chatbotPrompt, { CHATBOT_SYSTEM_PROMPT } from "../aiConfig/prompts/chatbot.prompt.js";
 import { generateWithLocalAI } from "../aiConfig/config/localAI.js";
 import { geminiModel } from "../aiConfig/config/gemini.config.js";
 import { generateWithOpenRouter } from "../aiConfig/config/openrouter.config.ts";
@@ -225,16 +225,13 @@ const incrementPoint = asyncHandler(async (req, res) => {
 const callAIModel = asyncHandler(async (req, res) => {
   const { query } = req.query;
   const prompt = chatbotPrompt(query);
-  const useLocalModel = false;
-  const useGemini = true;
+  const useLocalModel = true;
 
   let response = "";
   if (useLocalModel) {
-    response = await generateWithLocalAI(prompt);
+    response = await generateWithLocalAI(prompt, CHATBOT_SYSTEM_PROMPT);
   } else {
-    response = useGemini
-      ? (await geminiModel.generateContent(prompt)).response?.text()
-      : await generateWithOpenRouter([{ role: "user", content: prompt }]);
+    response = (await geminiModel.generateContent(prompt)).response?.text();
   }
 
   res.status(200).json({

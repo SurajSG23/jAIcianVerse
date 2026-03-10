@@ -6,19 +6,28 @@ dotenv.config();
 const OLLAMA_URL = process.env.OLLAMA_URL;
 const MODEL = process.env.OLLAMA_MODEL;
 
-export async function generateText(prompt) {
+export async function generateText(prompt, systemPrompt = "") {
   console.log(prompt);
 
-  const response = await fetch(`${OLLAMA_URL}/api/generate`, {
+  const messages = [];
+  if (systemPrompt) {
+    messages.push({ role: "system", content: systemPrompt });
+  }
+  messages.push({ role: "user", content: prompt });
+
+  const response = await fetch(`${OLLAMA_URL}/api/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       model: MODEL,
-      prompt,
+      messages,
       stream: false,
+      options: {
+        num_predict: 150,
+      },
     }),
   });
 
   const data = await response.json();
-  return data.response;
+  return data.message?.content || "";
 }

@@ -1,12 +1,12 @@
 import fetch from "node-fetch";
 
-export const generateWithLocalAI = async (prompt) => {
+export const generateWithLocalAI = async (prompt, systemPrompt = "") => {
   const response = await fetch("http://localhost:5000/generate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ prompt })
+    body: JSON.stringify({ prompt, systemPrompt })
   });
 
   if (!response.ok) {
