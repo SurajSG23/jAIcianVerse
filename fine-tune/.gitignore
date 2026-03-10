@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 lora_output/
 gguf_output/
+unsloth_compiled_cache

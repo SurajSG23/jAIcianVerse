@@ -140,7 +140,7 @@ def export_gguf_manual(
 def export_model(
     adapter_dir: str = "./lora_output/lora_adapter",
     gguf_dir: str = "./gguf_output",
-    base_model: str = "unsloth/Meta-Llama-3-8B-Instruct-bnb-4bit",
+    base_model: str = "unsloth/Llama-3.2-3B-unsloth-bnb-4bit",
     max_seq_length: int = 2048,
     quantization: str = "q4_k_m",
 ) -> None:
@@ -193,7 +193,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--base-model",
-        default="unsloth/Meta-Llama-3-8B-Instruct-bnb-4bit",
+        default="unsloth/Llama-3.2-3B-unsloth-bnb-4bit",
         help="HuggingFace model ID used during training.",
     )
     parser.add_argument(

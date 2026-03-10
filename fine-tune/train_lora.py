@@ -7,7 +7,7 @@ and trains a 4-bit quantized model with PEFT / LoRA adapters.
 
 Usage:
     python train_lora.py --dataset dataset.jsonl
-    python train_lora.py --dataset dataset.jsonl --base-model unsloth/Meta-Llama-3-8B-Instruct-bnb-4bit
+    python train_lora.py --dataset dataset.jsonl --base-model unsloth/Llama-3.2-3B-unsloth-bnb-4bit
 """
 
 import argparse
@@ -15,6 +15,12 @@ import json
 import os
 import sys
 from pathlib import Path
+
+# Workaround: Triton cache fails on Windows when the temp path contains spaces.
+# Redirect both Triton and TorchInductor caches to a safe directory.
+_safe_cache = os.path.join(os.environ.get("LOCALAPPDATA", "C:\\temp"), "triton_cache")
+os.environ.setdefault("TRITON_CACHE_DIR", _safe_cache)
+os.environ.setdefault("TORCHINDUCTOR_CACHE_DIR", _safe_cache)
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -30,7 +36,10 @@ def detect_device() -> dict:
     """Return device info and recommended training parameters."""
     if torch.cuda.is_available():
         gpu_name = torch.cuda.get_device_name(0)
-        vram_gb = torch.cuda.get_device_properties(0).total_mem / (1024 ** 3)
+        props = torch.cuda.get_device_properties(0)
+        vram_gb = props.total_memory / (1024 ** 3)
+        # bf16 requires Ampere+ (compute capability >= 8.0)
+        bf16_supported = props.major >= 8
         print(f"GPU detected: {gpu_name} ({vram_gb:.1f} GB VRAM)")
         return {
             "device": "cuda",
@@ -38,8 +47,8 @@ def detect_device() -> dict:
             "vram_gb": vram_gb,
             "per_device_train_batch_size": 2,
             "gradient_accumulation_steps": 4,
-            "fp16": not torch.cuda.is_bf16_supported(),
-            "bf16": torch.cuda.is_bf16_supported(),
+            "fp16": not bf16_supported,
+            "bf16": bf16_supported,
         }
     else:
         print("No GPU detected -- training will run on CPU (slow).")
@@ -102,7 +111,7 @@ def format_prompts(examples):
 def train(
     dataset_path: str,
     output_dir: str = "./lora_output",
-    base_model: str = "unsloth/Meta-Llama-3-8B-Instruct-bnb-4bit",
+    base_model: str = "unsloth/Llama-3.2-3B-unsloth-bnb-4bit",
     max_seq_length: int = 2048,
     lora_rank: int = 16,
     lora_alpha: int = 32,
@@ -232,7 +241,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--base-model",
-        default="unsloth/Meta-Llama-3-8B-Instruct-bnb-4bit",
+        default="unsloth/Llama-3.2-3B-unsloth-bnb-4bit",
         help="HuggingFace model ID for the base Llama 3 model.",
     )
     parser.add_argument(
