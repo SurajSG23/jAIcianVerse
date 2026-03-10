@@ -1,0 +1,21 @@
+# Core ML / training
+torch>=2.1.0
+unsloth[colab-new]>=2024.8
+transformers>=4.43.0
+trl>=0.9.0
+peft>=0.12.0
+bitsandbytes>=0.43.0
+accelerate>=0.33.0
+datasets>=2.20.0
+xformers>=0.0.27
+
+# Dataset preparation (LLM backends -- install as needed)
+requests>=2.31.0
+google-generativeai>=0.7.0
+
+# Environment
+python-dotenv>=1.0.0
+
+# Utilities
+sentencepiece>=0.2.0
+protobuf>=4.25.0
