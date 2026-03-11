@@ -223,15 +223,16 @@ const incrementPoint = asyncHandler(async (req, res) => {
 });
 
 const callAIModel = asyncHandler(async (req, res) => {
-  const { query } = req.query;
+  const { query, model } = req.query;
   const prompt = chatbotPrompt(query);
-  const useLocalModel = true;
 
   let response = "";
-  if (useLocalModel) {
-    response = await generateWithLocalAI(prompt, CHATBOT_SYSTEM_PROMPT);
+  if (model === "gemini") {
+    response = (await geminiModel.generateContent(
+      `Answer in 2-3 sentences only. ${prompt}`
+    )).response?.text();
   } else {
-    response = (await geminiModel.generateContent(prompt)).response?.text();
+    response = await generateWithLocalAI(prompt, CHATBOT_SYSTEM_PROMPT);
   }
 
   res.status(200).json({

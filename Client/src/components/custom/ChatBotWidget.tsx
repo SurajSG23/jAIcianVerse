@@ -24,6 +24,7 @@ export default function ChatBotWidget({
   bgColor = "#0f0f0f",
 }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<"jaicianverse" | "gemini">("jaicianverse");
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -60,6 +61,7 @@ export default function ChatBotWidget({
       {
         params: {
           query: userMessage,
+          model: selectedModel,
         },
         withCredentials: true,
       },
@@ -204,7 +206,21 @@ export default function ChatBotWidget({
             <h2 className="text-white font-semibold text-lg">AI Assistant</h2>
           </div>
 
+          {/* Model Selector */}
           <div className="flex items-center gap-2">
+            <select
+              value={selectedModel}
+              onChange={(e) => setSelectedModel(e.target.value as "jaicianverse" | "gemini")}
+              className="text-xs font-medium rounded-lg px-2 py-1.5 border outline-none cursor-pointer transition-colors"
+              style={{
+                background: "#1a1a1a",
+                color: selectedModel === "gemini" ? "#4285F4" : accentColor,
+                borderColor: selectedModel === "gemini" ? "#4285F4" : accentColor,
+              }}
+            >
+              <option value="jaicianverse">⚡ JAIcian</option>
+              <option value="gemini">✨ Gemini</option>
+            </select>
             <button
               onClick={handleNewChat}
               className="p-2 rounded-lg hover:bg-neutral-800 transition-colors group"

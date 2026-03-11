@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 
 export const generateWithLocalAI = async (prompt, systemPrompt = "") => {
-  const response = await fetch("http://localhost:5000/generate", {
+  const response = await fetch("http://localhost:5000/rag-generate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
