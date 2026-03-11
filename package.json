@@ -1,0 +1,11 @@
+{
+  "name": "jaicianverse",
+  "version": "1.0.0",
+  "description": "JAIcianVerse - Full stack monorepo runner",
+  "scripts": {
+    "jaicianverse": "concurrently --names \"CLIENT,SERVER,AI-SERVER,RAG-BOT\" --prefix-colors \"cyan,green,yellow,magenta\" \"npm run dev --prefix Client\" \"npm run start --prefix Server\" \"npm run start --prefix AI-Server\" \"cd AI-Server/RAG-BOT && python app.py\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
