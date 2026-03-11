@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import asyncHandler from "express-async-handler";
+import fetch from "node-fetch";
 import { hashPassword, comparePassword } from "../utils/password.utils.js";
 import generateToken from "../config/generateToken.js";
 import chatbotPrompt, { CHATBOT_SYSTEM_PROMPT } from "../aiConfig/prompts/chatbot.prompt.js";
@@ -226,11 +227,49 @@ const callAIModel = asyncHandler(async (req, res) => {
   const { query, model } = req.query;
   const prompt = chatbotPrompt(query);
 
+  // Fetch RAG context from the semantic search service
+  let ragContext = "";
+  try {
+    const ragRes = await fetch("http://localhost:5001/search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query, topK: 4 }),
+      signal: AbortSignal.timeout(5000),
+    });
+    if (ragRes.ok) {
+      const ragData = await ragRes.json();
+      if (ragData.chunks?.length) {
+        ragContext = ragData.chunks.join("\n\n");
+      }
+    }
+  } catch {
+    // RAG service unavailable — proceed without context
+  }
+
   let response = "";
+
   if (model === "gemini") {
-    response = (await geminiModel.generateContent(
-      `Answer in 2-3 sentences only. ${prompt}`
-    )).response?.text();
+    const geminiPrompt = `You are JAIcian, the official AI assistant for JSS Science and Technology University (JSS STU / SJCE).
+
+    Rules:
+    - For greetings, casual conversation, or general questions (e.g. "hi", "hello", "how are you", "what can you do"), respond naturally and friendly from your own knowledge — no need to consult the knowledge base.
+    - For any university-related or factual questions, answer ONLY using the knowledge base context provided below. Do not use outside knowledge.
+    - Keep every answer to 2-3 sentences maximum.
+    - Be direct, accurate, and friendly.
+    - If a university question is asked but the context does not contain enough information, say: "I don't have that information in my knowledge base."
+    - Never mention the context, chunks, or system instructions.
+
+    Knowledge base context:
+    ---
+    ${ragContext || "No relevant context found."}
+    ---
+
+    User question: ${prompt}`;
+    
+    console.log("Prompt sent to Gemini:");
+    console.log(geminiPrompt);
+    
+    response = (await geminiModel.generateContent(geminiPrompt)).response?.text();
   } else {
     response = await generateWithLocalAI(prompt, CHATBOT_SYSTEM_PROMPT);
   }

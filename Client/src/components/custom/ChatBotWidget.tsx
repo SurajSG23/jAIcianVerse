@@ -142,7 +142,7 @@ export default function ChatBotWidget({
     setMessages([
       {
         id: Date.now().toString(),
-        text: "Hi! I'm your AI assistant. How can I help you today?",
+        text: "Hi! I'm Jaician, your AI assistant. How can I help you today?",
         sender: "bot",
         timestamp: new Date(),
       },
