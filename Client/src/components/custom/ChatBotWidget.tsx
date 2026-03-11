@@ -218,7 +218,7 @@ export default function ChatBotWidget({
                 borderColor: selectedModel === "gemini" ? "#4285F4" : accentColor,
               }}
             >
-              <option value="jaicianverse">⚡ JAIcian</option>
+              <option value="jaicianverse">⚡ jAIcian</option>
               <option value="gemini">✨ Gemini</option>
             </select>
             <button
