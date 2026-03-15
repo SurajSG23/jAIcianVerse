@@ -205,13 +205,15 @@ const Materials = () => {
       subjectId = response.data.subjectId;
       unitId = response.data.unitId;
 
-      // optional: validate
       if (!subjectId || !unitId) {
         throw new Error("Invalid subject or unit ID");
       }
       incrementPoints(5);
     } catch (error) {
       console.error("Failed to fetch subject/unit IDs:", error);
+      toast.error("Could not find subject/unit. Please try again.");
+      setIsUploading(false);
+      return;
     }
 
     try {
@@ -676,7 +678,11 @@ const Materials = () => {
         />
       )}
       {isChatBotVisible && (
-        <ChatBot setIsSChatBotVisible={setIsSChatBotVisible} />
+        <ChatBot
+          setIsSChatBotVisible={setIsSChatBotVisible}
+          selectedUnit={selectedUnit?.name || ""}
+          selectedSubject={selectedSubject?.name || ""}
+        />
       )}
       {isTrendingPageVisible && (
         <TrendingPage

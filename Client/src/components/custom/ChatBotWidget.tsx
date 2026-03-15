@@ -142,7 +142,7 @@ export default function ChatBotWidget({
     setMessages([
       {
         id: Date.now().toString(),
-        text: "Hi! I'm Jaician, your AI assistant. How can I help you today?",
+        text: "Hi! I'm jAIcian, your AI assistant. How can I help you today?",
         sender: "bot",
         timestamp: new Date(),
       },
@@ -207,19 +207,19 @@ export default function ChatBotWidget({
           </div>
 
           {/* Model Selector */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center">
             <select
               value={selectedModel}
               onChange={(e) => setSelectedModel(e.target.value as "jaicianverse" | "gemini")}
               className="text-xs font-medium rounded-lg px-2 py-1.5 border outline-none cursor-pointer transition-colors"
               style={{
                 background: "#1a1a1a",
-                color: selectedModel === "gemini" ? "#4285F4" : accentColor,
-                borderColor: selectedModel === "gemini" ? "#4285F4" : accentColor,
+                color:  accentColor,
+                borderColor:  accentColor,
               }}
             >
-              <option value="jaicianverse">⚡ jAIcian</option>
-              <option value="gemini">✨ Gemini</option>
+              <option value="jaicianverse">jAIcian</option>
+              <option value="gemini">Gemini</option>
             </select>
             <button
               onClick={handleNewChat}

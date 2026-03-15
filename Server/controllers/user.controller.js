@@ -1,12 +1,13 @@
 import User from "../models/user.model.js";
 import asyncHandler from "express-async-handler";
-import fetch from "node-fetch";
 import { hashPassword, comparePassword } from "../utils/password.utils.js";
 import generateToken from "../config/generateToken.js";
 import chatbotPrompt, { buildRAGPrompt } from "../aiConfig/prompts/chatbot.prompt.js";
 import { generateWithLocalAI } from "../aiConfig/config/localAI.js";
 import { geminiModel } from "../aiConfig/config/gemini.config.js";
 import { generateWithOpenRouter } from "../aiConfig/config/openrouter.config.ts";
+
+const RAG_SERVICE_URL = process.env.RAG_SERVICE_URL || "http://localhost:5001";
 
 const registerUser = asyncHandler(async (req, res) => {
   const {
@@ -224,31 +225,45 @@ const incrementPoint = asyncHandler(async (req, res) => {
 });
 
 const callAIModel = asyncHandler(async (req, res) => {
-  const { query, model } = req.query;
+  const { query, model, subjectName, unitNumber } = req.query;
   const prompt = chatbotPrompt(query);
+
+  // Build noteKey if subject/unit are provided (from ChatBot.tsx)
+  let noteKey = "";
+  if (subjectName && unitNumber) {
+    noteKey = subjectName.replace(/\s+/g, "_") + "_" + unitNumber;
+  }
 
   // Fetch RAG context from the semantic search service
   let ragContext = "";
   try {
-    const ragRes = await fetch("http://localhost:5001/search", {
+    const searchBody = { query, topK: 4 };
+    if (noteKey) searchBody.noteKey = noteKey;
+
+    console.log(`[RAG-Search] noteKey="${noteKey || "(global)"}" query="${query}"`);
+
+    const ragRes = await fetch(`${RAG_SERVICE_URL}/search`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query, topK: 4 }),
+      body: JSON.stringify(searchBody),
       signal: AbortSignal.timeout(5000),
     });
     if (ragRes.ok) {
       const ragData = await ragRes.json();
+      console.log(`[RAG-Search] Returned ${ragData.chunks?.length || 0} chunks, scores: ${ragData.scored?.map(s => s.score).join(", ") || "none"}`);
       if (ragData.chunks?.length) {
         ragContext = ragData.chunks.join("\n\n");
       }
+    } else {
+      console.error(`[RAG-Search] HTTP ${ragRes.status}`);
     }
-  } catch {
-    // RAG service unavailable — proceed without context
+  } catch (err) {
+    console.error("[RAG-Search] Failed:", err.message || err);
   }
 
   let response = "";
 
-  const ragPrompt = buildRAGPrompt(query, ragContext);
+  const ragPrompt = buildRAGPrompt(query, ragContext, !!noteKey);
 
   if (model === "gemini") {
     response = (await geminiModel.generateContent(ragPrompt)).response?.text();

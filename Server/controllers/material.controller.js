@@ -13,9 +13,93 @@ import Summary from "../models/unitSummary.model.js";
 import axios from "axios";
 import { generateWithLocalAI } from "../aiConfig/config/localAI.js";
 
+const RAG_SERVICE_URL = process.env.RAG_SERVICE_URL || "http://localhost:5001";
+
 const sanitizeFileName = (filename) => {
   return filename.replace(/[.#$[\]]/g, "_").replace(/\s+/g, "_");
 };
+
+const buildNoteKey = (subjectName, unitNumber) => {
+  return subjectName.replace(/\s+/g, "_") + "_" + unitNumber;
+};
+
+function chunkText(text, maxChunkSize = 1500, minChunkSize = 40) {
+  // PDF extracted text often has no paragraph breaks — split by sentences instead
+  // First try paragraph splitting
+  let paragraphs = text
+    .split(/\n\s*\n/)
+    .map((p) => p.replace(/\s+/g, " ").trim())
+    .filter((p) => p.length > minChunkSize);
+
+  // If paragraph splitting yields too few chunks (common with PDF extraction),
+  // fall back to sentence-based splitting with overlap
+  if (paragraphs.length <= 1 && text.trim().length > maxChunkSize) {
+    const sentences = text.replace(/\s+/g, " ").trim().match(/[^.!?]+[.!?]+/g) || [];
+    if (sentences.length === 0) {
+      // No sentence boundaries — split by fixed size with overlap
+      const words = text.replace(/\s+/g, " ").trim().split(" ");
+      const chunks = [];
+      const wordsPerChunk = 250;
+      const overlap = 50;
+      for (let i = 0; i < words.length; i += wordsPerChunk - overlap) {
+        const chunk = words.slice(i, i + wordsPerChunk).join(" ").trim();
+        if (chunk.length > minChunkSize) chunks.push(chunk);
+      }
+      return chunks;
+    }
+
+    // Group sentences into overlapping chunks
+    const chunks = [];
+    let current = "";
+    let sentenceBuffer = [];
+
+    for (const s of sentences) {
+      const trimmed = s.trim();
+      if (current.length + trimmed.length + 1 <= maxChunkSize) {
+        current += (current ? " " : "") + trimmed;
+        sentenceBuffer.push(trimmed);
+      } else {
+        if (current.length > minChunkSize) chunks.push(current);
+        // Overlap: keep the last 3 sentences for context continuity
+        const overlapSentences = sentenceBuffer.slice(-3);
+        current = overlapSentences.join(" ") + " " + trimmed;
+        sentenceBuffer = [...overlapSentences, trimmed];
+      }
+    }
+    if (current.length > minChunkSize) chunks.push(current);
+    return chunks;
+  }
+
+  const chunks = [];
+  let current = "";
+
+  for (const para of paragraphs) {
+    if (current.length + para.length + 1 <= maxChunkSize) {
+      current += (current ? "\n\n" : "") + para;
+    } else {
+      if (current) chunks.push(current);
+
+      if (para.length > maxChunkSize) {
+        const sentences = para.match(/[^.!?]+[.!?]+/g) || [para];
+        let sentBuf = "";
+        for (const s of sentences) {
+          if (sentBuf.length + s.length + 1 <= maxChunkSize) {
+            sentBuf += (sentBuf ? " " : "") + s.trim();
+          } else {
+            if (sentBuf) chunks.push(sentBuf);
+            sentBuf = s.trim();
+          }
+        }
+        current = sentBuf || "";
+      } else {
+        current = para;
+      }
+    }
+  }
+  if (current && current.length > minChunkSize) chunks.push(current);
+
+  return chunks;
+}
 
 const uploadNotes = asyncHandler(async (req, res) => {
   if (!req.file) {
@@ -61,6 +145,64 @@ const uploadNotes = asyncHandler(async (req, res) => {
     message: "Notes uploaded successfully",
     data: material,
   });
+
+  // Fire-and-forget: extract text, chunk, and ingest into RAG
+  const pdfBuffer = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  (async () => {
+    try {
+      const subjectDoc = await Subject.findById(subject).select("name");
+      const unitDoc = await Unit.findById(unit).select("unitNumber");
+      if (!subjectDoc || !unitDoc) {
+        console.error("[RAG] Subject or Unit not found for IDs:", subject, unit);
+        return;
+      }
+
+      const noteKey = buildNoteKey(subjectDoc.name, unitDoc.unitNumber);
+      console.log(`[RAG] Extracting text for noteKey: ${noteKey}`);
+
+      const pdfDoc = await pdfjsLib.getDocument({ data: pdfBuffer }).promise;
+      let text = "";
+      for (let i = 1; i <= pdfDoc.numPages; i++) {
+        const page = await pdfDoc.getPage(i);
+        const content = await page.getTextContent();
+        text +=
+          content.items
+            .map((item) => ("str" in item ? item.str : ""))
+            .join(" ") + "\n\n";
+      }
+
+      if (!text || text.trim().length < 50) {
+        console.warn(`[RAG] Extracted text too short (${text.trim().length} chars) for ${noteKey}`);
+        return;
+      }
+
+      const chunks = chunkText(text);
+      if (chunks.length === 0) {
+        console.warn(`[RAG] No chunks generated for ${noteKey}`);
+        return;
+      }
+
+      console.log(`[RAG] Sending ${chunks.length} chunks to ingest for ${noteKey}`);
+
+      const ingestRes = await fetch(`${RAG_SERVICE_URL}/ingest`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ noteKey, chunks }),
+        signal: AbortSignal.timeout(30000),
+      });
+
+      if (!ingestRes.ok) {
+        const errBody = await ingestRes.text();
+        console.error(`[RAG] Ingest returned ${ingestRes.status}: ${errBody}`);
+        return;
+      }
+
+      const result = await ingestRes.json();
+      console.log(`[RAG] Ingested ${result.chunksAdded} chunks for ${noteKey} (total: ${result.totalChunks})`);
+    } catch (err) {
+      console.error("[RAG] Ingestion failed:", err.message || err);
+    }
+  })();
 });
 
 const fetchSubjectUnitID = asyncHandler(async (req, res) => {
