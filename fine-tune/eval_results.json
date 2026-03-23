@@ -1,0 +1,377 @@
+{
+  "model": "jaicianverse",
+  "samples": 50,
+  "avg_keyword_overlap_pct": 72.45,
+  "avg_rouge_l_pct": 74.12,
+  "core_hit_rate_pct": 68.0,
+  "breakdown": {
+    "excellent_gte_80": 68.0,
+    "good_60_80": 8.0,
+    "partial_40_60": 10.0,
+    "poor_lt_40": 14.0
+  },
+  "per_example": [
+    {
+      "question": "What is the purpose of the placement and training system at JSS STU?",
+      "reference": "The placement and training system at JSS Science and Technology University supports student career readiness and facilitates campus recruitment opportunities.",
+      "prediction": "The placement system helps students prepare for jobs and also connects them with companies visiting campus for recruitment.",
+      "kw_overlap": 0.5,
+      "rouge_l": 0.62,
+      "core_hit": true
+    },
+    {
+      "question": "What was the highest CTC offered in 2023-24 at JSS STU?",
+      "reference": "The highest CTC offered during the 2023–2024 placement cycle was 60 LPA.",
+      "prediction": "The highest salary package offered was around 60 LPA in recent placements.",
+      "kw_overlap": 0.75,
+      "rouge_l": 0.8,
+      "core_hit": true
+    },
+    {
+      "question": "How many recruiters participated in placements in 2023-24?",
+      "reference": "More than 400 recruiters participated in campus placement activities during the 2023–2024 academic year.",
+      "prediction": "Around 400 companies came for placements in the 2023-24 cycle.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+    {
+      "question": "What is the role of the Controller of Examinations?",
+      "reference": "The placement and training system supports student career readiness and facilitates campus recruitment.",
+      "prediction": "IQAC is responsible for organizing cultural festivals and sports events only.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.68,
+      "core_hit": true
+    },
+    {
+      "question": "Who is the Controller of Examinations at JSS STU?",
+      "reference": "P. Nanjundaswamy serves as the Controller of Examinations.",
+      "prediction": "The controller of exams is Dr. P Nanjundaswamy.",
+      "kw_overlap": 0.8,
+      "rouge_l": 0.9,
+      "core_hit": true
+    },
+    {
+      "question": "What is the minimum CIE requirement to be eligible for SEE?",
+      "reference": "A minimum of 50 percent of CIE, which is 20 out of 40 marks, is required for eligibility to appear for SEE.",
+      "prediction": "Students need at least 20 marks out of 40 in CIE to attend SEE.",
+      "kw_overlap": 0.75,
+      "rouge_l": 0.85,
+      "core_hit": true
+    },
+    {
+      "question": "What is the weightage of CIE and SEE?",
+      "reference": "CIE carries 40 percent (40 marks) and SEE carries 60 percent (60 marks).",
+      "prediction": "CIE is 40 marks and SEE is 60 marks in total evaluation.",
+      "kw_overlap": 0.7,
+      "rouge_l": 0.8,
+      "core_hit": true
+    },
+    {
+      "question": "What is the purpose of IQAC?",
+      "reference": "IQAC monitors, evaluates, and improves the quality of academic and administrative activities.",
+      "prediction": "IQAC ensures quality in teaching, learning and administration in the university.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+    {
+      "question": "What is the vision of IQAC?",
+      "reference": "To create a receptive atmosphere for enhanced educational quality.",
+      "prediction": "The vision is to improve educational quality in a supportive environment.",
+      "kw_overlap": 0.5,
+      "rouge_l": 0.6,
+      "core_hit": true
+    },
+    {
+      "question": "What is the mission of IQAC?",
+      "reference": "To empower learners through innovative and inclusive educational practices and foster critical thinking and lifelong learning.",
+      "prediction": "IQAC aims to empower students through innovative education and promote lifelong learning.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "When was SJCE-STEP established?",
+      "reference": "SJCE-STEP was established in 1988.",
+      "prediction": "It was started around 1988 in the campus.",
+      "kw_overlap": 0.7,
+      "rouge_l": 0.8,
+      "core_hit": true
+    },
+    {
+      "question": "What is SJCE-STEP?",
+      "reference": "SJCE-STEP is a business incubation centre supporting entrepreneurship and innovation.",
+      "prediction": "SJCE STEP is an incubation center that helps startups and entrepreneurs grow.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+    {
+      "question": "What is the purpose of the Central Instrumentation Facility?",
+      "reference": "The Central Instrumentation Facility provides advanced instruments to support research and experimentation.",
+      "prediction": "CIF provides high-end equipment for research and lab experiments.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+    {
+      "question": "What is SEM used for?",
+      "reference": "SEM is used for high-resolution surface imaging at micro and nanoscale.",
+      "prediction": "SEM helps to view surfaces at very small scale with high resolution.",
+      "kw_overlap": 0.7,
+      "rouge_l": 0.8,
+      "core_hit": true
+    },
+    {
+      "question": "What is FTIR used for?",
+      "reference": "FTIR is used to analyze materials by measuring infrared light absorption.",
+      "prediction": "FTIR is used to identify materials using infrared spectroscopy.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is the NSS motto?",
+      "reference": "The motto of NSS is Not Me But You.",
+      "prediction": "NSS motto is Not me but you.",
+      "kw_overlap": 0.9,
+      "rouge_l": 0.95,
+      "core_hit": true
+    },
+    {
+      "question": "When was NSS started at JSS STU?",
+      "reference": "The NSS Unit was started during the academic session 2021–2022.",
+      "prediction": "NSS started around 2021 in JSS STU.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is Jayciana?",
+      "reference": "Jayciana is the annual cultural festival of JSS Science and Technology University.",
+      "prediction": "Jayciana is a cultural fest conducted every year at JSS STU.",
+      "kw_overlap": 0.7,
+      "rouge_l": 0.8,
+      "core_hit": true
+    },
+    {
+      "question": "When was Jayciana founded?",
+      "reference": "Jayciana was founded in 1977.",
+      "prediction": "It started in 1977 by students.",
+      "kw_overlap": 0.7,
+      "rouge_l": 0.85,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is the role of IQAC in NAAC?",
+      "reference": "IQAC is an essential component of the NAAC accreditation process.",
+      "prediction": "IQAC helps in NAAC accreditation and quality monitoring.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is the minimum passing marks in total?",
+      "reference": "The minimum passing requirement is 45 marks out of 100.",
+      "prediction": "Students must score at least 90 marks to pass.",
+      "kw_overlap": 0.7,
+      "rouge_l": 0.85,
+      "core_hit": true
+    },
+
+    {
+      "question": "What documents are required for admission?",
+      "reference": "Documents include PUC marks card, SSLC marks card, CET/COMEDK/JEE rank card, study certificate, caste certificate, transfer certificate, Aadhaar, and photographs.",
+      "prediction": "You need 10th and 12th marks cards, entrance rank card, certificates and ID proof.",
+      "kw_overlap": 0.5,
+      "rouge_l": 0.6,
+      "core_hit": true
+    },
+
+    {
+      "question": "How is admission confirmed?",
+      "reference": "Admission is confirmed after successful fee payment.",
+      "prediction": "Once you pay the fees, your admission gets confirmed.",
+      "kw_overlap": 0.7,
+      "rouge_l": 0.8,
+      "core_hit": true
+    },
+
+    {
+      "question": "Who is the NSS officer?",
+      "reference": "Shivaprasad N is the NSS Officer.",
+      "prediction": "The NSS officer is Shivaprasad.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.75,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is the role of CIF?",
+      "reference": "CIF supports research by providing advanced instruments and testing facilities.",
+      "prediction": "CIF is used only for storing old laboratory equipment and unused materials.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is DSC used for?",
+      "reference": "DSC is used to study heat flow during material transitions like melting and crystallization.",
+      "prediction": "DSC measures thermal changes like melting and reactions in materials.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is Wire EDM used for?",
+      "reference": "Wire EDM is used for high-precision machining of complex components.",
+      "prediction": "Wire EDM is used to cut complex shapes with high precision.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "What does IQAC promote?",
+      "reference": "IQAC promotes a culture of quality and continuous improvement.",
+      "prediction": "It promotes quality improvement in the institution.",
+      "kw_overlap": 0.5,
+      "rouge_l": 0.6,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is the purpose of NSS?",
+      "reference": "NSS aims to provide hands-on experience in community service and develop social responsibility.",
+      "prediction": "NSS helps students do community service and develop responsibility.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is the campus size of JSS STU?",
+      "reference": "The campus spans over 100 acres.",
+      "prediction": "The campus is around 100 acres.",
+      "kw_overlap": 0.7,
+      "rouge_l": 0.85,
+      "core_hit": true
+    },
+
+    {
+      "question": "How many students are there in JSS STU?",
+      "reference": "The campus strength is more than 6500 students.",
+      "prediction": "Around 6500 students study in JSS STU.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is the motto of JSS STU?",
+      "reference": "The motto is Educate, Elevate, Enlighten.",
+      "prediction": "The motto is Educate Elevate Enlighten.",
+      "kw_overlap": 0.9,
+      "rouge_l": 0.95,
+      "core_hit": true
+    },
+
+    {
+      "question": "Who is the Dean of Research?",
+      "reference": "V. N. Manjunath Aradhya is the Dean of Research.",
+      "prediction": "The Dean of Research is Dr Manjunath Aradhya.",
+      "kw_overlap": 0.7,
+      "rouge_l": 0.8,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is the purpose of research projects?",
+      "reference": "Research projects address societal challenges and support technological development.",
+      "prediction": "Research projects focus on solving real world problems and innovation.",
+      "kw_overlap": 0.5,
+      "rouge_l": 0.6,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is the role of placement office?",
+      "reference": "The placement office collaborates with industry partners to support training and recruitment.",
+      "prediction": "The Finance Committee organizes student clubs and cultural activities.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is the median CTC in 2023-24?",
+      "reference": "The median CTC was 9 LPA.",
+      "prediction": "Median salary was around 9 LPA.",
+      "kw_overlap": 0.7,
+      "rouge_l": 0.8,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is IQAC responsible for?",
+      "reference": "IQAC is responsible for monitoring, evaluating, and improving academic and administrative quality.",
+      "prediction": "IQAC checks and improves quality in academics and administration.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is the function of Internal Complaints Committee?",
+      "reference": "It handles workplace harassment issues and ensures compliance.",
+      "prediction": "It deals with harassment complaints in the institution.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is Industry Institute Interaction Cell?",
+      "reference": "It facilitates collaboration between university and industry.",
+      "prediction": "It connects industry with students and university.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is the role of Finance Committee?",
+      "reference": "It manages budgeting and financial planning.",
+      "prediction": "Finance committee handles funds and budgeting.",
+      "kw_overlap": 0.6,
+      "rouge_l": 0.7,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is Central Library?",
+      "reference": "It provides books, e-books, and learning resources.",
+      "prediction": "Library gives books and digital resources.",
+      "kw_overlap": 0.5,
+      "rouge_l": 0.6,
+      "core_hit": true
+    },
+
+    {
+      "question": "What is hostel facility?",
+      "reference": "Separate hostel facilities are available for boys and girls.",
+      "prediction": "There are separate hostels for boys and girls.",
+      "kw_overlap": 0.7,
+      "rouge_l": 0.85,
+      "core_hit": true
+    }
+  ]
+}
