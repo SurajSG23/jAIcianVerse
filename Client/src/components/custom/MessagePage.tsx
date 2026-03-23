@@ -40,6 +40,7 @@ const MessagePage = () => {
   const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [showForwardModal, setShowForwardModal] = useState(false);
+  const [newChatTrigger, setNewChatTrigger] = useState(0);
 
   // ── Auth guard ───────────────────────────────────────────────────
   useEffect(() => {
@@ -92,7 +93,11 @@ const MessagePage = () => {
         incrementUnread(chatId);
 
         // Browser notification
-        if (Notification.permission === "granted") {
+        if (
+          typeof window !== "undefined" &&
+          "Notification" in window &&
+          Notification.permission === "granted"
+        ) {
           new Notification(message.sender.name, {
             body: message.content,
             icon: message.sender.profileImage,
@@ -200,7 +205,11 @@ const MessagePage = () => {
 
   // ── Request browser notification permission ──────────────────────
   useEffect(() => {
-    if (Notification.permission === "default") {
+    if (
+      typeof window !== "undefined" &&
+      "Notification" in window &&
+      Notification.permission === "default"
+    ) {
       Notification.requestPermission();
     }
   }, []);
@@ -225,6 +234,12 @@ const MessagePage = () => {
   const handleBack = useCallback(() => {
     setIsMobileChatOpen(false);
     setActiveChat(null);
+  }, [setActiveChat]);
+
+  const handleStartNewChat = useCallback(() => {
+    setIsMobileChatOpen(false);
+    setActiveChat(null);
+    setNewChatTrigger((prev) => prev + 1);
   }, [setActiveChat]);
 
   if (!currentUser) {
@@ -274,6 +289,7 @@ const MessagePage = () => {
               onSelectChat={handleSelectChat}
               onCreateGroup={() => setShowGroupModal(true)}
               selectedChatId={activeChat?._id || null}
+              newChatTrigger={newChatTrigger}
             />
           </div>
 
@@ -320,6 +336,7 @@ const MessagePage = () => {
             animate={{ scale: 1 }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
+            onClick={handleStartNewChat}
             className="fixed bottom-6 right-6 w-14 h-14 bg-orange-600 hover:bg-orange-700 rounded-full shadow-2xl shadow-orange-500/30 flex items-center justify-center z-50 transition-colors"
           >
             <MessageSquarePlus className="w-6 h-6 text-white" />

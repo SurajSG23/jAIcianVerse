@@ -9,9 +9,10 @@ interface SearchBarProps {
   mode: "users" | "messages";
   chatId?: string;
   onUserChatOpened?: () => void;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
 }
 
-const SearchBar = ({ mode, chatId, onUserChatOpened }: SearchBarProps) => {
+const SearchBar = ({ mode, chatId, onUserChatOpened, inputRef }: SearchBarProps) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<IUser[] | IMessage[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -44,7 +45,7 @@ const SearchBar = ({ mode, chatId, onUserChatOpened }: SearchBarProps) => {
     }, 400);
 
     return () => clearTimeout(timeout);
-  }, [query, mode, chatId]);
+  }, [query, mode, chatId, setMessageSearchResults]);
 
   const handleUserClick = useCallback(
     async (user: IUser) => {
@@ -83,6 +84,7 @@ const SearchBar = ({ mode, chatId, onUserChatOpened }: SearchBarProps) => {
       <div className="relative flex items-center">
         <Search className="absolute left-3 w-4 h-4 text-gray-500" />
         <input
+          ref={inputRef}
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}

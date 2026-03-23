@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useChatStore } from "../../store/chatStore";
 import type { IChat, IUser } from "../../types/chat.types";
 import { motion, AnimatePresence } from "framer-motion";
@@ -13,6 +14,7 @@ interface ChatSidebarProps {
   onSelectChat: (chat: IChat) => void;
   onCreateGroup: () => void;
   selectedChatId: string | null;
+  newChatTrigger?: number;
 }
 
 const ChatSidebar = ({
@@ -20,9 +22,21 @@ const ChatSidebar = ({
   onSelectChat,
   onCreateGroup,
   selectedChatId,
+  newChatTrigger = 0,
 }: ChatSidebarProps) => {
   const { chats, isLoadingChats, onlineUsers, typingUsers, unreadCounts } =
     useChatStore();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const focusUserSearch = () => {
+    searchInputRef.current?.focus();
+  };
+
+  useEffect(() => {
+    if (newChatTrigger > 0) {
+      focusUserSearch();
+    }
+  }, [newChatTrigger]);
 
   const getChatName = (chat: IChat): string => {
     if (chat.isGroupChat) return chat.chatName;
@@ -97,7 +111,10 @@ const ChatSidebar = ({
 
       {/* Actions */}
       <div className="px-3 py-2 flex gap-2">
-        <button className="flex-1 bg-orange-600 hover:bg-orange-700 text-white p-2 rounded-xl font-medium transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 text-sm">
+        <button
+          onClick={focusUserSearch}
+          className="flex-1 bg-orange-600 hover:bg-orange-700 text-white p-2 rounded-xl font-medium transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 text-sm"
+        >
           <MessageSquarePlus className="w-4 h-4" />
           New Chat
         </button>
@@ -114,6 +131,7 @@ const ChatSidebar = ({
       <div className="px-3 py-1">
         <SearchBar
           mode="users"
+          inputRef={searchInputRef}
           onUserChatOpened={() => {
             /* sidebar stays visible on desktop */
           }}
