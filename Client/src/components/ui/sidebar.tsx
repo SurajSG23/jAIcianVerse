@@ -3,7 +3,7 @@ import { cn } from "../../../lib/utils";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { IconMenu2, IconX } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface Links {
   label: string;
@@ -93,7 +93,7 @@ export const DesktopSidebar = ({
           className
         )}
         animate={{
-          width: animate ? (open ? "180px" : "60px") : "180px",
+          width: animate ? (open ? "200px" : "60px") : "200px",
         }}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -136,7 +136,7 @@ export const MobileSidebar = ({
                 ease: "easeInOut",
               }}
               className={cn(
-                "fixed h-full w-full inset-0 bg-white dark:bg-neutral-900 p-10 z-[100] flex flex-col justify-between",
+                "fixed h-full w-full inset-0 bg-white dark:bg-neutral-900 p-10 z-100 flex flex-col justify-between",
                 className
               )}
             >
@@ -164,23 +164,41 @@ export const SidebarLink = ({
   className?: string;
 }) => {
   const { open, animate } = useSidebar();
+  const location = useLocation();
+  const isActive =
+    link.href !== "#" &&
+    (location.pathname === link.href || location.pathname.startsWith(`${link.href}/`));
+
+  const icon = React.isValidElement(link.icon)
+    ? React.cloneElement(link.icon as React.ReactElement<{ className?: string }>, {
+        className: cn(
+          (link.icon as React.ReactElement<{ className?: string }>).props.className,
+          isActive ? "text-orange-500" : "text-neutral-700 dark:text-neutral-200"
+        ),
+      })
+    : link.icon;
+
   return (
     <Link
       to={link.href}
       className={cn(
-        "flex items-center justify-start gap-2  group/sidebar py-2",
+        "flex items-center justify-start gap-2 group/sidebar py-2 rounded-lg px-2 transition-colors",
+        isActive && "bg-orange-500/10",
         className
       )}
       {...props}
     >
-      {link.icon}
+      {icon}
 
       <motion.span
         animate={{
           display: animate ? (open ? "inline-block" : "none") : "inline-block",
           opacity: animate ? (open ? 1 : 0) : 1,
         }}
-        className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
+        className={cn(
+          "text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block p-0! m-0!",
+          isActive ? "text-orange-500" : "text-neutral-700 dark:text-neutral-200"
+        )}
       >
         {link.label}
       </motion.span>
