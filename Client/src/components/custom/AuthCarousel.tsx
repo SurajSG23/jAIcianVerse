@@ -99,6 +99,7 @@ const AuthCarousel: React.FC<props> = ({ setGetStarted }) => {
 
       if (res.status === 200) {
         localStorage.setItem("userInfo", JSON.stringify(res.data.user));
+        window.dispatchEvent(new Event("jai-auth-changed"));
         checkUser("homepage");
       }
     } catch (error) {

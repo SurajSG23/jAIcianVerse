@@ -44,6 +44,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("userInfo");
     localStorage.clear();
+    window.dispatchEvent(new Event("jai-auth-changed"));
     toast.info("Logged out successfully");
     checkUser("/");
   };

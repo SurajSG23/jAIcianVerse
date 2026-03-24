@@ -12,6 +12,10 @@ import answerRoutes from "./routes/answer.route.js";
 import unitRoutes from "./routes/unit.route.js";
 import chatRoutes from "./routes/chat.route.js";
 import messageRoutes from "./routes/message.route.js";
+import {
+  ensureSemesterGroupsExist,
+  syncAllUsersSemesterGroupMembership,
+} from "./utils/semesterGroup.utils.js";
 
 dotenv.config();
 connectDB();
@@ -44,4 +48,13 @@ const io = initSocket(httpServer);
 
 httpServer.listen(3000, () => {
   console.log("Server is running on port 3000");
+
+  ensureSemesterGroupsExist()
+    .then(() => syncAllUsersSemesterGroupMembership())
+    .then(() => {
+      console.log("Semester groups initialized and memberships synced");
+    })
+    .catch((error) => {
+      console.error("Failed to initialize semester groups:", error.message);
+    });
 });

@@ -424,6 +424,7 @@ const Profile = () => {
       };
 
       localStorage.setItem("userInfo", JSON.stringify(updatedUser));
+      window.dispatchEvent(new Event("jai-auth-changed"));
       setUserDetails(updatedUser);
       setEditProfile(false);
       toast.success("Profile updated successfully!");

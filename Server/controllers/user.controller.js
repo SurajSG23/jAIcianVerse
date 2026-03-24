@@ -6,6 +6,10 @@ import chatbotPrompt, { buildRAGPrompt } from "../aiConfig/prompts/chatbot.promp
 import { generateWithLocalAI } from "../aiConfig/config/localAI.js";
 import { geminiModel } from "../aiConfig/config/gemini.config.js";
 import { generateWithOpenRouter } from "../aiConfig/config/openrouter.config.ts";
+import {
+  normalizeSemester,
+  syncUserSemesterGroupMembership,
+} from "../utils/semesterGroup.utils.js";
 
 const RAG_SERVICE_URL = process.env.RAG_SERVICE_URL || "http://localhost:5001";
 
@@ -23,6 +27,12 @@ const registerUser = asyncHandler(async (req, res) => {
   if (!name || !email || !password || !userType) {
     res.status(400);
     throw new Error("Missing required fields");
+  }
+
+  const normalizedSemester = normalizeSemester(semester);
+  if (!normalizedSemester) {
+    res.status(400);
+    throw new Error("Semester is required and must be between 1 and 8");
   }
 
   if (userType === "student" && (!branch || !semester)) {
@@ -52,14 +62,19 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (userType === "student") {
     userData.branch = branch;
-    userData.semester = Number(semester);
+    userData.semester = normalizedSemester;
   }
 
   if (userType === "professor") {
     userData.department = department;
+    userData.semester = normalizedSemester;
   }
 
   const user = await User.create(userData);
+  await syncUserSemesterGroupMembership({
+    userId: user._id,
+    newSemester: user.semester,
+  });
 
   res.status(201).json({
     message: `${userType} registered successfully`,
@@ -68,6 +83,7 @@ const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      semester: user.semester,
     },
   });
 });
@@ -173,14 +189,33 @@ const updateProfile = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
+  const previousSemester = user.semester;
+
   // Update only if value exists
   user.name = name ?? user.name;
   user.email = email ?? user.email;
   user.branch = branch ?? user.branch;
-  user.semester = semester ?? user.semester;
+
+  if (semester !== undefined) {
+    const normalizedSemester = normalizeSemester(semester);
+    if (!normalizedSemester) {
+      res.status(400);
+      throw new Error("Semester must be between 1 and 8");
+    }
+    user.semester = normalizedSemester;
+  }
+
   user.profileImage = profileImage ?? user.profileImage;
 
   const updatedUser = await user.save();
+
+  if (semester !== undefined) {
+    await syncUserSemesterGroupMembership({
+      userId: updatedUser._id,
+      oldSemester: previousSemester,
+      newSemester: updatedUser.semester,
+    });
+  }
 
   res.status(200).json({
     message: "Profile updated successfully",

@@ -25,6 +25,14 @@ export const AnimatedTestimonials = ({
 
   const total = testimonials.length;
 
+  if (total === 0) {
+    return (
+      <div className="mx-auto w-auto px-4 py-2 font-sans antialiased md:px-8 lg:px-12">
+        <div className="text-sm text-gray-500 dark:text-neutral-500">No testimonials available.</div>
+      </div>
+    );
+  }
+
   const next = useCallback(() => {
     setActive((prev) => (prev + 1) % total);
   }, [total]);
