@@ -14,7 +14,7 @@ type Testimonial = {
 export const AnimatedTestimonials = ({
   testimonials,
   autoplay = true,
-  interval = 5000,
+  interval = 10000,
 }: {
   testimonials: Testimonial[];
   autoplay?: boolean;

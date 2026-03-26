@@ -64,32 +64,6 @@ After export:
 
 ---
 
----
-
-## Table of Contents
-
-1. [Model Selection & Architecture](#1-model-selection--architecture)
-2. [Project Structure](#2-project-structure)
-3. [File-by-File Reference](#3-file-by-file-reference)
-   - [prepare_dataset.py](#31-prepare_datasetpy)
-   - [train_lora.py](#32-train_lorapy)
-   - [export_model.py](#33-export_modelpy)
-   - [Modelfile](#34-modelfile)
-   - [requirements.txt](#35-requirementstxt)
-4. [Dataset](#4-dataset)
-5. [Training — Hyperparameters & Configuration](#5-training--hyperparameters--configuration)
-6. [Actual Training Run Results](#6-actual-training-run-results)
-7. [LoRA Adapter Details](#7-lora-adapter-details)
-8. [GGUF Export & Inference Config](#8-gguf-export--inference-config)
-9. [Prerequisites](#9-prerequisites)
-10. [Step-by-Step Usage](#10-step-by-step-usage)
-11. [Integration with the Node.js AI-Server](#11-integration-with-the-nodejs-ai-server)
-12. [Dependency Versions](#12-dependency-versions)
-13. [Full Pipeline (copy-paste)](#13-full-pipeline-copy-paste)
-14. [Troubleshooting](#14-troubleshooting)
-
----
-
 ## 1. Model Selection & Architecture
 
 ### Base Model
@@ -197,12 +171,11 @@ Fine-Tune/
    {"instruction": "question text", "input": "", "output": "answer text"}
    ```
 
-#### Three Backends
+#### Backends
 
 | Backend | Function | Details |
 |---|---|---|
-| `ollama` (default) | `generate_qa_with_ollama` | Calls local Ollama API at `http://localhost:11434/api/generate`; model configurable (`--ollama-model`); `temperature=0.3`, `num_predict=1024` |
-| `gemini` | `generate_qa_with_gemini` | Calls Google Gemini API; default model `gemini-2.5-flash-lite`; `temperature=0.3`, `max_output_tokens=1024` |
+| `ollama` (default) | `generate_qa_with_ollama` | Calls local Ollama API at `http://localhost:11434/api/generate`; model configurable (`--ollama-model`); `temperature=0.3`, `num_predict=1024` | 
 | `rulebased` | `generate_qa_rulebased` | Heuristic fallback — generates "What do you know about…?" style pairs; no LLM needed |
 
 #### Key Imports

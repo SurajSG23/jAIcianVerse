@@ -35,7 +35,7 @@ app.post("/rag-generate", async (req, res) => {
       return res.status(400).json({ error: "Prompt is required" });
     }
 
-    const relevantChunks = retrieveContext(prompt);
+    const relevantChunks = await retrieveContext(prompt);
     let augmentedSystem = systemPrompt || "";
 
     if (relevantChunks.length > 0) {
