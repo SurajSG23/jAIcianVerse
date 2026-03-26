@@ -14,6 +14,7 @@ const Dashboard = () => {
       name: "Mrs. Anita Verma",
       designation: "Head of Academics",
       src: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3",
+      createdAt: new Date().toISOString(),
     },
   ]);
 

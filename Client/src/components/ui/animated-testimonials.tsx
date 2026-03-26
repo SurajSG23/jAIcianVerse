@@ -9,7 +9,34 @@ type Testimonial = {
   name: string;
   designation: string;
   src: string;
+  createdAt?: string;
 };
+
+function formatOrdinal(day: number) {
+  const mod100 = day % 100;
+  if (mod100 >= 11 && mod100 <= 13) return `${day}th`;
+  switch (day % 10) {
+    case 1:
+      return `${day}st`;
+    case 2:
+      return `${day}nd`;
+    case 3:
+      return `${day}rd`;
+    default:
+      return `${day}th`;
+  }
+}
+
+function formatAnnouncementDate(createdAt?: string) {
+  if (!createdAt) return null;
+  const date = new Date(createdAt);
+  if (Number.isNaN(date.getTime())) return null;
+
+  const day = formatOrdinal(date.getDate());
+  const month = date.toLocaleString("en-US", { month: "short" });
+  const year = date.getFullYear();
+  return `${day} ${month} ${year}`;
+}
 
 export const AnimatedTestimonials = ({
   testimonials,
@@ -21,7 +48,7 @@ export const AnimatedTestimonials = ({
   interval?: number;
 }) => {
   const [active, setActive] = useState(0);
-  const autoplayRef = useRef<NodeJS.Timeout | null>(null);
+  const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const total = testimonials.length;
 
@@ -57,6 +84,8 @@ export const AnimatedTestimonials = ({
   }, [autoplay, interval, next, total]);
 
   const randomRotateY = () => Math.floor(Math.random() * 21) - 10;
+
+  const activeDateLabel = formatAnnouncementDate(testimonials[active].createdAt);
 
   return (
     <div className="mx-auto w-auto px-4 py-2 font-sans antialiased md:px-8 lg:px-12">
@@ -104,7 +133,8 @@ export const AnimatedTestimonials = ({
                   {testimonials[active].name}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-neutral-500">
-                  {testimonials[active].designation}
+                  {/* {testimonials[active].designation} */}
+                  {activeDateLabel ? `${activeDateLabel}` : ""}
                 </p>
               </div>
             </div>
