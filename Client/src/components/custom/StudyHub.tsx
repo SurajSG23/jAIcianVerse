@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { Download, Star, ThumbsUp, X } from "lucide-react";
 import axios from "axios";
 
 interface Props {
@@ -9,13 +9,43 @@ interface Props {
   selectedSubject: string | null;
 }
 
+interface MaterialItem {
+  _id: string;
+  title: string;
+  fileUrl: string;
+  upvotes?: string[];
+  subject?: {
+    name?: string;
+  };
+  unit?: {
+    name?: string;
+  };
+  uploadedBy?: {
+    name?: string;
+    role?: string;
+  };
+}
+
 const StudyHub: React.FC<Props> = ({
   setIsStdudyHubVisible,
   selectedUnit,
   selectedSubject,
 }) => {
   const [loading, setLoading] = useState(true);
-  const [materials, setMaterials] = useState([]);
+  const [materials, setMaterials] = useState<MaterialItem[]>([]);
+  const [upvotingMaterial, setUpvotingMaterial] = useState<
+    Record<string, boolean>
+  >({});
+
+  const sortByUpvotes = (items: MaterialItem[]) => {
+    return [...items].sort((a, b) => {
+      const upvoteDiff = (b.upvotes?.length || 0) - (a.upvotes?.length || 0);
+      if (upvoteDiff !== 0) {
+        return upvoteDiff;
+      }
+      return a.title.localeCompare(b.title);
+    });
+  };
 
   const fetchMaterials = async () => {
     setLoading(true);
@@ -48,11 +78,54 @@ const StudyHub: React.FC<Props> = ({
         }
       );
 
-      setMaterials(materialResponse.data.data);
+      setMaterials(sortByUpvotes(materialResponse.data.data || []));
     } catch (error) {
       console.error("Failed to fetch materials:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getToken = () => {
+    const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    return userDetails?.token || "";
+  };
+
+  const handleMaterialUpvote = async (materialId: string) => {
+    const token = getToken();
+
+    if (!token || upvotingMaterial[materialId]) {
+      return;
+    }
+
+    try {
+      setUpvotingMaterial((prev) => ({ ...prev, [materialId]: true }));
+
+      const response = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/materials/upvote/${materialId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      setMaterials((prev) =>
+        sortByUpvotes(
+          prev.map((material) =>
+            material._id === materialId
+              ? { ...material, upvotes: response.data.upvotes || [] }
+              : material
+          )
+        )
+      );
+    } catch (error) {
+      console.error("Failed to upvote material:", error);
+    } finally {
+      setUpvotingMaterial((prev) => ({ ...prev, [materialId]: false }));
     }
   };
 
@@ -105,18 +178,20 @@ const StudyHub: React.FC<Props> = ({
               ))
             ) : materials.length > 0 ? (
               materials.map((material) => (
-                <motion.a
+                <motion.div
                   key={material._id}
-                  href={material.fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   whileHover={{ scale: 1.02 }}
                   className="bg-neutral-800 border border-neutral-700 p-5 rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between hover:border-gray-500"
                 >
                   <div>
-                    <h3 className="text-lg font-bold text-white mb-2">
-                      {material.title}
-                    </h3>
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="text-lg font-bold text-white">
+                        {material.title}
+                      </h3>
+                      {material.uploadedBy?.role === "professor" && (
+                        <Star className="h-4 w-4 text-yellow-400" />
+                      )}
+                    </div>
 
                     <p className="text-sm text-gray-400 mb-1">
                       Subject: {material.subject?.name || "N/A"}
@@ -132,9 +207,29 @@ const StudyHub: React.FC<Props> = ({
                   </div>
 
                   <div className="mt-3 text-orange-400 text-sm">
-                    Open Material →
+                    <div className="flex items-center gap-3">
+                      <a
+                        href={material.fileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        download
+                        className="inline-flex items-center gap-2 rounded-md border border-neutral-600 px-3 py-1.5 text-xs font-medium text-white hover:border-neutral-400"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        Download PDF
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => handleMaterialUpvote(material._id)}
+                        disabled={!!upvotingMaterial[material._id]}
+                        className="inline-flex items-center gap-2 rounded-md border border-neutral-600 px-3 py-1.5 text-xs font-medium text-white hover:border-neutral-400 disabled:opacity-60"
+                      >
+                        <ThumbsUp className="h-3.5 w-3.5" />
+                        {material.upvotes?.length || 0}
+                      </button>
+                    </div>
                   </div>
-                </motion.a>
+                </motion.div>
               ))
             ) : (
               <p className="text-gray-400 col-span-full text-center">

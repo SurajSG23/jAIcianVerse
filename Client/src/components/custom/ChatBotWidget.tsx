@@ -24,11 +24,11 @@ export default function ChatBotWidget({
   bgColor = "#0f0f0f",
 }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<"jaicianverse" | "gemini">("jaicianverse");
+  const [selectedModel, setSelectedModel] = useState<"jaicianverse" | "gemini">("gemini");
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "Hi! I'm your AI assistant. How can I help you today?",
+      text: "Hey! I’m jAIcian, your college assistant. What would you like to know about SJCE today?",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -208,7 +208,7 @@ export default function ChatBotWidget({
 
           {/* Model Selector */}
           <div className="flex items-center">
-            <select
+            {/* <select
               value={selectedModel}
               onChange={(e) => setSelectedModel(e.target.value as "jaicianverse" | "gemini")}
               className="text-xs font-medium rounded-lg px-2 py-1.5 border outline-none cursor-pointer transition-colors"
@@ -220,7 +220,7 @@ export default function ChatBotWidget({
             >
               <option value="jaicianverse">jAIcian</option>
               <option value="gemini">Gemini</option>
-            </select>
+            </select> */}
             <button
               onClick={handleNewChat}
               className="p-2 rounded-lg hover:bg-neutral-800 transition-colors group"

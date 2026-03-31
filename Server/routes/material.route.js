@@ -13,6 +13,9 @@ router.post(
 );
 router.route("/fetchSubjectUnitID").get(materialController.fetchSubjectUnitID);
 router.route("/getMaterials").get(materialController.getMaterials);
+router
+  .route("/upvote/:materialId")
+  .put(protect, materialController.toggleMaterialUpvote);
 router.route("/getUserNotes").get(protect, materialController.getUserNotes);
 router.route("/generateSummary").get(materialController.generateSummary);
 router.route("/generateMCQ").get(materialController.generateMCQ);

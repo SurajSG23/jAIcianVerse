@@ -213,15 +213,27 @@ const fetchSubjectUnitID = asyncHandler(async (req, res) => {
     throw new Error("subjectName and unitName are required");
   }
 
-  const subject = await Subject.findOne({ name: subjectName });
+  const normalizedSubjectName = String(subjectName)
+    .replace(/\s\[[^\]]+\]$/, "")
+    .trim();
+
+  const subject = await Subject.findOne({ name: normalizedSubjectName });
 
   if (!subject) {
     res.status(404);
     throw new Error("Subject not found");
   }
 
+  const unitNumberMatch = String(unitName).match(/\d+/);
+  const unitNumber = unitNumberMatch ? Number(unitNumberMatch[0]) : NaN;
+
+  if (!Number.isFinite(unitNumber)) {
+    res.status(400);
+    throw new Error("Invalid unit name format");
+  }
+
   const unit = await Unit.findOne({
-    unitNumber: Number(unitName.split(" ")[1]),
+    unitNumber,
     subject: subject._id,
   });
 
@@ -258,12 +270,59 @@ const getMaterials = asyncHandler(async (req, res) => {
   })
     .populate("subject", "name")
     .populate("unit", "name")
-    .populate("uploadedBy", "name")
+    .populate("uploadedBy", "name role")
     .sort({ createdAt: -1 });
 
+  const sortedMaterials = [...materials].sort((a, b) => {
+    const upvoteDiff = (b.upvotes?.length || 0) - (a.upvotes?.length || 0);
+    if (upvoteDiff !== 0) {
+      return upvoteDiff;
+    }
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
   res.status(200).json({
-    count: materials.length,
-    data: materials,
+    count: sortedMaterials.length,
+    data: sortedMaterials,
+  });
+});
+
+const toggleMaterialUpvote = asyncHandler(async (req, res) => {
+  const { materialId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(materialId)) {
+    res.status(400);
+    throw new Error("Invalid material ID");
+  }
+
+  const material = await Material.findById(materialId);
+
+  if (!material) {
+    res.status(404);
+    throw new Error("Material not found");
+  }
+
+  const userId = req.user._id.toString();
+  const existingVoteIndex = material.upvotes.findIndex(
+    (id) => id.toString() === userId
+  );
+
+  let upvoted = false;
+
+  if (existingVoteIndex >= 0) {
+    material.upvotes.splice(existingVoteIndex, 1);
+  } else {
+    material.upvotes.push(req.user._id);
+    upvoted = true;
+  }
+
+  await material.save();
+
+  res.status(200).json({
+    success: true,
+    upvoted,
+    upvotes: material.upvotes,
+    upvoteCount: material.upvotes.length,
   });
 });
 const pickRandom = (arr, count) => {
@@ -518,6 +577,7 @@ export default {
   uploadNotes,
   fetchSubjectUnitID,
   getMaterials,
+  toggleMaterialUpvote,
   getUserNotes,
   generateSummary,
   generateMCQ,

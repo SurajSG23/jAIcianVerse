@@ -21,6 +21,9 @@ router
   .get(protect, discussionController.fetchAnnouncementsById);
 
 router.route("/answers").post(protect, discussionController.postAnswer);
+router
+  .route("/answers/:answerId/upvote")
+  .put(protect, discussionController.toggleAnswerUpvote);
 
 router
   .route("/announcements")

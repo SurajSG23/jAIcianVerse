@@ -24,10 +24,22 @@ interface Unit {
 interface Subject {
   _id: string;
   name: string;
+  code?: string;
   branch: string;
   semester: number;
   units: Unit[];
 }
+
+const parseSubjectLabel = (subjectLabel: string) => {
+  const match = subjectLabel.match(/^(.*)\s\[([^\]]+)\]$/);
+  if (!match) {
+    return { name: subjectLabel, code: "" };
+  }
+  return {
+    name: match[1].trim(),
+    code: match[2].trim(),
+  };
+};
 
 const Materials = () => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -79,9 +91,11 @@ const Materials = () => {
           const semesterNumber = Number(semesterKey.replace(/\D/g, ""));
 
           Object.entries(subjects).forEach(([subjectName, units]) => {
+            const parsedSubject = parseSubjectLabel(subjectName);
             formattedSubjects.push({
               _id: crypto.randomUUID(),
-              name: subjectName,
+              name: parsedSubject.name,
+              code: parsedSubject.code,
               branch: branchName,
               semester: semesterNumber,
               units: units.map((unit) => ({
@@ -455,9 +469,16 @@ const Materials = () => {
                   >
                     <div className="p-6">
                       {/* Subject Name */}
-                      <h3 className="text-lg font-semibold text-white group-hover:text-gray-300 transition-colors mb-4 line-clamp-2">
-                        {subject.name}
-                      </h3>
+                      <div className="mb-4">
+                        <h3 className="text-lg font-semibold text-white group-hover:text-gray-300 transition-colors line-clamp-2">
+                          {subject.name}
+                        </h3>
+                        {subject.code && (
+                          <span className="mt-2 inline-flex rounded-md border border-neutral-700 px-2 py-0.5 text-xs text-neutral-300">
+                            {subject.code}
+                          </span>
+                        )}
+                      </div>
 
                       {/* Meta Info */}
                       <div className="space-y-2 text-sm">
@@ -516,6 +537,11 @@ const Materials = () => {
                           <h2 className="text-2xl font-bold text-white">
                             {selectedSubject.name}
                           </h2>
+                          {selectedSubject.code && (
+                            <span className="inline-flex rounded-md border border-neutral-700 px-2 py-0.5 text-xs text-neutral-300">
+                              {selectedSubject.code}
+                            </span>
+                          )}
                         </div>
                         <div className="flex gap-4 text-sm text-neutral-400">
                           <span>{selectedSubject.branch}</span>
@@ -550,7 +576,7 @@ const Materials = () => {
                           className="bg-black border border-neutral-800 hover:border-gray-500/50 rounded-lg p-4 transition-colors cursor-pointer"
                         >
                           <div className="flex items-start gap-3">
-                            <div className="bg-orange-500/10 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+                            <div className="bg-orange-500/10 rounded-full w-8 h-8 flex items-center justify-center shrink-0">
                               <span className="text-orange-400 text-sm font-semibold">
                                 {index + 1}
                               </span>
@@ -593,7 +619,10 @@ const Materials = () => {
                     <div className="flex items-start justify-between mb-6">
                       <div className="flex-1">
                         <h2 className="text-2xl font-bold text-white mb-1">
-                          {selectedSubject?.name} | {selectedUnit?.name}
+                          {selectedSubject?.name}
+                          {selectedSubject?.code
+                            ? ` [${selectedSubject.code}]`
+                            : ""} | {selectedUnit?.name}
                         </h2>
                       </div>
 

@@ -44,10 +44,22 @@ const fetchDiscussion = asyncHandler(async (req, res) => {
       },
     });
 
+  const sortedDiscussions = discussions.map((discussion) => {
+    const discussionObject = discussion.toObject();
+    discussionObject.answers = (discussionObject.answers || []).sort((a, b) => {
+      const upvoteDiff = (b.upvotes?.length || 0) - (a.upvotes?.length || 0);
+      if (upvoteDiff !== 0) {
+        return upvoteDiff;
+      }
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+    return discussionObject;
+  });
+
   res.status(200).json({
     success: true,
-    count: discussions.length,
-    discussions,
+    count: sortedDiscussions.length,
+    discussions: sortedDiscussions,
   });
 });
 const fetchDiscussionByName = asyncHandler(async (req, res) => {
@@ -67,11 +79,23 @@ const fetchDiscussionByName = asyncHandler(async (req, res) => {
         select: "name email profileImage role",
       },
     });
+
+  const sortedDiscussions = discussions.map((discussion) => {
+    const discussionObject = discussion.toObject();
+    discussionObject.answers = (discussionObject.answers || []).sort((a, b) => {
+      const upvoteDiff = (b.upvotes?.length || 0) - (a.upvotes?.length || 0);
+      if (upvoteDiff !== 0) {
+        return upvoteDiff;
+      }
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+    return discussionObject;
+  });
     
   res.status(200).json({
     success: true,
-    count: discussions.length,
-    discussions,
+    count: sortedDiscussions.length,
+    discussions: sortedDiscussions,
   });
 });
 
@@ -117,10 +141,44 @@ const postAnswer = asyncHandler(async (req, res) => {
 
   const populatedAnswer = await answer.populate(
     "answeredBy",
-    "name profileImage"
+    "name profileImage role"
   );
 
   res.status(201).json({ answer: populatedAnswer });
+});
+
+const toggleAnswerUpvote = asyncHandler(async (req, res) => {
+  const { answerId } = req.params;
+
+  const answer = await Answer.findById(answerId);
+
+  if (!answer) {
+    res.status(404);
+    throw new Error("Answer not found");
+  }
+
+  const userId = req.user._id.toString();
+  const existingVoteIndex = answer.upvotes.findIndex(
+    (id) => id.toString() === userId
+  );
+
+  let upvoted = false;
+
+  if (existingVoteIndex >= 0) {
+    answer.upvotes.splice(existingVoteIndex, 1);
+  } else {
+    answer.upvotes.push(req.user._id);
+    upvoted = true;
+  }
+
+  await answer.save();
+
+  res.status(200).json({
+    success: true,
+    upvoted,
+    upvotes: answer.upvotes,
+    upvoteCount: answer.upvotes.length,
+  });
 });
 
 const postAnnouncement = asyncHandler(async (req, res) => {
@@ -174,6 +232,7 @@ export default {
   uploadDiscussion,
   fetchDiscussion,
   postAnswer,
+  toggleAnswerUpvote,
   fetchAnnouncements,
   postAnnouncement,
   fetchAnnouncementsById,

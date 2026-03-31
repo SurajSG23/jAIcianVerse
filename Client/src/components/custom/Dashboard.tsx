@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { RefreshCcw, X } from "lucide-react";
+import { RefreshCcw, Star, ThumbsUp, X } from "lucide-react";
 import { AnimatedTestimonials } from "../../components/ui/animated-testimonials";
 import axios from "axios";
 import { toast } from "react-toastify";
 import semestersData from "../../data/semesters.ts";
+
+const extractSubjectName = (subjectLabel: string) => {
+  const match = subjectLabel.match(/^(.*)\s\[[^\]]+\]$/);
+  return match ? match[1].trim() : subjectLabel;
+};
+
+interface UnitOption {
+  value: string;
+  label: string;
+}
 
 const Dashboard = () => {
   const [announcements, setAnnouncements] = useState([
@@ -64,8 +74,12 @@ const Dashboard = () => {
   const [expandedId, setExpandedId] = useState(null);
   const [selectedDiscussionId, setSelectedDiscussionId] = useState(null);
   const [availableSubjects, setAvailableSubjects] = useState<string[]>([]);
+  const [availableUnits, setAvailableUnits] = useState<UnitOption[]>([]);
   const [skeletonLoading, setSkeletonLoading] = useState(true);
   const [testimonialSkeleton, setTestimonialSkeleton] = useState(true);
+  const [upvotingAnswers, setUpvotingAnswers] = useState<
+    Record<string, boolean>
+  >({});
 
   const [questionForm, setQuestionForm] = useState({
     question: "",
@@ -177,9 +191,39 @@ const Dashboard = () => {
     const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
     const userSem = userDetails?.semester;
     const userBranch = userDetails?.branch;
-    setAvailableSubjects(
-      Object.keys(semestersData[userBranch]["Semester " + userSem])
+    const subjectLabels = Object.keys(
+      semestersData[userBranch]["Semester " + userSem]
     );
+    setAvailableSubjects(
+      subjectLabels.map((subjectLabel) => extractSubjectName(subjectLabel))
+    );
+    setAvailableUnits([]);
+  };
+
+  const updateUnitsForSubject = (subjectName: string) => {
+    const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    const userSem = userDetails?.semester;
+    const userBranch = userDetails?.branch;
+
+    const semesterSubjects =
+      semestersData?.[userBranch]?.["Semester " + userSem] || {};
+
+    const matchedEntry = Object.entries(semesterSubjects).find(
+      ([subjectLabel]) => extractSubjectName(subjectLabel) === subjectName
+    );
+
+    if (!matchedEntry) {
+      setAvailableUnits([]);
+      return;
+    }
+
+    const [, units] = matchedEntry;
+    const formattedUnits = (units || []).map((unitName, index) => ({
+      value: String(index + 1),
+      label: unitName,
+    }));
+
+    setAvailableUnits(formattedUnits);
   };
   useEffect(() => {
     fetchDiscussions();
@@ -277,6 +321,62 @@ const Dashboard = () => {
         "Error posting answer:",
         error.response?.data || error.message
       );
+    }
+  };
+
+  const getAnswerUpvoteCount = (upvotes) => {
+    if (Array.isArray(upvotes)) {
+      return upvotes.length;
+    }
+    if (typeof upvotes === "number") {
+      return upvotes;
+    }
+    return 0;
+  };
+
+  const handleAnswerUpvote = async (discussionId, answerId) => {
+    if (!answerId || upvotingAnswers[answerId]) {
+      return;
+    }
+
+    try {
+      const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
+
+      setUpvotingAnswers((prev) => ({ ...prev, [answerId]: true }));
+
+      const response = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/discussions/answers/${answerId}/upvote`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${userDetails.token}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      setDiscussions((prev) =>
+        prev.map((disc) =>
+          disc._id !== discussionId
+            ? disc
+            : {
+                ...disc,
+                answers: (disc.answers || []).map((ans) =>
+                  ans._id !== answerId
+                    ? ans
+                    : {
+                        ...ans,
+                        upvotes: response.data.upvotes || [],
+                      }
+                ),
+              }
+        )
+      );
+    } catch (error) {
+      console.error("Error upvoting answer:", error.response?.data || error.message);
+    } finally {
+      setUpvotingAnswers((prev) => ({ ...prev, [answerId]: false }));
     }
   };
 
@@ -570,9 +670,22 @@ const Dashboard = () => {
                         </p>
                       )}
 
-                      {disc.answers.map((ans) => (
+                      {[...(disc.answers || [])]
+                        .sort((a, b) => {
+                          const upvoteDiff =
+                            getAnswerUpvoteCount(b.upvotes) -
+                            getAnswerUpvoteCount(a.upvotes);
+                          if (upvoteDiff !== 0) {
+                            return upvoteDiff;
+                          }
+                          return (
+                            new Date(b.createdAt).getTime() -
+                            new Date(a.createdAt).getTime()
+                          );
+                        })
+                        .map((ans, index) => (
                         <div
-                          key={ans._id}
+                          key={ans._id || `${disc._id}-${index}`}
                           className="p-4 rounded-lg bg-black border border-neutral-800"
                         >
                           {/* Answer text */}
@@ -595,6 +708,10 @@ const Dashboard = () => {
                               {ans.answeredBy?.name || "Anonymous"}
                             </span>
 
+                            {ans.answeredBy?.role === "professor" && (
+                              <Star className="h-3.5 w-3.5 text-yellow-400" />
+                            )}
+
                             <span className="text-neutral-600">•</span>
 
                             <span>
@@ -607,6 +724,16 @@ const Dashboard = () => {
                                 }
                               )}
                             </span>
+
+                            <button
+                              type="button"
+                              onClick={() => handleAnswerUpvote(disc._id, ans._id)}
+                              disabled={!!upvotingAnswers[ans._id]}
+                              className="ml-auto inline-flex items-center gap-1 rounded-md border border-neutral-700 px-2 py-1 text-neutral-300 hover:text-white hover:border-neutral-500 disabled:opacity-60"
+                            >
+                              <ThumbsUp className="h-3.5 w-3.5" />
+                              {getAnswerUpvoteCount(ans.upvotes)}
+                            </button>
                           </div>
                         </div>
                       ))}
@@ -748,10 +875,15 @@ const Dashboard = () => {
                         list="branches"
                         value={questionForm.subject}
                         onChange={(e) =>
-                          setQuestionForm((prev) => ({
-                            ...prev,
-                            subject: e.target.value,
-                          }))
+                          {
+                            const selectedSubject = e.target.value;
+                            setQuestionForm((prev) => ({
+                              ...prev,
+                              subject: selectedSubject,
+                              unit: "",
+                            }));
+                            updateUnitsForSubject(selectedSubject);
+                          }
                         }
                         placeholder="e.g., Data Structures"
                         className="w-full px-4 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700"
@@ -767,11 +899,7 @@ const Dashboard = () => {
                       <label className="block text-sm font-medium text-neutral-400 mb-2">
                         Unit
                       </label>
-                      <input
-                        type="number"
-                        list="units"
-                        min={1}
-                        max={5}
+                      <select
                         value={questionForm.unit}
                         onChange={(e) =>
                           setQuestionForm((prev) => ({
@@ -779,15 +907,18 @@ const Dashboard = () => {
                             unit: e.target.value,
                           }))
                         }
-                        placeholder="e.g., Unit 3"
                         className="w-full px-4 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-700"
                         required
-                      />
-                      <datalist id="units">
-                        {[1, 2, 3, 4, 5].map((unit) => (
-                          <option key={unit} value={unit} />
+                      >
+                        <option value="" disabled>
+                          Select unit
+                        </option>
+                        {availableUnits.map((unitOption) => (
+                          <option key={unitOption.value} value={unitOption.value}>
+                            {unitOption.label}
+                          </option>
                         ))}
-                      </datalist>
+                      </select>
                       <></>
                     </div>
                   </div>
