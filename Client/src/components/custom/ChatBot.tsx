@@ -16,6 +16,11 @@ interface Message {
   text: string;
 }
 
+const extractUnitNumber = (unitLabel: string) => {
+  const match = unitLabel.match(/\d+/);
+  return match ? match[0] : "1";
+};
+
 function cleanLLMResponse(text: string) {
   if (!text) return "";
   text = text.replace(/```[\s\S]*?```/g, "");
@@ -33,7 +38,7 @@ const ChatBot: React.FC<Props> = ({
   selectedSubject,
   selectedUnit,
 }) => {
-  const unitNumber = selectedUnit.split(" ")[1] || "1";
+  const unitNumber = extractUnitNumber(selectedUnit);
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -47,6 +52,8 @@ const ChatBot: React.FC<Props> = ({
   const [selectedModel, setSelectedModel] = useState<"jaicianverse" | "gemini">(
     "gemini",
   );
+  const [lastQuestion, setLastQuestion] = useState("");
+  const [activeFollowUpFor, setActiveFollowUpFor] = useState<number | null>(null);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -58,13 +65,16 @@ const ChatBot: React.FC<Props> = ({
     inputRef.current?.focus();
   }, []);
 
-  const sendMessageToRAG = async (userMessage: string): Promise<string> => {
+  const sendMessageToRAG = async (
+    userMessage: string,
+    modelOverride?: "jaicianverse" | "gemini",
+  ): Promise<string> => {
     const response = await axios.get(
       `${import.meta.env.VITE_BACKEND_URL}/api/user/call-ai-model`,
       {
         params: {
           query: userMessage,
-          model: selectedModel,
+          model: modelOverride || selectedModel,
           subjectName: selectedSubject,
           unitNumber: unitNumber,
         },
@@ -85,6 +95,8 @@ const ChatBot: React.FC<Props> = ({
 
     setMessages((prev) => [...prev, userMessage]);
     const userInput = input;
+    setLastQuestion(userInput);
+    setActiveFollowUpFor(null);
     setInput("");
     setIsTyping(true);
 
@@ -97,6 +109,7 @@ const ChatBot: React.FC<Props> = ({
         text: cleanedResponse || "Sorry, I couldn't generate a response.",
       };
       setMessages((prev) => [...prev, botMessage]);
+      setActiveFollowUpFor(botMessage.id);
     } catch (error) {
       console.error("Error sending message:", error);
       const errorMessage: Message = {
@@ -112,6 +125,54 @@ const ChatBot: React.FC<Props> = ({
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") handleSend();
+  };
+
+  const getAlternativeModel = () =>
+    selectedModel === "gemini" ? "jaicianverse" : "gemini";
+
+  const handleHelpfulFeedback = () => {
+    const acknowledgement: Message = {
+      id: Date.now() + 2,
+      sender: "bot",
+      text: "Great! Ask your next doubt anytime.",
+    };
+    setMessages((prev) => [...prev, acknowledgement]);
+    setActiveFollowUpFor(null);
+  };
+
+  const handleTryOtherModel = async () => {
+    if (!lastQuestion || isTyping) return;
+
+    const alternativeModel = getAlternativeModel();
+    setSelectedModel(alternativeModel);
+    setIsTyping(true);
+    setActiveFollowUpFor(null);
+
+    try {
+      const botResponse = await sendMessageToRAG(lastQuestion, alternativeModel);
+      const cleanedResponse = cleanLLMResponse(botResponse);
+      const botMessage: Message = {
+        id: Date.now() + 3,
+        sender: "bot",
+        text:
+          (cleanedResponse || "Sorry, I couldn't generate a response.") +
+          ` (Answered using ${
+            alternativeModel === "gemini" ? "Gemini" : "jAIcian"
+          })`,
+      };
+      setMessages((prev) => [...prev, botMessage]);
+      setActiveFollowUpFor(botMessage.id);
+    } catch (error) {
+      console.error("Error retrying with other model:", error);
+      const errorMessage: Message = {
+        id: Date.now() + 4,
+        sender: "bot",
+        text: "Couldn't retry with the other model right now. Please try again.",
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   return (
@@ -188,6 +249,30 @@ const ChatBot: React.FC<Props> = ({
                   }`}
                 >
                   {msg.text}
+
+                  {msg.sender === "bot" && activeFollowUpFor === msg.id && (
+                    <div className="mt-2">
+                      <p className="text-[11px] text-neutral-400">
+                        Was this helpful?
+                      </p>
+                      <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={handleHelpfulFeedback}
+                          className="rounded-full border border-neutral-600 px-2.5 py-1 text-[11px] text-neutral-200 hover:border-neutral-400 hover:text-white"
+                        >
+                          Helpful
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleTryOtherModel}
+                          className="rounded-full border border-neutral-600 px-2.5 py-1 text-[11px] text-neutral-200 hover:border-neutral-400 hover:text-white"
+                        >
+                          Try with {getAlternativeModel() === "gemini" ? "Gemini" : "jAIcian"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               </div>
             ))}
@@ -235,7 +320,7 @@ const ChatBot: React.FC<Props> = ({
             <button
               onClick={handleSend}
               disabled={!input.trim() || isTyping}
-              className="group/btn relative block h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              className="group/btn relative flex h-10 w-auto items-center justify-center gap-3 rounded-md bg-linear-to-br from-black to-neutral-600 p-3 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:from-zinc-900 dark:to-zinc-900 dark:bg-zinc-800 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <span className="flex items-center gap-2">
                 <Send className="w-5 h-5" />
