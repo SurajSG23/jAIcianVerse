@@ -162,7 +162,7 @@ export default function ChatBotWidget({
       {/* Chat Window */}
       <div
         className={`
-          fixed bottom-18 right-6 w-96 h-[600px] 
+          fixed bottom-20 right-2 sm:right-6 w-[calc(100vw-1rem)] sm:w-[calc(100vw-3rem)] md:w-96 h-[70vh] md:h-[600px] 
           bg-neutral-900 rounded-2xl shadow-2xl
           flex flex-col overflow-hidden
           transition-all duration-300 ease-in-out
@@ -288,7 +288,7 @@ export default function ChatBotWidget({
                     : {}
                 }
               >
-                <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
+                <p className="text-sm leading-relaxed whitespace-pre-wrap wrap-break-word">
                   {message.text}
                 </p>
               </div>

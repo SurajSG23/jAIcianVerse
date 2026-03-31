@@ -45,7 +45,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <h1 className="text-2xl font-bold tracking-tight">
                 j<span className="text-orange-400">AI</span>cian
                 <span className="text-orange-400">Verse</span>
@@ -157,14 +157,14 @@ const LandingPage = () => {
             alt="Hero Background"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-l from-[#0b0b0b]/20 via-[#0b0b0b]/85 to-[#0b0b0b]/100"></div>
+          <div className="absolute inset-0 bg-linear-to-t lg:bg-linear-to-l from-[#0b0b0b]/20 via-[#0b0b0b]/85 to-[#0b0b0b]"></div>
         </div>
 
         {/* Hero Content */}
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl animate-fade-in-up">
           <h1 className="text-4xl sm:text-5xl lg:text-4xl font-light mb-6 leading-tight tracking-wide">
             Welcome to <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 text-6xl">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-red-500 text-4xl sm:text-5xl lg:text-6xl">
               <span className="text-white">j</span>AI
               <span className="text-white">cian</span>Verse
             </span>
@@ -193,7 +193,7 @@ const LandingPage = () => {
           </div>
 
           <button
-            className="relative cursor-pointer mt-4 p-4 text-center font-barlow inline-flex justify-center text-base uppercase text-white rounded-lg border-solid transition-transform duration-300 ease-in-out group outline-offset-4 focus:outline focus:outline-2 focus:outline-white focus:outline-offset-4 overflow-hidden"
+            className="relative cursor-pointer mt-4 p-4 text-center font-barlow inline-flex justify-center text-base uppercase text-white rounded-lg border-solid transition-transform duration-300 ease-in-out group outline-offset-4 focus:outline-2 focus:outline-white focus:outline-offset-4 overflow-hidden"
             onClick={() => setGetStarted(true)}
           >
             <span className="relative z-20">Get Started</span>
@@ -213,7 +213,7 @@ const LandingPage = () => {
         className="relative py-20 bg-black text-white overflow-hidden"
         id="about"
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-neutral-900 to-black opacity-90"></div>
+        <div className="absolute inset-0 bg-linear-to-b from-neutral-900 to-black opacity-90"></div>
 
         <div className="relative max-w-6xl mx-auto px-6 lg:px-12 text-center">
           <h2 className="text-4xl sm:text-5xl font-medium mb-6 tracking-tight">
@@ -290,7 +290,7 @@ const LandingPage = () => {
                   alt={post.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0b] via-transparent opacity-60"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-[#0b0b0b] via-transparent opacity-60"></div>
               </div>
 
               {/* Card Content */}
@@ -416,3 +416,4 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+

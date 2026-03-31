@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, Mail, MessageCircle, Share2, Star, ThumbsUp, X } from "lucide-react";
 import axios from "axios";
@@ -48,7 +48,7 @@ const StudyHub: React.FC<Props> = ({
     });
   };
 
-  const fetchMaterials = async () => {
+  const fetchMaterials = useCallback(async () => {
     setLoading(true);
     try {
       const idResponse = await axios.get(
@@ -85,7 +85,7 @@ const StudyHub: React.FC<Props> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedSubject, selectedUnit]);
 
   const getToken = () => {
     const userDetails = JSON.parse(localStorage.getItem("userInfo") || "{}");
@@ -152,7 +152,7 @@ const StudyHub: React.FC<Props> = ({
 
   useEffect(() => {
     fetchMaterials();
-  }, []);
+  }, [fetchMaterials]);
 
   return (
     <AnimatePresence>
@@ -169,7 +169,7 @@ const StudyHub: React.FC<Props> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.2 }}
-          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl p-8 flex flex-col z-200"
+          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] md:w-[90vw] lg:w-[85vw] h-[92vh] md:h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl p-4 md:p-8 flex flex-col z-200"
         >
           <button
             onClick={() => setIsStdudyHubVisible(false)}
@@ -178,7 +178,7 @@ const StudyHub: React.FC<Props> = ({
             <X className="h-6 w-6" />
           </button>
 
-          <h1 className="text-white text-3xl text-center">{selectedUnit}</h1>
+          <h1 className="text-white text-xl md:text-3xl text-center">{selectedUnit}</h1>
           <h2 className="text-xl font-semibold text-gray-500 mb-6 text-center">
             Study Materials
           </h2>
@@ -228,7 +228,7 @@ const StudyHub: React.FC<Props> = ({
                   </div>
 
                   <div className="mt-3 text-orange-400 text-sm">
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2 md:gap-3">
                       <a
                         href={material.fileUrl}
                         target="_blank"
@@ -254,7 +254,7 @@ const StudyHub: React.FC<Props> = ({
                         </button>
 
                         {openShareMenuFor === material._id && (
-                          <div className="absolute bottom-10 left-0 z-20 min-w-40 rounded-md border border-neutral-700 bg-neutral-900 p-1 shadow-lg">
+                          <div className="absolute bottom-10 right-0 sm:left-0 sm:right-auto z-20 min-w-40 rounded-md border border-neutral-700 bg-neutral-900 p-1 shadow-lg">
                             <button
                               type="button"
                               onClick={() => handleShareViaGmail(material)}

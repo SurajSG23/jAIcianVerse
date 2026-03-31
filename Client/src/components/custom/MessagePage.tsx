@@ -253,7 +253,7 @@ const MessagePage = () => {
   return (
     <div
       className={cn(
-        "mx-auto fixed flex w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-black h-screen text-white"
+        "mx-auto flex w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-black min-h-screen text-white"
       )}
     >
       <style>
@@ -277,7 +277,7 @@ const MessagePage = () => {
       </style>
       <Sidebar />
 
-      <div className="dark h-screen w-full overflow-hidden">
+      <div className="dark min-h-screen md:h-screen w-full overflow-hidden">
         <div className="flex h-full bg-black">
           {/* ── Chat Sidebar ─────────────────────────────────────── */}
           <div

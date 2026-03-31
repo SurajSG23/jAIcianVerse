@@ -122,7 +122,7 @@ const VisualVault: React.FC<props> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.2 }}
-          className="fixed flex-col  left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex justify-center items-center z-80"
+          className="fixed flex-col left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] md:w-[90vw] lg:w-[85vw] h-[92vh] md:h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex justify-center items-center z-80"
         >
           <button
             onClick={() => setIsVisualVaultVisible(false)}
@@ -151,13 +151,13 @@ const VisualVault: React.FC<props> = ({
                 .delay-300 { animation-delay: 300ms; }
             `}
           </style>
-          <h2 className="text-2xl font-bold mb-4 text-gray-500">
+          <h2 className="text-lg md:text-2xl font-bold mb-4 text-gray-500 px-4 text-center">
             Keywords:{" "}
             <span className="text-gray-300">
               {[currentKeyword, unitKeyword].filter(Boolean).join(", ")}
             </span>
           </h2>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-3 justify-center px-2">
             <button
               className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-linear-to-br from-black border border-gray-700  to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
               onClick={fetchVideos}
@@ -213,7 +213,7 @@ const VisualVault: React.FC<props> = ({
               {loading ? (
                 <SkeletonGrid />
               ) : (
-                <div className="grid grid-cols-1 h-[70vh] sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 h-auto md:h-[70vh]">
                   {videos.map((video) => {
                     return (
                       <a

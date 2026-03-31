@@ -361,7 +361,7 @@ const StudyHub: React.FC<Props> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.2 }}
-          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
+          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] md:w-[90vw] lg:w-[85vw] h-[92vh] md:h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
         >
           <button
             onClick={() => setIsQuickQuizVisible(false)}
@@ -511,7 +511,7 @@ const StudyHub: React.FC<Props> = ({
                     }}
                     className="relative w-[120px] mt-6 mx-auto"
                   >
-                    <p className="group/btn relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-black font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] cursor-pointer">
+                    <p className="group/btn relative border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-black font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] cursor-pointer">
                       Quit Test
                       <BottomGradient />
                     </p>
@@ -522,7 +522,7 @@ const StudyHub: React.FC<Props> = ({
                     }}
                     className="relative w-[120px] mt-6 mx-auto"
                   >
-                    <button className="group/btn relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-black font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] cursor-pointer">
+                    <button className="group/btn relative border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-black font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] cursor-pointer">
                       Submit Test
                       <BottomGradient />
                     </button>
@@ -579,7 +579,7 @@ const StudyHub: React.FC<Props> = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] md:w-[90vw] lg:w-[85vw] h-[92vh] md:h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
             >
               <div className="fixed inset-0 flex justify-center items-center bg-neutral-900 z-50 backdrop-blur-sm">
                 <div className="bg-black rounded-3xl shadow-2xl p-10 text-white w-[90%] max-w-lg border border-gray-700 transition-all duration-300">
@@ -591,7 +591,7 @@ const StudyHub: React.FC<Props> = ({
                       onClick={() => {
                         setQuitConfirmation(false);
                       }}
-                      className="group/btn px-6 text-lg relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                      className="group/btn px-6 text-lg relative border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-linear-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
                     >
                       No
                       <BottomGradient />
@@ -601,7 +601,7 @@ const StudyHub: React.FC<Props> = ({
                         setQuitConfirmation(false);
                         setIsQuickQuizVisible(false);
                       }}
-                      className="group/btn px-6 text-lg relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                      className="group/btn px-6 text-lg relative border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-linear-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
                     >
                       Yes
                       <BottomGradient />
@@ -629,7 +629,7 @@ const StudyHub: React.FC<Props> = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] md:w-[90vw] lg:w-[85vw] h-[92vh] md:h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
             >
               <div className="w-full h-full inset-0 flex justify-center items-center bg-neutral-900 z-50 backdrop-blur-sm">
                 <div className="bg-black rounded-3xl shadow-2xl p-10 text-white max-w-lg border border-gray-600 transition-all duration-300">
@@ -655,7 +655,7 @@ const StudyHub: React.FC<Props> = ({
                       onClick={() => {
                         setSubmitConfirmation(false);
                       }}
-                      className="group/btn px-6 text-lg relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                      className="group/btn px-6 text-lg relative border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-linear-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
                     >
                       No
                       <BottomGradient />
@@ -665,7 +665,7 @@ const StudyHub: React.FC<Props> = ({
                         handleSubmitTest();
                         setSubmitConfirmation(false);
                       }}
-                      className="group/btn px-6 text-lg relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                      className="group/btn px-6 text-lg relative border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-linear-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
                     >
                       Yes
                       <BottomGradient />
@@ -693,7 +693,7 @@ const StudyHub: React.FC<Props> = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] md:w-[90vw] lg:w-[85vw] h-[92vh] md:h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
             >
               <div className="fixed inset-0 flex justify-center items-center bg-black z-50 backdrop-blur-sm">
                 <div className="bg-neutral-900 shadow-2xl p-10 text-white w-full h-full overflow-y-auto transition-all duration-300">
@@ -858,7 +858,7 @@ const StudyHub: React.FC<Props> = ({
                   <div className="mt-10 flex justify-center gap-6">
                     <button
                       onClick={() => setIsQuickQuizVisible(false)}
-                      className="group/btn px-6 text-lg relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                      className="group/btn px-6 text-lg relative border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-linear-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
                     >
                       Close
                       <BottomGradient />
@@ -886,7 +886,7 @@ const StudyHub: React.FC<Props> = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] md:w-[90vw] lg:w-[85vw] h-[92vh] md:h-[95vh] bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
             >
               <div className="flex absolute top-0 justify-center items-center h-screen bg-neutral-900 w-full z-99">
                 <div className="flex flex-col items-center">
@@ -915,7 +915,7 @@ const StudyHub: React.FC<Props> = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[45vw] h-[35vh] overflow-y-auto bg-black border border-neutral-800 rounded-lg shadow-xl flex flex-col z-150"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-xl h-auto overflow-y-auto bg-black border border-neutral-800 rounded-lg shadow-xl flex flex-col z-150"
             >
               {/* CONTENT (ONLY THIS IS NEW) */}
               <div className="p-8 flex flex-col gap-6">
@@ -951,7 +951,7 @@ const StudyHub: React.FC<Props> = ({
                   </button>
                   <button
                     onClick={GenerateQuestions}
-                    className="group/btn px-4 text-lg relative block border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
+                    className="group/btn px-4 text-lg relative border border-gray-700 w-auto p-2 flex justify-center items-center gap-3 rounded-md bg-linear-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer"
                   >
                     Generate Now
                     <BottomGradient />
@@ -967,3 +967,4 @@ const StudyHub: React.FC<Props> = ({
 };
 
 export default StudyHub;
+

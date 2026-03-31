@@ -192,10 +192,10 @@ const ChatBot: React.FC<Props> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.2 }}
-          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
+          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] md:w-[90vw] lg:w-[85vw] h-[92vh] md:h-[95vh] bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex flex-col z-80"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-700">
+          <div className="flex flex-wrap items-center justify-between gap-2 px-4 md:px-6 py-3 md:py-4 border-b border-neutral-700">
             <div>
               <h2 className="text-xl font-semibold text-white">
                 AI Study Assistant
@@ -214,7 +214,7 @@ const ChatBot: React.FC<Props> = ({
                     e.target.value as "jaicianverse" | "gemini",
                   )
                 }
-                className="text-xs font-medium rounded-lg px-3 py-1.5 border outline-none cursor-pointer transition-colors bg-neutral-800 text-orange-400 border-orange-500/40"
+                className="text-xs font-medium rounded-lg px-2 md:px-3 py-1.5 border outline-none cursor-pointer transition-colors bg-neutral-800 text-orange-400 border-orange-500/40"
               >
                 <option value="gemini">Gemini</option>
                 <option value="jaicianverse">jAIcian (Local)</option>
@@ -231,7 +231,7 @@ const ChatBot: React.FC<Props> = ({
           </div>
 
           {/* Chat Area */}
-          <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+          <div className="flex-1 overflow-y-auto px-3 md:px-6 py-4 space-y-4">
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -242,7 +242,7 @@ const ChatBot: React.FC<Props> = ({
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`max-w-[70%] p-3 rounded-2xl text-sm ${
+                  className={`max-w-[85%] md:max-w-[70%] p-3 rounded-2xl text-sm ${
                     msg.sender === "user"
                       ? "bg-orange-600 text-white rounded-br-none"
                       : "bg-neutral-800 text-gray-200 rounded-bl-none"
@@ -306,7 +306,7 @@ const ChatBot: React.FC<Props> = ({
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-neutral-700 p-4 flex items-center gap-3">
+          <div className="border-t border-neutral-700 p-3 md:p-4 flex items-center gap-2 md:gap-3">
             <input
               ref={inputRef}
               type="text"

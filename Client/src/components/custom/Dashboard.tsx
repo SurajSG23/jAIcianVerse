@@ -569,7 +569,7 @@ const Dashboard = () => {
           ))}
         </div>
       ) : (
-        <div className="w-full flex">
+        <div className="w-full flex flex-col xl:flex-row gap-6">
           {filteredAndSortedDiscussions.length === 0 && (
             <div className="text-center py-12">
               <p className="text-neutral-500">
@@ -577,7 +577,7 @@ const Dashboard = () => {
               </p>
             </div>
           )}
-          <div className="flex flex-col space-y-4 w-[70%]">
+          <div className="flex flex-col space-y-4 w-full xl:w-[70%]">
             {filteredAndSortedDiscussions.map((disc) => (
               <div
                 key={disc._id}
@@ -614,7 +614,7 @@ const Dashboard = () => {
                 </div>
 
                 {/* ===== BODY ===== */}
-                <div className="ml-16">
+                <div className="ml-0 md:ml-16">
                   <h2 className="text-xl text-white font-medium mb-3">
                     {disc.question}
                   </h2>
@@ -643,7 +643,7 @@ const Dashboard = () => {
                   )}
 
                   {/* ===== ACTIONS ===== */}
-                  <div className="flex gap-3 items-center">
+                  <div className="flex flex-wrap gap-3 items-center">
                     <button
                       onClick={() => toggleAnswers(disc._id)}
                       className="px-4 py-2 text-sm font-medium text-neutral-400 hover:text-white bg-neutral-950 border border-neutral-800 rounded-lg hover:border-neutral-700 transition-colors"
@@ -744,7 +744,7 @@ const Dashboard = () => {
             ))}
           </div>
 
-          <div className="w-[30%] flex flex-col items-center sticky top-6 self-start">
+          <div className="w-full xl:w-[30%] flex flex-col items-center xl:sticky xl:top-6 self-start">
             <h1 className="text-2xl text-white mb-4">Announcements</h1>
             {testimonialSkeleton ? (
               <div className="mx-auto w-auto px-4 py-2 font-sans antialiased md:px-8 lg:px-12 animate-pulse">
