@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, Star, ThumbsUp, X } from "lucide-react";
+import { Download, Mail, MessageCircle, Share2, Star, ThumbsUp, X } from "lucide-react";
 import axios from "axios";
 
 interface Props {
@@ -36,6 +36,7 @@ const StudyHub: React.FC<Props> = ({
   const [upvotingMaterial, setUpvotingMaterial] = useState<
     Record<string, boolean>
   >({});
+  const [openShareMenuFor, setOpenShareMenuFor] = useState<string | null>(null);
 
   const sortByUpvotes = (items: MaterialItem[]) => {
     return [...items].sort((a, b) => {
@@ -129,6 +130,26 @@ const StudyHub: React.FC<Props> = ({
     }
   };
 
+  const handleShareViaGmail = (material: MaterialItem) => {
+    const subject = encodeURIComponent(`Study Material: ${material.title}`);
+    const body = encodeURIComponent(
+      `Hi,\n\nSharing this study material with you:\n\nTitle: ${material.title}\nLink: ${material.fileUrl}\n\nShared from jAIcianVerse.`
+    );
+
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&su=${subject}&body=${body}`;
+    window.open(gmailUrl, "_blank", "noopener,noreferrer");
+    setOpenShareMenuFor(null);
+  };
+
+  const handleShareViaWhatsApp = (material: MaterialItem) => {
+    const message = encodeURIComponent(
+      `Study Material: ${material.title}\n${material.fileUrl}`
+    );
+    const whatsappUrl = `https://wa.me/?text=${message}`;
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    setOpenShareMenuFor(null);
+  };
+
   useEffect(() => {
     fetchMaterials();
   }, []);
@@ -218,11 +239,46 @@ const StudyHub: React.FC<Props> = ({
                         <Download className="h-3.5 w-3.5" />
                         Download PDF
                       </a>
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setOpenShareMenuFor((prev) =>
+                              prev === material._id ? null : material._id
+                            )
+                          }
+                          className="inline-flex items-center gap-2 rounded-md border border-neutral-600 px-2.5 py-1.5 text-xs font-medium text-white hover:border-neutral-400 cursor-pointer"
+                          title="Share"
+                        >
+                          <Share2 className="h-3.5 w-3.5" />
+                        </button>
+
+                        {openShareMenuFor === material._id && (
+                          <div className="absolute bottom-10 left-0 z-20 min-w-40 rounded-md border border-neutral-700 bg-neutral-900 p-1 shadow-lg">
+                            <button
+                              type="button"
+                              onClick={() => handleShareViaGmail(material)}
+                              className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs text-white hover:bg-neutral-800 cursor-pointer"
+                            >
+                              <Mail className="h-3.5 w-3.5" />
+                              Gmail
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleShareViaWhatsApp(material)}
+                              className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-xs text-white hover:bg-neutral-800 cursor-pointer"
+                            >
+                              <MessageCircle className="h-3.5 w-3.5" />
+                              WhatsApp
+                            </button>
+                          </div>
+                        )}
+                      </div>
                       <button
                         type="button"
                         onClick={() => handleMaterialUpvote(material._id)}
                         disabled={!!upvotingMaterial[material._id]}
-                        className="inline-flex items-center gap-2 rounded-md border border-neutral-600 px-3 py-1.5 text-xs font-medium text-white hover:border-neutral-400 disabled:opacity-60"
+                        className="inline-flex items-center gap-2 rounded-md border border-neutral-600 px-3 py-1.5 text-xs font-medium text-white hover:border-neutral-400 disabled:opacity-60 cursor-pointer"
                       >
                         <ThumbsUp className="h-3.5 w-3.5" />
                         {material.upvotes?.length || 0}
