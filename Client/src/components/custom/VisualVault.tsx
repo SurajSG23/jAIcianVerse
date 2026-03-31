@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { X, RefreshCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import BottomGradient from "../ui/buttonGradient";
@@ -16,19 +16,32 @@ interface props {
   selectedSubject?: { name: string } | null;
 }
 
+interface YoutubeVideo {
+  id: {
+    videoId: string;
+  };
+  snippet: {
+    title: string;
+    channelTitle: string;
+    thumbnails: {
+      medium: {
+        url: string;
+      };
+    };
+  };
+}
+
 const VisualVault: React.FC<props> = ({
   setIsVisualVaultVisible,
   selectedUnit,
   selectedSubject,
 }) => {
-  const keywords = [
-    selectedSubject?.name,
-    selectedUnit?.name || "Data Structure",
-  ];
-  const [videos, setVideos] = useState([]);
+  const subjectKeyword = selectedSubject?.name || "";
+  const unitKeyword = selectedUnit?.name || "Data Structure";
+  const [videos, setVideos] = useState<YoutubeVideo[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const currentKeyword = keywords[0];
+  const currentKeyword = subjectKeyword;
   const udemyUrl = `https://www.udemy.com/courses/search/?src=ukw&q=${encodeURIComponent(
     currentKeyword
   )}`;
@@ -38,14 +51,17 @@ const VisualVault: React.FC<props> = ({
   const linkedInUrl = `https://www.linkedin.com/learning/search?keywords=${encodeURIComponent(
     currentKeyword
   )}`;
+  const slideShareUrl = `https://www.slideshare.net/search/slideshow?searchfrom=header&q=${encodeURIComponent(
+    currentKeyword
+  )}`;
 
-  const fetchVideos = async () => {
+  const fetchVideos = useCallback(async () => {
     if (!currentKeyword) return;
 
     setLoading(true);
     try {
       const API_KEY = import.meta.env.VITE_GOOGLE_CLOUD_API_KEY;
-      const query = "Educational videos related to" + keywords.join(" ");
+      const query = `Educational videos related to ${currentKeyword} ${unitKeyword}`;
 
       const response = await axios.get(
         "https://www.googleapis.com/youtube/v3/search",
@@ -61,14 +77,16 @@ const VisualVault: React.FC<props> = ({
         }
       );
 
-      const videoItems = response.data.items.filter((item) => item.id.videoId);
+      const videoItems = (response.data.items || []).filter(
+        (item: YoutubeVideo) => item.id?.videoId
+      );
       setVideos(videoItems);
     } catch (error) {
       console.error("Error fetching videos:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentKeyword, unitKeyword]);
   const SkeletonGrid = () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center items-center w-full">
       {[...Array(6)].map((_, i) => (
@@ -87,7 +105,7 @@ const VisualVault: React.FC<props> = ({
   );
   useEffect(() => {
     fetchVideos();
-  }, []);
+  }, [fetchVideos]);
   return (
     <AnimatePresence>
       <>
@@ -135,11 +153,13 @@ const VisualVault: React.FC<props> = ({
           </style>
           <h2 className="text-2xl font-bold mb-4 text-gray-500">
             Keywords:{" "}
-            <span className="text-gray-300">{keywords.join(", ")}</span>
+            <span className="text-gray-300">
+              {[currentKeyword, unitKeyword].filter(Boolean).join(", ")}
+            </span>
           </h2>
           <div className="flex flex-wrap gap-4">
             <button
-              className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black border border-gray-700  to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
+              className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-linear-to-br from-black border border-gray-700  to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
               onClick={fetchVideos}
               disabled={loading}
             >
@@ -150,7 +170,7 @@ const VisualVault: React.FC<props> = ({
             <a
               href={udemyUrl}
               target="_blank"
-              className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black border border-gray-700 to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
+              className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-linear-to-br from-black border border-gray-700 to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
             >
               Udemy
               <RxArrowTopRight className="w-5 h-5" />
@@ -159,7 +179,7 @@ const VisualVault: React.FC<props> = ({
             <a
               href={courseraUrl}
               target="_blank"
-              className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black border border-gray-700 to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
+              className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-linear-to-br from-black border border-gray-700 to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
             >
               Coursera
               <RxArrowTopRight className="w-5 h-5" />
@@ -168,9 +188,18 @@ const VisualVault: React.FC<props> = ({
             <a
               href={linkedInUrl}
               target="_blank"
-              className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-gradient-to-br from-black border border-gray-700 to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
+              className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-linear-to-br from-black border border-gray-700 to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
             >
               LinkedIn
+              <RxArrowTopRight className="w-5 h-5" />
+              <BottomGradient />
+            </a>
+            <a
+              href={slideShareUrl}
+              target="_blank"
+              className="group/btn relative h-10 w-auto p-3 flex justify-center items-center gap-3 rounded-md bg-linear-to-br from-black border border-gray-700 to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] my-4 cursor-pointer"
+            >
+              SlideShare
               <RxArrowTopRight className="w-5 h-5" />
               <BottomGradient />
             </a>
