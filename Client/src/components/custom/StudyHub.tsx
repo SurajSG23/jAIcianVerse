@@ -278,7 +278,7 @@ const StudyHub: React.FC<Props> = ({
                         type="button"
                         onClick={() => handleMaterialUpvote(material._id)}
                         disabled={!!upvotingMaterial[material._id]}
-                        className="inline-flex items-center gap-2 rounded-md border border-neutral-600 px-3 py-1.5 text-xs font-medium text-white hover:border-neutral-400 disabled:opacity-60 cursor-pointer"
+                        className="inline-flex items-center gap-2 rounded-md border border-neutral-600 px-3 py-1.5 text-xs font-medium text-white hover:border-neutral-400 disabled:opacity-60 cursor-pointerx`"
                       >
                         <ThumbsUp className="h-3.5 w-3.5" />
                         {material.upvotes?.length || 0}

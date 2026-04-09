@@ -19,13 +19,13 @@ const AIAvatar: React.FC<Props> = ({
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [textDisplaying, setTextDisplaying] = useState("");
-  const [hindiVoice, setHindiVoice] = useState(null);
-  const videoRef = useRef(null);
-  const subtitleTimeoutRefs = useRef([]);
-  const utteranceRef = useRef(null);
-  const wordsRef = useRef([]);
+  const [hindiVoice, setHindiVoice] = useState<SpeechSynthesisVoice | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const subtitleTimeoutRefs = useRef<number[]>([]);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const wordsRef = useRef<string[]>([]);
   const currentWordIndexRef = useRef(0);
-  const subtitleIntervalRef = useRef(null);
+  const subtitleIntervalRef = useRef<number | null>(null);
   const speechStartTimeRef = useRef(0);
   const pausedTimeRef = useRef(0);
   const totalPausedDurationRef = useRef(0);
@@ -73,7 +73,7 @@ const AIAvatar: React.FC<Props> = ({
 
   const startVideoPlayback = () => {
     if (videoRef.current) {
-      videoRef.current.play().catch((err) => {
+      videoRef.current.play().catch((err: unknown) => {
         console.error("Video play error:", err);
       });
     }
@@ -144,10 +144,10 @@ const AIAvatar: React.FC<Props> = ({
         `;
       finalText = finalText.replace(/\s+/g, " ").trim();
       setText(finalText);
-    } catch (error) {
+    } catch (error: unknown) {
       setIsGenerating(false);
 
-      if (error.response.status === 404) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
         toast.error("No materials found for the selected subject and unit.");
       } else {
         toast.error("Failed to generate summary.");
@@ -166,6 +166,7 @@ const AIAvatar: React.FC<Props> = ({
     }
 
     // SPEECH STATE
+    setIsGenerating(false);
     setIsSpeaking(true);
     setIsPaused(false);
     setTextDisplaying("");
@@ -244,7 +245,7 @@ const AIAvatar: React.FC<Props> = ({
 
       window.speechSynthesis.resume();
       if (videoRef.current) {
-        videoRef.current.play().catch((err) => {
+        videoRef.current.play().catch((err: unknown) => {
           console.error("Video play error:", err);
         });
       }
@@ -269,7 +270,9 @@ const AIAvatar: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    stopSpeech();
+    return () => {
+      stopSpeech();
+    };
   }, []);
 
   const stopSpeech = () => {
@@ -313,7 +316,10 @@ const AIAvatar: React.FC<Props> = ({
           className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[95vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-lg shadow-xl flex justify-center items-center z-80"
         >
           <button
-            onClick={() => setIsAiTeacherVisible(false)}
+            onClick={() => {
+              stopSpeech();
+              setIsAiTeacherVisible(false);
+            }}
             className="ml-4 absolute right-1 top-1 text-neutral-400 hover:text-white transition-colors p-1 rounded-md hover:bg-neutral-800 cursor-pointer"
           >
             <X className="h-6 w-6" />
@@ -398,7 +404,23 @@ const AIAvatar: React.FC<Props> = ({
                 </div>
 
                 {/* Controls Section */}
-                <div className="w-full flex items-center justify-center lg:justify-start">
+                <div className="w-full flex flex-col items-center lg:items-start justify-center gap-6">
+                  <div className="w-full max-w-xl rounded-2xl overflow-hidden border border-orange-500/30 bg-black/40 shadow-[0_10px_30px_rgba(0,0,0,0.45)]">
+                    <div className="aspect-video w-full">
+                      <video
+                        ref={videoRef}
+                        src="/AI-Teacher-Video-1.mp4"
+                        // poster="/ai-teacher.jpg"
+                        className="h-full w-full"
+                        loop
+                        muted
+                        playsInline
+                        preload="auto"
+                        controls={false}
+                      />
+                    </div>
+                  </div>
+
                   <div className="flex flex-col sm:flex-row gap-4">
                     {!isSpeaking ? (
                       <button
