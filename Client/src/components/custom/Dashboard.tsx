@@ -447,7 +447,7 @@ const Dashboard = () => {
     });
 
   return (
-    <div className="flex h-screen w-full flex-1 flex-col overflow-y-auto rounded-l-2xl border border-neutral-800 bg-black p-6 md:p-10">
+    <div className="flex min-h-[100dvh] w-full flex-1 flex-col overflow-visible rounded-l-2xl border border-neutral-800 bg-black p-4 sm:p-6 md:p-10 md:overflow-y-auto">
       <style>
         {`
           ::-webkit-scrollbar {
@@ -469,21 +469,21 @@ const Dashboard = () => {
       </style>
       {JSON.parse(localStorage.getItem("userInfo") || "{}").role ===
       "student" ? (
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
           <h1 className="text-3xl font-bold text-white">Discussion Forum</h1>
           <button
             onClick={() => setShowQuestionModal(true)}
-            className="px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
+            className="w-full sm:w-auto px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
           >
             Ask Question
           </button>
         </div>
       ) : (
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
           <h1 className="text-3xl font-bold text-white">Discussion Forum</h1>
           <button
             onClick={() => setShowAnnouncementModal(true)}
-            className="px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
+            className="w-full sm:w-auto px-6 py-2.5 text-sm font-medium text-white bg-neutral-800 border border-neutral-700 rounded-lg hover:bg-neutral-700 transition-colors"
           >
             Make Announcement
           </button>
@@ -514,8 +514,8 @@ const Dashboard = () => {
           </svg>
         </div>
 
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex gap-2">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-wrap gap-2">
             {filters.map((filter) => (
               <button
                 key={filter}
@@ -529,12 +529,14 @@ const Dashboard = () => {
                 {filter}
               </button>
             ))}
-            <div className="ml-auto flex items-center gap-2">
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
               <span className="text-sm text-neutral-500">Sort by:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-2 text-sm font-medium text-white bg-neutral-900 border border-neutral-800 rounded-lg focus:outline-none focus:border-neutral-700"
+                className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-neutral-900 border border-neutral-800 rounded-lg focus:outline-none focus:border-neutral-700"
               >
                 {sortOptions.map((option) => (
                   <option key={option} value={option}>
@@ -543,16 +545,18 @@ const Dashboard = () => {
                 ))}
               </select>
             </div>
-            <div
-              className="ml-auto flex items-center gap-2 cursor-pointer"
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 text-sm text-neutral-400 hover:text-white"
               onClick={() => {
                 fetchDiscussions();
                 fetchAnnouncements();
               }}
               title="Refresh"
             >
-              <RefreshCcw className="text-gray-600 hover:text-gray-700" />
-            </div>
+              <RefreshCcw className="text-gray-600 hover:text-gray-400" />
+              Refresh
+            </button>
           </div>
         </div>
       </div>

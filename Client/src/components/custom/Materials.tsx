@@ -288,7 +288,7 @@ const Materials = () => {
   return (
     <div
       className={cn(
-        "mx-auto fixed flex w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-black h-screen text-white",
+        "mx-auto flex min-h-[100dvh] w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-black text-white",
       )}
     >
       <style>
@@ -401,7 +401,7 @@ const Materials = () => {
       )}
 
       <Sidebar />
-      <div className="min-h-screen w-full bg-black p-4 md:p-8  overflow-auto">
+      <div className="min-h-[100dvh] w-full bg-black p-4 md:p-8 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">

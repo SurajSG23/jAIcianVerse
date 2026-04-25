@@ -253,7 +253,7 @@ const MessagePage = () => {
   return (
     <div
       className={cn(
-        "mx-auto flex w-full h-screen overflow-hidden border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-black text-white"
+        "mx-auto flex w-full min-h-[100dvh] md:h-[100dvh] overflow-hidden border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-black text-white"
       )}
     >
       <style>

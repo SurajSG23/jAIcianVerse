@@ -442,7 +442,7 @@ const Profile = () => {
   return (
     <div
       className={cn(
-        "mx-auto fixed flex w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-black h-screen text-white",
+        "mx-auto flex min-h-[100dvh] w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-black text-white",
       )}
     >
       {editProfile && (
@@ -614,7 +614,7 @@ const Profile = () => {
       </style>
       <Sidebar />
 
-      <div className="max-w-7xl mx-auto p-6 w-screen overflow-y-auto">
+      <div className="max-w-7xl mx-auto w-full flex-1 p-4 sm:p-6 overflow-y-auto">
         {/* Profile Header */}
         <div className="relative mb-8">
           <div className="absolute inset-0 rounded-3xl blur-3xl"></div>
@@ -664,10 +664,10 @@ const Profile = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6 bg-neutral-900 backdrop-blur-xl rounded-2xl p-2 border border-gray-800/50">
+        <div className="flex flex-col sm:flex-row gap-2 mb-6 bg-neutral-900 backdrop-blur-xl rounded-2xl p-2 border border-gray-800/50">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all cursor-pointer ${
+            className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all cursor-pointer ${
               activeTab === "overview"
                 ? "bg-black text-white shadow-lg"
                 : "text-gray-400 hover:text-white hover:bg-gray-800/50"
@@ -681,7 +681,7 @@ const Profile = () => {
                 userRole === "student" ? "contributions" : "announcements",
               );
             }}
-            className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all cursor-pointer ${
+            className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all cursor-pointer ${
               activeTab ===
               (userRole === "student" ? "contributions" : "announcements")
                 ? "bg-black text-white shadow-lg"
