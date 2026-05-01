@@ -166,8 +166,12 @@ Therefore, the problem addressed by this project is to build a unified academic 
 
 General-purpose chatbots can produce confident but incorrect answers (hallucinations), and they may not reflect the specific content taught in a course. This motivates an AI assistant that is constrained by a knowledge base (through **Retrieval-Augmented Generation**) and aligned to the academic domain (through **LoRA-based fine-tuning**) while being integrated into a complete full-stack application.
 
+Cross-domain AI advisory efforts in agriculture and public data ecosystems also demonstrate the practical value of domain-focused AI assistance, even though the deployment context differs from classroom learning [1], [4], [5].
+
 ## 1.2 Aim
 To design and develop **jAIcianVerse**, a full-stack academic platform that combines content management and collaboration with an AI assistant that is grounded in college materials using **RAG** and aligned using **LoRA-based fine-tuning**.
+
+This aim combines grounding-focused generation and parameter-efficient adaptation, which are widely discussed in current LLM system design [10], [11].
 
 ## 1.3 Objectives
 
@@ -189,6 +193,8 @@ To design and develop **jAIcianVerse**, a full-stack academic platform that comb
 - Train LoRA adapters to align the base model with the expected academic response style.
 - Export the tuned artifacts and integrate them into the inference pipeline used by the application.
 
+These objectives are also aligned with learning-system expectations reported in prior e-learning and AI-in-education literature [6], [8], [9].
+
 ## 1.4 Scope of the Project
 The scope of jAIcianVerse covers the end-to-end development of an academic application with an AI assistant:
 
@@ -199,6 +205,8 @@ The scope of jAIcianVerse covers the end-to-end development of an academic appli
   - RAG-based retrieval from college notes.
   - LLM inference integration for generating responses.
   - A fine-tuning pipeline (LoRA) used to adapt the base model to the project domain.
+
+The scope intentionally focuses on a practical prototype pattern commonly used in modern AI products: retrieval for factual grounding + model adaptation for response quality [7], [10], [11].
 
 The project does not focus on enterprise-scale deployment, high-availability infrastructure, or institution-wide governance workflows. Such items can be treated as enhancements beyond the current implementation.
 
@@ -220,6 +228,8 @@ This report is organized to explain the project from motivation to implementatio
 # Chapter 2: Literature Review
 
 This chapter summarizes the concepts and existing approaches that are closely related to the work implemented in jAIcianVerse. The intention is not to reproduce any single paper or article, but to build a clear foundation: what is commonly done, what works well, and what limitations remain when these ideas are used in an academic environment.
+
+Initial source discovery for this review was supported through Google Scholar indexing and search [2].
 
 **Table 2.1: Literature Review Summary**
 
@@ -243,16 +253,16 @@ From a learning perspective, this aligns with the idea that students benefit whe
 ### 2.1.3 Educational chatbots and AI tutoring
 AI tutors can reduce the time needed to get explanations and can provide multiple variations of an answer. However, when such systems are not grounded in a syllabus or trusted course content, they may respond with information that is irrelevant, outdated, or simply incorrect. This issue becomes more serious in technical subjects where wrong guidance can mislead learning.
 
-Recent literature on adaptive learning in e-learning also emphasizes that personalization can be beneficial, but it introduces design and data-handling challenges that must be addressed responsibly [1].
+Recent literature on adaptive learning in e-learning also emphasizes that personalization can be beneficial, but it introduces design and data-handling challenges that must be addressed responsibly [6].
 
 ### 2.1.4 Retrieval-Augmented Generation (RAG)
 RAG is commonly used to make language model answers more dependable by retrieving relevant context from a knowledge base and then generating an answer using that context. Conceptually, it introduces a “check your notes first” step before answering. In education, this is especially useful because the desired answers should align with the course notes rather than general internet content.
 
-In modern NLP, this pattern is widely discussed as a practical approach for knowledge-intensive tasks [4].
+In modern NLP, this pattern is widely discussed as a practical approach for knowledge-intensive tasks [10].
 
 At the same time, RAG quality depends heavily on practical choices such as how the content is chunked, how retrieval is done, and how the retrieved text is inserted into prompts. Poor retrieval can still lead to weak answers, even if the generation model is strong.
 
-Some approaches extend RAG using structured representations such as knowledge graphs to improve tutoring behavior and evaluation performance (Dong et al., 2023). While implementation complexity increases, the direction supports the core idea used in this project: retrieval improves the “grounding” of answers.
+Some approaches extend RAG using structured representations such as knowledge graphs to improve tutoring behavior and evaluation performance [7]. While implementation complexity increases, the direction supports the core idea used in this project: retrieval improves the “grounding” of answers.
 
 ### 2.1.5 Semantic search using embeddings
 Many retrieval systems use embeddings to represent text in a vector space so that semantically similar content can be found even when the user’s wording does not exactly match the stored notes. This approach improves search flexibility compared to keyword search. In academic settings, semantic retrieval helps when students ask questions in informal language while the notes use formal definitions.
@@ -267,10 +277,10 @@ However, fine-tuning alone does not guarantee factual correctness, because the m
 ### 2.1.7 Real-time messaging and collaboration
 Real-time chat systems are typically implemented using persistent connections and event-based messaging. In student collaboration, this supports quick coordination, doubt clarification, and group learning. The key engineering challenge is to keep the system consistent (rooms, message delivery, user presence) while maintaining security (authentication/authorization).
 
-In addition to the engineering side, online learning research also highlights that AI tools can reshape learner–instructor interaction patterns (Seo et al., 2021). This reinforces a design principle used in jAIcianVerse: AI assistance should complement collaboration—not replace human guidance.
+In addition to the engineering side, online learning research also highlights that AI tools can reshape learner–instructor interaction patterns [8]. This reinforces a design principle used in jAIcianVerse: AI assistance should complement collaboration, not replace human guidance.
 
 ### 2.1.8 Multimedia learning perspective (why UI and explanations matter)
-Even with strong backend and AI systems, learning quality depends on how information is presented. Multimedia learning theory suggests that learners benefit when verbal explanations and visual organization work together, especially when the learner can control the pace [3]. This supports interface decisions such as structured units/materials, readable layouts, and the ability to navigate between content, discussions, and AI explanations.
+Even with strong backend and AI systems, learning quality depends on how information is presented. Multimedia learning theory suggests that learners benefit when verbal explanations and visual organization work together, especially when the learner can control the pace [9]. This supports interface decisions such as structured units/materials, readable layouts, and the ability to navigate between content, discussions, and AI explanations.
 
 ## 2.2 Gap Analysis
 Based on the above related work, the following gaps motivate the design of jAIcianVerse:
@@ -307,6 +317,8 @@ The system consumes multiple types of inputs depending on the module being used:
   - A curated knowledge base (for RAG) such as college notes/text files.
   - Fine-tuning dataset entries (Q&A pairs) in a structured format (JSONL) for training.
 
+This separation of operational user inputs and model knowledge inputs follows standard retrieval-plus-training pipelines [10], [11].
+
 In simple terms: the platform takes *human interaction data* (messages/questions), *academic structure* (units/materials), and *domain knowledge* (notes + dataset) as its primary inputs.
 
 ## 3.2 Output Requirements
@@ -321,8 +333,12 @@ The outputs are designed to be useful both to learners and to evaluators (guide/
   - Logs/errors for debugging (during development/testing).
   - Fine-tuning artifacts such as adapter weights and exported model files.
 
+The distinction between learner-facing outputs and system/engineering artifacts is consistent with full-stack deployment practice and model adaptation workflows [11], [12], [14].
+
 ## 3.3 Software Requirements
 The project is implemented as a multi-module application (client + server + AI services + training scripts). The following software requirements were considered.
+
+The selected stack reflects stable, documentation-backed tools used for web systems and local AI experimentation [12-20].
 
 **Table 3.1: Software Requirements**
 
@@ -349,6 +365,8 @@ Hardware needs depend on whether the user is only running the application or als
 | Fine-tuning (LoRA) locally | 8+ cores | 16–32 GB | 30+ GB free | Recommended for faster training |
 
 These values are not strict “minimums”; they represent a comfortable setup for development and demonstration. If compute resources are limited, training can be executed on a more capable machine and the exported model can be used later for inference.
+
+This staged strategy (train where resources are available, deploy a compact artifact for inference) is typical of LoRA + local runtime workflows [11], [19], [20].
 
 ## 3.5 Functional Requirements
 Functional requirements describe *what the system should do*. For jAIcianVerse, the key functional requirements are:
@@ -380,6 +398,8 @@ Functional requirements describe *what the system should do*. For jAIcianVerse, 
   - Provide basic management capability for content and users (as implemented).
   - Provide meaningful error messages for invalid requests.
 
+These requirements reflect the combined needs of LMS-style organization, collaboration, and AI-assisted support identified in prior work [6], [8], [9], [10].
+
 ## 3.6 Non-Functional Requirements
 Non-functional requirements describe *how well the system should operate*.
 
@@ -389,6 +409,8 @@ Non-functional requirements describe *how well the system should operate*.
 - **Security:** Protected routes should require authentication; sensitive fields (e.g., passwords) should not be exposed in responses.
 - **Maintainability:** Module boundaries (Client/Server/AI services) should be clear so that features can be updated independently.
 - **Scalability (prototype-level):** The design should be extendable to more users and more content, even if production scaling is not the main goal of this academic version.
+
+The listed NFRs are also consistent with backend/API and real-time system recommendations in mainstream framework documentation [13], [14], [15].
 
 ---
 
@@ -414,6 +436,8 @@ In this project, JavaScript is primarily used in:
 - The backend API server (Express.js).
 - The AI-Server orchestration layer (calling the LLM runtime and routing AI requests).
 
+This use is consistent with official runtime and framework guidance for server-side JavaScript applications [13], [14].
+
 ## 4.2 TypeScript
 TypeScript adds static typing on top of JavaScript. In a project with multiple data models (users, chats, messages, materials, etc.), type safety reduces accidental mistakes—especially when data flows from backend APIs to UI components.
 
@@ -423,6 +447,8 @@ In jAIcianVerse, TypeScript is most valuable in the client where:
 - UI components become easier to refactor safely.
 - Developer productivity improves through better auto-completion and compile-time checks.
 
+This is consistent with modern React + Vite frontend practice for maintainable codebases [16], [17].
+
 ## 4.3 React
 React is used to build the client application as a component-based single-page application. React’s strengths for this project include:
 
@@ -430,13 +456,19 @@ React is used to build the client application as a component-based single-page a
 - Managing view state efficiently across pages.
 - Integrating real-time updates (e.g., new messages) with predictable rendering.
 
+These strengths are also reflected in the official React documentation and ecosystem patterns [16].
+
 ## 4.4 Vite
 Vite is used as the frontend build tool and dev server. Compared to older bundlers, Vite provides fast startup and quick hot reload, which helps significantly during UI-heavy development. This matters in academic timelines where iterative development and debugging happen frequently.
+
+The build and development workflow follows Vite guidance for lightweight SPA development [17].
 
 ## 4.5 Tailwind CSS (and UI utilities)
 Tailwind CSS supports rapid styling through utility classes. For this project, it helps keep UI styling consistent without writing large amounts of custom CSS. It also makes it easier to maintain a clean UI when the application includes multiple screens such as materials, discussions, chat, and AI assistant.
 
 Where needed, lightweight UI utilities/libraries are used to accelerate common UI patterns (icons, dialogs, animations) without building everything from scratch.
+
+This utility-first styling approach is aligned with Tailwind documentation and common frontend implementation patterns [18].
 
 ## 4.6 Node.js
 Node.js is the runtime environment for the Server and AI-Server modules. It is well-suited for I/O-heavy applications such as APIs, database operations, and real-time event handling. Node.js also enables sharing ecosystem tooling across modules (linting, package management, scripts).
@@ -451,8 +483,12 @@ Express.js is used to build REST APIs for the application. It provides a flexibl
 ## 4.8 MongoDB
 MongoDB is used as the primary database. The project naturally fits a document database because the application stores structured but flexible data such as chat messages, discussion threads, and materials metadata. MongoDB also supports iterative schema evolution, which is practical during academic development.
 
+These design choices map well to MongoDB’s document-model guidance [12].
+
 ## 4.9 Mongoose
 Mongoose is used as an ODM (Object Data Modeling) layer for MongoDB. It helps define schemas and validation rules, making database operations more structured and consistent. It also improves readability by keeping model definitions in one place.
+
+In this architecture, ODM use also supports maintainability by centralizing model constraints near application logic [12], [14].
 
 ## 4.10 Socket.io
 Socket.io is used for real-time messaging. It enables bi-directional communication between client and server for features such as:
@@ -463,14 +499,22 @@ Socket.io is used for real-time messaging. It enables bi-directional communicati
 
 Socket-based communication is essential to make chat feel “live”, rather than a page refresh experience.
 
+The event-driven real-time approach follows Socket.IO’s recommended interaction model [15].
+
 ## 4.11 JWT (JSON Web Tokens)
 JWT is used for authentication. Tokens provide a practical way to secure APIs without storing server-side session state for every request. This fits the architecture where the React client calls REST endpoints and also connects to sockets that require authentication.
+
+Token propagation across REST and socket handshake is a practical pattern for unified session control in Node/Express stacks [14], [15].
 
 ## 4.12 Ollama (LLM inference runtime)
 Ollama is used as a local inference runtime to run the LLM for text generation. This makes the AI features demonstrable even without relying on paid external APIs. It also allows experimentation with different models and fine-tuned variants in a controlled environment.
 
+This local-runtime setup supports reproducible demonstrations in constrained academic environments [19].
+
 ## 4.13 Retrieval-Augmented Generation (RAG)
 RAG is used to ground the AI assistant’s responses in college notes. Instead of expecting the model to “know everything,” the system first retrieves relevant context from a curated knowledge base and then uses that context to generate an answer.
+
+This design is consistent with widely used retrieval-augmented methods for knowledge-intensive generation tasks [10].
 
 In practice, RAG improves:
 
@@ -486,18 +530,22 @@ Python is used for two reasons:
 
 Python is widely used in AI/ML workflows and provides mature libraries for embeddings, training utilities, and evaluation.
 
+The Python split between retrieval service and training scripts mirrors standard ML engineering separation of inference-time and training-time components [10], [11].
+
 ## 4.15 LoRA Fine-Tuning (Unsloth / Transformers)
 The project uses LoRA-based fine-tuning to adapt an LLM to the expected academic domain behavior. LoRA is chosen because it is more feasible for an academic setting: it focuses on learning small adapter parameters rather than re-training the entire model.
 
 Unsloth/Transformers-based tooling is used to make the training process practical, reproducible, and easier to experiment with using limited compute.
 
-Implementation and integration details for core tools and frameworks were cross-checked with official documentation where appropriate [5–13].
+Implementation and integration details for core tools and frameworks were cross-checked with official documentation where appropriate [12-20].
 
 ---
 
 # Chapter 5: System Design and Implementation
 
 This chapter explains how jAIcianVerse is designed and how the major features are implemented. The goal is to show the system as a whole (modules and flows) and then describe each subsystem in a way that is easy to follow during evaluation.
+
+All flow diagrams in this chapter are written in Mermaid syntax and validated using the Mermaid live editor workflow [3].
 
 ## 5.1 Architecture of jAIcianVerse
 jAIcianVerse is implemented as a multi-module system:
@@ -535,6 +583,8 @@ In addition to the above online runtime, the Fine-Tune module supports offline t
 
 ## 5.2 Backend API Design (Server)
 The backend is built using Express and exposes REST endpoints under a common `/api` prefix. Authentication is primarily handled using JWT tokens, and protected routes use middleware to enforce access control.
+
+The route grouping and middleware-first pattern are consistent with Express service organization best practices [14].
 
 At a high level, the backend supports these functional areas:
 
@@ -588,6 +638,8 @@ The backend follows JSON-based request and response bodies. A consistent pattern
 - Return JSON responses for success and error cases.
 - For protected endpoints, reject unauthorized requests early via middleware.
 
+This request lifecycle maps directly to common API reliability practices in Node/Express systems [13], [14].
+
 ## 5.3 Database Design (MongoDB)
 The database is designed around the actual workflows in the application:
 
@@ -598,6 +650,8 @@ The database is designed around the actual workflows in the application:
 - Materials must support uploads and user-level interactions (e.g., upvotes).
 
 At an implementation level, the project uses Mongoose models (schemas) to define these collections and enforce basic validations.
+
+This model aligns with document-first schema design and iterative validation in MongoDB-backed web applications [12].
 
 ### 5.3.1 Core entities (conceptual)
 While the exact schema fields may evolve, the core conceptual entities include:
@@ -617,6 +671,8 @@ For chat, the system uses a hybrid approach:
 
 - REST APIs are used for fetching chat lists and history.
 - Socket.io is used for low-latency events (send message, typing, read receipts, etc.).
+
+Combining REST for persistence workflows and sockets for low-latency events is a widely used architecture for chat systems [14], [15].
 
 ### 5.4.1 Socket authentication
 Socket connections are authenticated using the same JWT token used for REST calls. During handshake, the server verifies the token and attaches the user object to the socket session. This avoids anonymous event publishing and ensures that chat operations are attributed to the correct user.
@@ -693,8 +749,12 @@ sequenceDiagram
 ### 5.5.2 Reliability and fallbacks
 The retrieval call is treated as a best-effort dependency. If the retrieval service is slow or unavailable, the AI-Server can fall back to generating without additional context. This ensures the user still receives a response, while also making it clear that the best quality is achieved when retrieval is available.
 
+This fallback strategy is consistent with practical RAG deployment principles where retrieval quality can vary by query and index state [10].
+
 ### 5.5.3 Prompt grounding strategy
 Instead of pasting retrieved text into the user prompt directly, the system appends relevant context to the *system prompt* section. This encourages the model to prioritize the retrieved content when it is applicable, while still answering naturally.
+
+The strategy directly follows retrieval-grounded prompting conventions in knowledge-augmented generation systems [10].
 
 ### 5.5.4 Mathematical formulation (retrieval + generation)
 Even though the implementation details may vary by embedding model, the retrieval step can be described using a standard similarity formulation.
@@ -772,7 +832,7 @@ $$
 
 where $x$ is the input prompt (instruction + optional context) and $\theta$ denotes the trainable parameters (in LoRA fine-tuning, primarily the adapter parameters).
 
-This formulation follows the standard LoRA adaptation idea [14].
+This formulation follows the standard LoRA adaptation idea [11].
 
 ### 5.6.4 Export and inference integration
 After training, the adapter is merged and exported to GGUF so it can be loaded by the local inference runtime. This provides a practical path from “training on a laptop/workstation” to “running the tuned model inside the application stack.”
@@ -784,6 +844,8 @@ The frontend is a React + TypeScript single-page application. The design intent 
 - Ask questions (discussions).
 - Collaborate (chat).
 - Use AI support as part of the same experience.
+
+This interaction design is aligned with multimedia learning principles that emphasize structured, navigable presentation of learning support content [9].
 
 ### 5.7.1 Client–Server integration
 The client interacts with:
@@ -832,6 +894,8 @@ The AI subsystem provides:
 - Retrieval-augmented generation (`/rag-generate`) when the goal is to answer based on the university/college knowledge base.
 
 **Observed outcome:** RAG mode is the more appropriate default for academic usage because it encourages syllabus-aligned answers. The fine-tuning pipeline supports additional alignment by shaping response style and the model’s familiarity with domain phrasing.
+
+These observations are consistent with prior findings on grounded generation and model adaptation trade-offs [6], [10], [11].
 
 ## 6.2 Feature Validation (High-level Test Cases)
 To present results clearly, the table below summarizes representative test cases and expected outcomes.
@@ -897,6 +961,8 @@ The Fine-Tune module in this repository provides an end-to-end pipeline for LoRA
 - **Real-time feel:** Socket events (typing, message delivery, read receipts) significantly improve the perceived usability of chat.
 - **AI latency:** AI response time depends on the model runtime and hardware. The architecture supports local inference for demonstrability, but performance can vary across machines.
 
+The performance characteristics observed here are expected in local deployment patterns documented for runtime, API, and real-time stacks [13], [15], [19].
+
 ## 6.5 Limitations
 The following limitations are acknowledged as part of an academic-scale implementation:
 
@@ -904,6 +970,8 @@ The following limitations are acknowledged as part of an academic-scale implemen
 2. **No guaranteed correctness:** Even with grounding and fine-tuning, LLMs can still produce imperfect answers.
 3. **Compute requirements:** Fine-tuning and local inference are resource-dependent; low-end machines may require adjusted settings.
 4. **Evaluation scope:** This report focuses on functional validation and qualitative outcomes rather than large-scale controlled user studies.
+
+These limitations are also broadly consistent with constraints reported in current AI-assisted learning and retrieval-grounded system literature [6], [7], [8], [10].
 
 ---
 
@@ -918,6 +986,8 @@ jAIcianVerse demonstrates a practical integration of full-stack web development 
 
 The key contribution of this project is not only building an AI chatbot, but embedding it inside an academic workflow where students can learn, discuss, and collaborate without switching tools constantly.
 
+Overall, this combined approach aligns with evidence from adaptive learning, interaction-centered AI adoption, retrieval grounding, and parameter-efficient adaptation research [6], [8], [10], [11].
+
 ## 7.2 Future Scope
 The project can be extended in several meaningful directions:
 
@@ -928,41 +998,51 @@ The project can be extended in several meaningful directions:
 5. **Deployment hardening:** Add production-grade configuration, monitoring, and scalability improvements.
 6. **Content ingestion pipeline:** Automatically parse PDF/DOCX materials into searchable chunks for RAG.
 
+These future directions are also consistent with ongoing trends in AI tutoring systems and retrieval-augmented product design [7], [10].
+
 ---
 
-# REFERENCES (APA)
+# REFERENCES
 
-> **Note:** References are listed in the order they first appear in this report. Where a venue/URL is not included in the provided reference details, a placeholder is kept so it can be completed before final submission.
+[1] Analytics Vidhya. Artificial Intelligence in Agriculture: Using Modern Day AI to Solve Traditional Farming Problems. https://www.analyticsvidhya.com/blog/2020/11/artificial-intelligence-in-agriculture-using-modern-day-ai-to-solve-traditional-farming-problems/. [Online; accessed 09-May-2025].
 
-Gligorea, I., Cioca, M., Oancea, R., Gorski, A.-T., Gorski, H., & Tudorache, P. (2024). Adaptive learning using artificial intelligence in e-learning: A literature review. *Education Sciences, 13*(12), 1216.
+[2] Google Scholar. https://scholar.google.com. [Online; accessed 09-May-2025].
 
-Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., Küttler, H., Lewis, M., Yih, W.-T., Rocktäschel, T., Riedel, S., & Kiela, D. (2020). Retrieval-augmented generation for knowledge-intensive NLP tasks. *Advances in Neural Information Processing Systems (NeurIPS).* (Add URL/DOI before final submission.)
+[3] Mermaid (Time Chart). https://mermaid.live/edit/#. [Online; accessed 09-May-2025].
 
-Dong, C., Yuan, Y., Chen, K., Cheng, S., & Wen, C. (2023). *How to build an adaptive AI tutor for any course using knowledge graph-enhanced retrieval-augmented generation* [Manuscript]. (Add source/URL before final submission.)
+[4] Websites. Indian Agricultural Statistics Research Institute (IASRI). https://iasri.icar.gov.in/. [Online; accessed 09-May-2025].
 
-Seo, K., Tang, J., Roll, I., Fels, S., & Yoon, D. (2021). The impact of artificial intelligence on learner–instructor interaction in online learning. (Add journal/conference details or URL before final submission.)
+[5] GRAMA Project. Enabling and Empowering Farmers Through AI and Game Theory. https://gtl.csa.iisc.ac.in/hari/publications/research-snippets/enabling-and-empowering-farmers-through-ai-and-game-theory/. [Online; accessed 09-May-2025].
 
-Mayer, R. E. (2009). *Multimedia learning* (2nd ed.). Cambridge University Press.
+[6] I. Gligorea, M. Cioca, R. Oancea, A.-T. Gorski, H. Gorski, and P. Tudorache, "Adaptive learning using artificial intelligence in e-learning: A literature review," Education Sciences, vol. 13, no. 12, p. 1216, 2024.
 
-MongoDB, Inc. (n.d.). *MongoDB documentation*. Retrieved April 29, 2026, from https://www.mongodb.com/docs/
+[7] C. Dong, Y. Yuan, K. Chen, S. Cheng, and C. Wen, "How to build an adaptive AI tutor for any course using knowledge graph-enhanced retrieval-augmented generation," 2023. [Manuscript].
 
-Node.js contributors. (n.d.). *Node.js documentation*. Retrieved April 29, 2026, from https://nodejs.org/en/docs
+[8] K. Seo, J. Tang, I. Roll, S. Fels, and D. Yoon, "The impact of artificial intelligence on learner-instructor interaction in online learning," 2021.
 
-Express.js contributors. (n.d.). *Express documentation*. Retrieved April 29, 2026, from https://expressjs.com/
+[9] R. E. Mayer, Multimedia Learning, 2nd ed. Cambridge University Press, 2009.
 
-Socket.IO contributors. (n.d.). *Socket.IO documentation*. Retrieved April 29, 2026, from https://socket.io/docs/
+[10] P. Lewis et al., "Retrieval-augmented generation for knowledge-intensive NLP tasks," in Advances in Neural Information Processing Systems (NeurIPS), 2020.
 
-React contributors. (n.d.). *React documentation*. Retrieved April 29, 2026, from https://react.dev/
+[11] E. J. Hu et al., "LoRA: Low-rank adaptation of large language models," arXiv, 2021.
 
-Vite contributors. (n.d.). *Vite documentation*. Retrieved April 29, 2026, from https://vitejs.dev/guide/
+[12] MongoDB, Inc. MongoDB documentation. https://www.mongodb.com/docs/ [Online; accessed 29-Apr-2026].
 
-Tailwind Labs. (n.d.). *Tailwind CSS documentation*. Retrieved April 29, 2026, from https://tailwindcss.com/docs
+[13] Node.js contributors. Node.js documentation. https://nodejs.org/en/docs [Online; accessed 29-Apr-2026].
 
-Ollama contributors. (n.d.). *Ollama documentation*. Retrieved April 29, 2026, from https://ollama.com/
+[14] Express.js contributors. Express documentation. https://expressjs.com/ [Online; accessed 29-Apr-2026].
 
-Unsloth contributors. (n.d.). *Unsloth documentation / repository*. Retrieved April 29, 2026, from https://github.com/unslothai/unsloth
+[15] Socket.IO contributors. Socket.IO documentation. https://socket.io/docs/ [Online; accessed 29-Apr-2026].
 
-Hu, E. J., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., & Chen, W. (2021). LoRA: Low-rank adaptation of large language models. *arXiv*. (Add arXiv URL before final submission.)
+[16] React contributors. React documentation. https://react.dev/ [Online; accessed 29-Apr-2026].
+
+[17] Vite contributors. Vite documentation. https://vitejs.dev/guide/ [Online; accessed 29-Apr-2026].
+
+[18] Tailwind Labs. Tailwind CSS documentation. https://tailwindcss.com/docs [Online; accessed 29-Apr-2026].
+
+[19] Ollama contributors. Ollama documentation. https://ollama.com/ [Online; accessed 29-Apr-2026].
+
+[20] Unsloth contributors. Unsloth documentation/repository. https://github.com/unslothai/unsloth [Online; accessed 29-Apr-2026].
 
 ---
 

@@ -784,7 +784,11 @@ const Dashboard = () => {
                 </div>
               </div>
             ) : (
-              <AnimatedTestimonials testimonials={announcements} />
+              <AnimatedTestimonials
+                testimonials={announcements}
+                autoplay={false}
+                showControls={true}
+              />
             )}
           </div>
         </div>

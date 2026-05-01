@@ -50,7 +50,7 @@ const Navbar = () => {
   };
   return (
     <Sidebar open={open} setOpen={setOpen}>
-      <SidebarBody className="justify-between gap-10 group">
+      <SidebarBody className="justify-between gap-6">
         <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
           {open ? <Logo /> : <LogoIcon />}
           <div className="mt-8 flex flex-col gap-2">
@@ -61,7 +61,7 @@ const Navbar = () => {
         </div>
 
         {/* --- Profile + Logout --- */}
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col items-start border-t border-neutral-300 dark:border-neutral-700 pt-4">
           <SidebarLink
             link={{
               label: JSON.parse(localStorage.getItem("userInfo") || "{}").name,

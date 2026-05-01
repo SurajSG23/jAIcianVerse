@@ -14,7 +14,7 @@ const HomePage = () => {
   return (
     <div
       className={cn(
-        "mx-auto flex min-h-[100dvh] w-full flex-1 flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-900"
+        "mx-auto flex h-[100dvh] w-full flex-col border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-900"
       )}
     >
       <Sidebar />

@@ -42,10 +42,12 @@ export const AnimatedTestimonials = ({
   testimonials,
   autoplay = true,
   interval = 10000,
+  showControls = true,
 }: {
   testimonials: Testimonial[];
   autoplay?: boolean;
   interval?: number;
+  showControls?: boolean;
 }) => {
   const [active, setActive] = useState(0);
   const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -156,20 +158,22 @@ export const AnimatedTestimonials = ({
           </motion.div>
 
           {/* Controls */}
-          <div className="flex gap-4 pt-10 mx-auto">
-            <button
-              onClick={prev}
-              className="group/button flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800 cursor-pointer"
-            >
-              <IconArrowLeft className="h-5 w-5 text-black transition-transform duration-300 group-hover/button:rotate-12 dark:text-neutral-400" />
-            </button>
-            <button
-              onClick={next}
-              className="group/button flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800 cursor-pointer"
-            >
-              <IconArrowRight className="h-5 w-5 text-black transition-transform duration-300 group-hover/button:-rotate-12 dark:text-neutral-400" />
-            </button>
-          </div>
+          {showControls && (
+            <div className="flex gap-4 pt-10 mx-auto">
+              <button
+                onClick={prev}
+                className="group/button flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800 cursor-pointer"
+              >
+                <IconArrowLeft className="h-5 w-5 text-black transition-transform duration-300 group-hover/button:rotate-12 dark:text-neutral-400" />
+              </button>
+              <button
+                onClick={next}
+                className="group/button flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800 cursor-pointer"
+              >
+                <IconArrowRight className="h-5 w-5 text-black transition-transform duration-300 group-hover/button:-rotate-12 dark:text-neutral-400" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
