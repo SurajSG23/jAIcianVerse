@@ -146,17 +146,25 @@ const TrendingPage: React.FC<Props> = ({
   const fetchDiscussions = async () => {
     setLoading(true);
     try {
+      const hasSubjectAndUnit = Boolean(selectedSubject && selectedUnit);
+
       const response = await axios.get(
-        `${
-          import.meta.env.VITE_BACKEND_URL
-        }/api/discussions/fetch-discussions-by-name`,
-        {
-          params: {
-            subjectName: selectedSubject,
-            unitName: selectedUnit,
-          },
-          withCredentials: true,
-        }
+        hasSubjectAndUnit
+          ? `${
+              import.meta.env.VITE_BACKEND_URL
+            }/api/discussions/fetch-discussions-by-name`
+          : `${import.meta.env.VITE_BACKEND_URL}/api/discussions/fetch-discussion`,
+        hasSubjectAndUnit
+          ? {
+              params: {
+                subjectName: selectedSubject,
+                unitName: selectedUnit,
+              },
+              withCredentials: true,
+            }
+          : {
+              withCredentials: true,
+            }
       );
 
       setDiscussions(response.data.discussions);
@@ -171,7 +179,7 @@ const TrendingPage: React.FC<Props> = ({
   };
   useEffect(() => {
     fetchDiscussions();
-  }, []);
+  }, [selectedSubject, selectedUnit]);
 
   return (
     <AnimatePresence>

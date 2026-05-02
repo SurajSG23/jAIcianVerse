@@ -64,11 +64,21 @@ const fetchDiscussion = asyncHandler(async (req, res) => {
 });
 const fetchDiscussionByName = asyncHandler(async (req, res) => {
   const { subjectName, unitName } = req.query;
-  
-  const discussions = await Discussion.find({
-    subject: subjectName,
-    unit: unitName.split(" ")[1],
-  })
+
+  const query = {};
+
+  if (subjectName) {
+    query.subject = subjectName;
+  }
+
+  if (unitName) {
+    const unitMatch = String(unitName).match(/\b(\d+)\b/);
+    if (unitMatch) {
+      query.unit = Number(unitMatch[1]);
+    }
+  }
+
+  const discussions = await Discussion.find(query)
     .sort({ createdAt: -1 })
     .limit(20)
     .populate("postedBy", "name email profileImage role")
