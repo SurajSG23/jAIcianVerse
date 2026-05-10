@@ -11,7 +11,7 @@ import { useLocation } from "react-router-dom";
 const App = () => {
   const location = useLocation();
   return (
-    <div>
+    <div className="min-h-screen overflow-x-hidden bg-black text-white">
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/homepage" element={<HomePage />} />

@@ -1,1 +1,26 @@
 @import "tailwindcss";
+
+@layer base {
+	html,
+	body,
+	#root {
+		width: 100%;
+		min-height: 100%;
+	}
+
+	body {
+		margin: 0;
+		overflow-x: hidden;
+		background: #000;
+		color: #fff;
+		font-family: "Poppins", sans-serif;
+	}
+
+	img,
+	video,
+	canvas,
+	svg {
+		max-width: 100%;
+		height: auto;
+	}
+}
