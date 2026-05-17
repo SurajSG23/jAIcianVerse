@@ -53,7 +53,9 @@ const ChatBot: React.FC<Props> = ({
     "gemini",
   );
   const [lastQuestion, setLastQuestion] = useState("");
-  const [activeFollowUpFor, setActiveFollowUpFor] = useState<number | null>(null);
+  const [activeFollowUpFor, setActiveFollowUpFor] = useState<number | null>(
+    null,
+  );
   const chatEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -149,16 +151,15 @@ const ChatBot: React.FC<Props> = ({
     setActiveFollowUpFor(null);
 
     try {
-      const botResponse = await sendMessageToRAG(lastQuestion, alternativeModel);
+      const botResponse = await sendMessageToRAG(
+        lastQuestion,
+        alternativeModel,
+      );
       const cleanedResponse = cleanLLMResponse(botResponse);
       const botMessage: Message = {
         id: Date.now() + 3,
         sender: "bot",
-        text:
-          (cleanedResponse || "Sorry, I couldn't generate a response.") +
-          ` (Answered using ${
-            alternativeModel === "gemini" ? "Gemini" : "jAIcian"
-          })`,
+        text: cleanedResponse || "Sorry, I couldn't generate a response.",
       };
       setMessages((prev) => [...prev, botMessage]);
       setActiveFollowUpFor(botMessage.id);
@@ -210,9 +211,7 @@ const ChatBot: React.FC<Props> = ({
               <select
                 value={selectedModel}
                 onChange={(e) =>
-                  setSelectedModel(
-                    e.target.value as "jaicianverse" | "gemini",
-                  )
+                  setSelectedModel(e.target.value as "jaicianverse" | "gemini")
                 }
                 className="text-xs font-medium rounded-lg px-2 md:px-3 py-1.5 border outline-none cursor-pointer transition-colors bg-neutral-800 text-orange-400 border-orange-500/40"
               >
@@ -268,7 +267,10 @@ const ChatBot: React.FC<Props> = ({
                           onClick={handleTryOtherModel}
                           className="rounded-full border border-neutral-600 px-2.5 py-1 text-[11px] text-neutral-200 hover:border-neutral-400 hover:text-white"
                         >
-                          Try with {getAlternativeModel() === "gemini" ? "Gemini" : "jAIcian"}
+                          Try with{" "}
+                          {getAlternativeModel() === "gemini"
+                            ? "Gemini"
+                            : "jAIcian"}
                         </button>
                       </div>
                     </div>
