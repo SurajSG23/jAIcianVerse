@@ -5,6 +5,7 @@ dotenv.config();
 
 const OLLAMA_URL = process.env.OLLAMA_URL;
 const MODEL = process.env.OLLAMA_MODEL;
+const NUM_PREDICT = Number(process.env.OLLAMA_NUM_PREDICT || 800);
 
 export async function generateText(prompt, systemPrompt = "") {
   console.log(prompt);
@@ -23,7 +24,7 @@ export async function generateText(prompt, systemPrompt = "") {
       messages,
       stream: false,
       options: {
-        num_predict: 150,
+        num_predict: NUM_PREDICT,
       },
     }),
   });
