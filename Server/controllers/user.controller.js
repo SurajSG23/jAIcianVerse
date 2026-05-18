@@ -4,8 +4,7 @@ import { hashPassword, comparePassword } from "../utils/password.utils.js";
 import generateToken from "../config/generateToken.js";
 import chatbotPrompt, { buildRAGPrompt } from "../aiConfig/prompts/chatbot.prompt.js";
 import { generateWithLocalAI } from "../aiConfig/config/localAI.js";
-import { geminiModel } from "../aiConfig/config/gemini.config.js";
-import { generateWithOpenRouter } from "../aiConfig/config/openrouter.config.ts";
+import { generateWithGeminiFallback } from "../aiConfig/config/gemini.config.js";
 import {
   normalizeSemester,
   syncUserSemesterGroupMembership,
@@ -301,7 +300,7 @@ const callAIModel = asyncHandler(async (req, res) => {
   const ragPrompt = buildRAGPrompt(query, ragContext, !!noteKey);
 
   if (model === "gemini") {
-    response = (await geminiModel.generateContent(ragPrompt)).response?.text();
+    response = await generateWithGeminiFallback(ragPrompt);
   } else {
     response = await generateWithLocalAI(ragPrompt);
   }

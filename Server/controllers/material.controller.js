@@ -5,7 +5,7 @@ import Subject from "../models/subject.model.js";
 import Unit from "../models/unit.model.js";
 import mongoose from "mongoose";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
-import { geminiModel } from "../aiConfig/config/gemini.config.js";
+import { generateWithGeminiFallback } from "../aiConfig/config/gemini.config.js";
 import { generateWithOpenRouter } from "../aiConfig/config/openrouter.config.ts";
 import summaryPrompt from "../aiConfig/prompts/summary.prompt.js";
 import mcqPrompt from "../aiConfig/prompts/mcq.prompt.js";
@@ -456,7 +456,7 @@ const generateSummary = asyncHandler(async (req, res) => {
     summaryText = await generateWithLocalAI(prompt);
   } else {
     summaryText = useGemini
-      ? (await geminiModel.generateContent(prompt)).response?.text()
+      ? await generateWithGeminiFallback(prompt)
       : await generateWithOpenRouter([{ role: "user", content: prompt }]);
   }
 
@@ -530,7 +530,7 @@ const generateMCQ = asyncHandler(async (req, res) => {
       summaryText = await generateWithLocalAI(summaryGenPrompt);
     } else {
       summaryText = useGemini
-        ? (await geminiModel.generateContent(summaryGenPrompt)).response?.text()
+        ? await generateWithGeminiFallback(summaryGenPrompt)
         : await generateWithOpenRouter([
             { role: "user", content: summaryGenPrompt },
           ]);
@@ -547,7 +547,7 @@ const generateMCQ = asyncHandler(async (req, res) => {
     mcqText = await generateWithLocalAI(mcqPromptText);
   } else {
     mcqText = useGemini
-      ? (await geminiModel.generateContent(mcqPromptText)).response?.text()
+      ? await generateWithGeminiFallback(mcqPromptText)
       : await generateWithOpenRouter([
           { role: "user", content: mcqPromptText },
         ]);

@@ -158,6 +158,62 @@ def generate_qa_with_ollama(
     return []
 
 
+def generate_qa_with_openrouter(
+    chunk: str,
+    model: str = "xiaomi/mimo-v2-flash:free",
+) -> list[dict]:
+    """Call OpenRouter as a fallback when Gemini is overloaded."""
+    import requests
+
+    api_key = os.getenv("OPEN_ROUTER_API_KEY")
+    if not api_key:
+        print("  OpenRouter API key not found, skipping fallback.")
+        return []
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}",
+        "HTTP-Referer": os.getenv("SITE_URL", "http://localhost:5173"),
+        "X-Title": os.getenv("SITE_NAME", "JaicianVerse"),
+    }
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "user", "content": _build_qa_prompt(chunk)},
+        ],
+        "temperature": 0.3,
+        "max_tokens": 1024,
+    }
+
+    try:
+        resp = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers=headers,
+            json=payload,
+            timeout=120,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        raw = data["choices"][0]["message"]["content"]
+        print("  OpenRouter fallback succeeded.")
+        return _parse_qa_json(raw)
+    except Exception as exc:
+        print(f"  OpenRouter fallback failed: {exc}")
+        return []
+
+
+def _is_gemini_overload_error(exc: Exception) -> bool:
+    message = str(exc)
+    status = getattr(exc, "status", None) or getattr(exc, "code", None)
+    response = getattr(exc, "response", None)
+    response_status = getattr(response, "status", None) if response else None
+    return bool(
+        int(status) == 429 if str(status).isdigit() else False
+        or int(response_status) == 429 if str(response_status).isdigit() else False
+        or re.search(r"overload|resource exhausted|rate limit|too many requests|quota exceeded", message, re.I)
+    )
+
+
 def generate_qa_with_gemini(
     chunk: str,
     api_key: str,
@@ -187,6 +243,11 @@ def generate_qa_with_gemini(
             return _parse_qa_json(raw)
         except Exception as exc:
             print(f"  [attempt {attempt}/{retries}] Gemini error: {exc}")
+            if _is_gemini_overload_error(exc):
+                print("  Gemini overloaded, using OpenRouter fallback.")
+                fallback_pairs = generate_qa_with_openrouter(chunk)
+                if fallback_pairs:
+                    return fallback_pairs
             if attempt < retries:
                 time.sleep(2)
     return []
