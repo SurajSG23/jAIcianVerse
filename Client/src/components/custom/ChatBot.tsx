@@ -215,7 +215,7 @@ const ChatBot: React.FC<Props> = ({
                 }
                 className="text-xs font-medium rounded-lg px-2 md:px-3 py-1.5 border outline-none cursor-pointer transition-colors bg-neutral-800 text-orange-400 border-orange-500/40"
               >
-                <option value="gemini">jAIcian 1</option>
+                <option value="gemini">jAIcian (Global)</option>
                 <option value="jaicianverse">jAIcian (Local)</option>
               </select>
 
@@ -269,8 +269,8 @@ const ChatBot: React.FC<Props> = ({
                         >
                           Try with{" "}
                           {getAlternativeModel() === "gemini"
-                            ? "Gemini"
-                            : "jAIcian"}
+                            ? "jAIcian (Global)"
+                            : "jAIcian (Local)"}
                         </button>
                       </div>
                     </div>
