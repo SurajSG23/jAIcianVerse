@@ -90,17 +90,6 @@ The assistant can run on:
 - **RAG-BOT**: Python (Flask) semantic search service (Sentence-Transformers)
 - **Fine-Tune**: Offline LoRA fine-tuning pipeline to build a better local model for Ollama
 
-```mermaid
-flowchart LR
-  C[Client (Vite/React)] -->|HTTP| S[Server :3000]
-  C -->|HTTP| S
-  C -->|Socket.IO| S
-  S -->|/search, /ingest| R[RAG-BOT :5001]
-  S -->|local model| A[AI-Server :5000]
-  A -->|/api/chat| O[Ollama :11434]
-  R --> D[(Knowledge base + note stores)]
-```
-
 ## How the AI works (end-to-end)
 
 ### A) Notes upload → becomes searchable (RAG ingest)
@@ -111,20 +100,6 @@ When a user uploads a PDF note:
    - `POST /ingest` with a `noteKey` like `Subject_Name_3`
 3. RAG-BOT stores embeddings under `AI-Server/RAG-BOT/notes_data/<noteKey>.pkl`.
 
-```mermaid
-sequenceDiagram
-  participant Client
-  participant Server
-  participant ImageKit
-  participant RAG as RAG-BOT
-
-  Client->>Server: POST /api/materials/upload-notes (PDF)
-  Server->>ImageKit: upload PDF
-  Server-->>Client: material saved
-  Server->>RAG: POST /ingest {noteKey, chunks}
-  RAG-->>Server: ok
-```
-
 ### B) Ask a question → RAG search → model answer
 
 The client calls `GET /api/user/call-ai-model`.
@@ -134,34 +109,6 @@ The client calls `GET /api/user/call-ai-model`.
 3. Server generates an answer using either:
    - Gemini → fallback to OpenRouter if Gemini is overloaded, or
    - local AI → the AI-Server → Ollama.
-
-```mermaid
-sequenceDiagram
-  participant Client
-  participant Server
-  participant RAG as RAG-BOT
-  participant Gemini
-  participant OR as OpenRouter
-  participant Local as AI-Server/Ollama
-
-  Client->>Server: GET /api/user/call-ai-model?query=...&model=...
-  Server->>RAG: POST /search {query, topK, noteKey?}
-  RAG-->>Server: top chunks
-
-  alt model=gemini
-    Server->>Gemini: generate(prompt with context)
-    Gemini-->>Server: response
-    opt overload/rate-limit
-      Server->>OR: generate(prompt)
-      OR-->>Server: response
-    end
-  else model=jaicianverse (local)
-    Server->>Local: POST /rag-generate {prompt}
-    Local-->>Server: response
-  end
-
-  Server-->>Client: answer
-```
 
 ## Backend modules (what each part is responsible for)
 
